@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>我的个人主页</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* 默认：亮色模式 */
+    body {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    /* 暗色模式：根据用户系统偏好自动生效 */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #ffffff;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>你好</h1>
