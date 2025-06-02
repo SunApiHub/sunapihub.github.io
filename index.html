@@ -3,56 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>我的个人主页</title>
-   <style>
-    body {
-      margin: 0;
-      padding: 2em;
-      font-family: sans-serif;
-      transition: background-color 0.3s, color 0.3s;
-      line-height: 1.6;
-    }
-
-    /* 默认亮色主题 */
-    body {
-      background-color: #ffffff;
-      color: #000000;
-    }
-
-    /* 暗色主题 */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #121212;
-        color: #ffffff;
-        scrollbar-color: #555 #1e1e1e; /* Firefox 支持 */
-      }
-
-      ::-webkit-scrollbar-track {
-        background: #1e1e1e;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background-color: #555;
-      }
-    }
-
-    /* 通用滚动条样式（Chrome/Edge/Safari） */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f0f0f0;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: #aaa;
-      border-radius: 4px;
-    }
-
-    /* 使页面可滚动以查看滚动条效果 */
-    .content {
-      height: 200vh;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>你好</h1>
