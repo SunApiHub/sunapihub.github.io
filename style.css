@@ -1,0 +1,49 @@
+/* 通用样式 */
+body {
+  margin: 0;
+  padding: 2em;
+  font-family: sans-serif;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 默认亮色模式 */
+body {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* 暗色模式 */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #ffffff;
+    scrollbar-color: #555 #1e1e1e; /* Firefox 支持 */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #555;
+  }
+}
+
+/* 通用滚动条样式（Chrome/Edge/Safari） */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
+
+/* 使页面可以滚动 */
+.content {
+  height: 200vh;
+}
