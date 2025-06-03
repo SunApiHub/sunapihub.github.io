@@ -16,7 +16,7 @@ body {
 /* 暗色模式 */
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #181818;
+    background-color: #191919;
     color: #ffffff;
     scrollbar-color: #555 #1e1e1e; /* Firefox 支持 */
   }
