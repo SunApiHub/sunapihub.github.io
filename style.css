@@ -1,60 +1,25 @@
-/* 通用样式 */
 body {
   margin: 0;
-  padding: 2em;
   font-family: sans-serif;
-  line-height: 1.6;
-  transition: background-color 0.3s, color 0.3s;
 }
-
-/* 默认亮色模式 */
-body {
-  background-color: #ffffff;
-  color: #000000;
-}
-
-/* 暗色模式 */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #191919;
-    color: #ffffff;
-    scrollbar-color: #555 #1e1e1e; /* Firefox 支持 */
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #1e1e1e;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #555;
-  }
-}
-
-/* 页面主容器使用 flex 布局，撑满整个视口高度 */
 .container {
   display: flex;
   height: 100vh;
 }
-
-/* 左侧导航栏样式 */
 .sidebar {
-  width: 180px;                  /* 固定宽度 */
-  background: #f0f0f0;           /* 灰色背景 */
-  padding: 16px;                 /* 内边距 */
+  width: 180px;
+  background: #f0f0f0;
+  padding: 16px;
   box-sizing: border-box;
-  display: flex;                 /* 垂直布局 */
+  display: flex;
   flex-direction: column;
   align-items: center;
 }
-
-/* 顶部 logo */
 .logo {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 24px;
 }
-
-/* 导航按钮样式 */
 .sidebar button {
   width: 100%;
   margin-bottom: 10px;
@@ -63,33 +28,23 @@ body {
   border: none;
   cursor: pointer;
 }
-
-/* 按钮悬停样式 */
 .sidebar button:hover {
   background: #ddd;
 }
-
-/* 被点击激活后的按钮样式 */
 .sidebar button.active {
   background: #ccc;
   color: red;
   font-weight: bold;
 }
-
-/* 底部图片链接样式 */
 .sidebar img {
-  margin-top: auto;    /* 自动推到底部 */
+  margin-top: auto;
   width: 80px;
 }
-
-/* 右侧内容区域 */
 .content {
-  flex: 1;                   /* 占据剩余空间 */
+  flex: 1;
   padding: 16px;
   box-sizing: border-box;
 }
-
-/* iframe 让子页面自适应填满内容区域 */
 iframe {
   width: 100%;
   height: 100%;
