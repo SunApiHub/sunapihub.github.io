@@ -1,16 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>我的个人主页</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>导航页面</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>你好</h1>
-  <p>欢迎访问我的 GitHub 主页！</p>
-  <iframe src="https://frequent-thunder-273.notion.site/ebd/32aa25dd69084101a16ceaa315921f14?v=94c7ed5c2a704aacbb276e306be2ca5a" width="100%" height="8000" frameborder="0" allowfullscreen />
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">🌟 LOGO</div>
+      <button onclick="loadPage('home.html')" id="homeBtn" class="active">首页</button>
+      <button onclick="loadPage('game.html')" id="gameBtn">游戏</button>
+      <a href="https://example.com" target="_blank">
+        <img src="https://via.placeholder.com/80" alt="image link" />
+      </a>
+    </div>
+    <div class="content">
+      <iframe id="contentFrame" src="home.html" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <script>
+    function loadPage(page) {
+      document.getElementById('contentFrame').src = page;
+
+      document.querySelectorAll('.sidebar button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      if (page === 'home.html') document.getElementById('homeBtn').classList.add('active');
+      if (page === 'game.html') document.getElementById('gameBtn').classList.add('active');
+    }
+  </script>
 </body>
 </html>
-
-
