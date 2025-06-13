@@ -1,0 +1,12 @@
+/* page.css - 给 home.html、game.html 使用的通用样式 */
+
+body {
+  margin: 0;
+  padding: 100px;
+  background-color: #1a1a1a; /* 浅灰背景 */
+  color: #d7d7d7;               /* 默认字体颜色为深灰 */
+  font-size: 18px;           /* 默认字体大小 */
+  font-family: sans-serif;   /* 字体样式 */
+}
+
+

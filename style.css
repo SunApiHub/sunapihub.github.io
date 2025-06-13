@@ -4,65 +4,85 @@ body {
   font-family: sans-serif;
 }
 
+/* 右侧主内容区域样式 */
+.content {
+  flex: 1;                      /* 占据除导航栏外所有宽度 */
+  padding: 0px;                /* 内边距 */
+  box-sizing: border-box;       /* 包含 padding 在宽度内 */
+  # font-size: 20px;              /* 设置默认字体大小 */
+  # color: #d7d7d7;                  /* 设置默认字体颜色为深灰 */
+  # background-color: #f8f8f8;    /* 设置背景色为浅灰 */
+  # font-family: sans-serif;      /* 设置字体族 */
+}
+
 /* 页面主容器使用水平 flex 布局，高度占满整个视口 */
 .container {
   display: flex;        /* 设置为 flex 布局，使 sidebar 和 content 并排 */
   height: 100vh;        /* 设置高度为视口高度，确保全屏显示 */
 }
 
+
+
 /* 左侧导航栏样式 */
 .sidebar {
-  width: 230px;             /* 导航栏宽度固定为 180px */
-  color: white;  
-  background: #464646;      /* 浅灰色背景 */
-  padding: 2px;            /* 内边距，防止内容紧贴边缘 */
-  box-sizing: border-box;   /* 包含 padding 在 width 内 */
-  display: flex;            /* 使用 flex 垂直布局 */
-  flex-direction: column;   /* 内容垂直排列 */
-  align-items: center;      /* 水平居中对齐 */
+  width: 300px;               /* 导航栏宽度 */
+  background: #1e1e1e;        /* 导航栏背景色，深灰 */
+  padding: 12px;              /* 内边距 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #383838;               /* 导航栏内默认文字颜色为白色 */
+  font-size: 15px;            /* 导航栏内默认字体大小 */
+  font-family: sans-serif;    /* 字体族 */
 }
 
-/* 导航栏顶部的 logo 样式 */
+/* logo 样式 */
 .logo {
-  font-size: 20px;        /* 字体大小 */
-  font-weight: bold;      /* 加粗字体 */
-  margin-bottom: 24px;    /* 与下面按钮之间的间距 */
+  font-size: 22px;            /* 字体稍大 */
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #ffffff;             /* logo 字体颜色 */
 }
 
 /* 所有导航按钮的基础样式 */
 .sidebar button {
-  width: 100%;            /* 宽度撑满导航栏 */
-  margin-bottom: 10px;    /* 按钮之间留有间距 */
-  padding: 8px;           /* 内边距增加点击区域 */
-  background: none;       /* 去除默认背景 */
-  border: none;           /* 去除边框 */
-  cursor: pointer;        /* 鼠标悬停时显示为点击手势 */
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;            /* 设置按钮字体大小 */
+  color: #585858;             /* 按钮文字颜色 */
+  text-align: left;           /* 文字靠左对齐 */
+  border-radius: 8px;           /* 圆角 */
+  transition: background 0.2s, color 0.2s; /* 添加过渡效果 */
 }
 
-/* 鼠标悬停在按钮上的样式 */
+/* 鼠标悬停按钮时样式 */
 .sidebar button:hover {
-  background: #ddd;       /* 浅灰色背景 */
+  background: #2a2a2a;           /* 深一点的灰色背景 */
+  color: #585858;               /* 文字变为白色 */
+  border-radius: 8px;           /* 圆角 */
 }
 
-/* 被选中（激活状态）的按钮样式 */
+/* 激活状态按钮样式 */
 .sidebar button.active {
-  background: #ccc;       /* 更深一点的灰色背景 */
-  color: red;             /* 文字颜色为红色 */
-  font-weight: bold;      /* 加粗字体 */
+  background: #303030;           /* 激活时背景灰色 */
+  color: #d7d7d7;                 /* 文字颜色为 */
+  border-radius: 8px;           /* 圆角 */
+  # font-weight: bold;
+  border: 1px solid #424242;          /* ✅ 添加红色边框 */
+  border-radius: 8px;             /* 保持圆角 */
 }
 
-/* 底部图片链接的样式 */
+/* 图片链接样式（放到底部） */
 .sidebar img {
-  margin-top: auto;       /* 自动推到底部 */
-  width: 80px;            /* 固定图片宽度 */
+  margin-top: auto;
+  width: 80px;
 }
 
-/* 右侧主内容区域样式 */
-.content {
-  flex: 1;                /* 占据除导航栏外所有宽度 */
-  padding: 16px;          /* 内边距 */
-  box-sizing: border-box; /* 包含 padding 在宽度内 */
-}
 
 /* iframe 样式，用于加载右侧页面 */
 iframe {
