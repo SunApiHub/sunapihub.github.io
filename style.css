@@ -1,7 +1,11 @@
 /* 页面整体无边距，使用系统默认无衬线字体 */
-body {
+html, body {
   margin: 0;
-  font-family: sans-serif;
+  padding: 0;
+  height: 100%;
+  background-color: #000; /* 页面背景黑色 */
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 /* 右侧主内容区域样式 */
@@ -20,8 +24,6 @@ body {
   display: flex;        /* 设置为 flex 布局，使 sidebar 和 content 并排 */
   height: 100vh;        /* 设置高度为视口高度，确保全屏显示 */
 }
-
-
 
 /* 左侧导航栏样式 */
 .sidebar {
@@ -47,7 +49,7 @@ body {
 
 /* 所有导航按钮的基础样式 */
 .sidebar button {
-  width: 100%;
+  width: 90%;
   margin-bottom: 10px;
   padding: 10px;
   background: none;
@@ -59,6 +61,7 @@ body {
   border-radius: 8px;           /* 圆角 */
   transition: background 0.2s, color 0.2s; /* 添加过渡效果 */
 }
+
 
 /* 鼠标悬停按钮时样式 */
 .sidebar button:hover {
@@ -77,16 +80,56 @@ body {
   border-radius: 8px;             /* 保持圆角 */
 }
 
+/* 灰色分隔线样式 */
+.divider {
+  width: 60%;                 /* 横线长度，可根据需要调整 */
+  border: none;               /* 去掉默认边框 */
+  border-top: 1px solid #999; /* 灰色上边框线 */
+  margin: 20px auto;          /* 上下间距 + 居中 */
+}
+
 /* 图片链接样式（放到底部） */
 .sidebar img {
   margin-top: auto;
-  width: 80px;
+  width: 250px;
 }
 
+/* 图片默认黑白，悬停变彩色 */
+.color-toggle {
+  # width: 2600px;                    /* 固定宽度 */
+  height: auto;                   /* 自动等比例高度 */
+  filter: grayscale(100%);        /* 默认黑白 */
+  transition: filter 0.3s ease;   /* 平滑过渡 */
+  border-radius: 12px;            /* 圆角，数值越大越圆 */
+  display: block;                 /* 避免图片底部出现空隙 */
+}
+
+/* 鼠标悬停变彩色 */
+.color-toggle:hover {
+  filter: grayscale(0%);
+}
 
 /* iframe 样式，用于加载右侧页面 */
 iframe {
   width: 100%;            /* 宽度 100% 填满容器 */
   height: 100%;           /* 高度 100% 填满容器 */
   border: none;           /* 去除默认边框 */
+}
+
+/* 适用于 WebKit 浏览器：Safari、Chrome */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #222;     /* 滚动条轨道背景色：深色 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;     /* 滚动块颜色：深灰 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #888;     /* 鼠标悬停时更亮 */
 }

@@ -9,4 +9,16 @@ body {
   font-family: sans-serif;   /* 字体样式 */
 }
 
+.iframe-wrapper {
+  max-width: 960px;     /* 最大宽度，比如 960px */
+  margin: 0 auto;       /* 水平居中 */
+  padding: 16px;        /* 给两侧留出一点内边距 */
+}
+
+.iframe-wrapper iframe {
+  width: 100%;          /* 让 iframe 撑满容器 */
+  height: 8000px;       /* 或按需要设定高度 */
+  border: none;
+  border-radius: 8px;   /* 可选，让 iframe 圆角 */
+}
 
