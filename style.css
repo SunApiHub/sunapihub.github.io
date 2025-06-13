@@ -12,9 +12,10 @@ body {
 
 /* 左侧导航栏样式 */
 .sidebar {
-  width: 180px;             /* 导航栏宽度固定为 180px */
-  background: #f0f0f0;      /* 浅灰色背景 */
-  padding: 16px;            /* 内边距，防止内容紧贴边缘 */
+  width: 230px;             /* 导航栏宽度固定为 180px */
+  color: white;  
+  background: #464646;      /* 浅灰色背景 */
+  padding: 2px;            /* 内边距，防止内容紧贴边缘 */
   box-sizing: border-box;   /* 包含 padding 在 width 内 */
   display: flex;            /* 使用 flex 垂直布局 */
   flex-direction: column;   /* 内容垂直排列 */
