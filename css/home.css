@@ -1,0 +1,132 @@
+/* 页面整体背景和字体样式 */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family:     
+      "Noto Sans SC", 
+      "Source Han Sans SC", 
+      "Microsoft YaHei", 
+      sans-serif;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #111;
+  color: #eee;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+/* 新闻容器居中 */
+#news-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 时间显示 */
+.news-time {
+  color: #888;
+  font-size: 14px;
+  margin: 30px 0 10px;
+  text-align: left;
+}
+
+/* 消息卡片样式 */
+.news-item {
+  display: flex;
+  background-color: #222;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  min-height: 170px; /* 可选：确保卡片有一定高度 */
+}
+
+/* 左侧图片 */
+.news-left {
+  flex: 0 0 350px;
+  margin-right: 20px;
+}
+.news-left img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+.news-left img:hover {
+  filter: grayscale(0%);
+}
+
+/* 右侧内容改为垂直Flex布局 */
+.news-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 标题样式 */
+.news-title {
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 6px 0;  /* 顶部无间距 */
+}
+
+/* 正文样式 */
+.content {
+  color: #ccc;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 6px 0;
+}
+
+/* 金额样式 */
+.price {
+  color: #f76c6c;
+  font-weight: bold;
+  font-size: 25px;
+  white-space: nowrap;
+  margin: 0;
+  text-align: left;
+}
+
+/* 标签和价格一行显示，底部对齐 */
+.tags-price-line {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  align-items: flex-start;
+  gap: 10px; /* 标签与金额之间留点空隙 */
+  margin-top: 10px;
+}
+
+/* 标签容器 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: auto;           /* 向下撑满 */
+  align-self: flex-start;     /* 保持起始位置 */
+}
+
+/* 单个标签样式 */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #666;
+}
+
+/* 标签颜色样式 */
+.tag-日常 { background-color: #3c7eab; }
+.tag-游戏 { background-color: #a4c34c; }
+.tag-购买 { background-color: #f9a66a; }
+.tag-情绪 { background-color: #f76c6c; }
+.tag-公告 { background-color: #0088cc; }
+.tag-生活 { background-color: #c28ef0; }
+.tag-旅行 { background-color: #ffaaff; }
