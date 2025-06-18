@@ -82,6 +82,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   margin: 6px 0;
+  white-space: pre-line; /* ✅ 显示 \n 换行 */
 }
 
 /* 金额样式 */
