@@ -79,8 +79,8 @@ body {
 /* 正文样式 */
 .content {
   color: #ccc;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.8;
   margin: 6px 0;
   font-weight: 300;
   white-space: pre-line; /* ✅ 显示 \n 换行 */
