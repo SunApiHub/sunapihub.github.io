@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // 设置页面标题
-  titleEl.textContent = `标签：${selectedTag}`;
+  titleEl.textContent = `${selectedTag}`;
 
   // 加载 posts.json 数据
   fetch("posts.json")
