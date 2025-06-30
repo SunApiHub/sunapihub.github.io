@@ -291,13 +291,19 @@ nav a:hover {
 .total-price {
   margin-top: 20px;
   padding: 10px;
-  border: 3px solid var(--news-border-color);
+  border: 2px solid var(--news-border-color);
   border-radius: 8px;
   font-size: 20px; /* 可自定义大小 */
   text-align: center;
   font-weight: bold;
   position: relative;
   overflow: hidden;
+  cursor: pointer;/* 点击样式 */
+}
+
+.total-price:hover {
+  background-color: var(--nav-active-bg);
+  color: var(--nav-active-text);
 }
 
 .total-price span {
