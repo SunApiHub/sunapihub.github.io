@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const price = parseFloat(post.price);
     return !isNaN(price) ? sum + price : sum;
   }, 0);
-  container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul><div class="total-price">价格总和：¥${totalPrice.toFixed(2)}</div>`;
+  container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul><div class="total-price">¥${totalPrice.toFixed(2)}</div>`;
 }
 
   /**
