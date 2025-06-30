@@ -292,7 +292,7 @@ nav a:hover {
 .total-price {
   margin-top: 20px;
   padding: 10px;
-  border: 4px solid var(--news-border-color);
+  border: 3px solid var(--news-border-color);
   border-radius: 8px;
   font-size: 20px; /* 可自定义大小 */
   text-align: center;
