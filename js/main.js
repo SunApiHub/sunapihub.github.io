@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
         <div class="news-right">
           <h3 class="news-title">${item.title}</h3>
+          <p class="news-time">${item.date}</p>
           <p class="content">${item.content}</p>
           <div class="tags-price-line">
             <div class="tags">${tagsHTML}</div>
