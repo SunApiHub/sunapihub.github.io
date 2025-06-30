@@ -62,17 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'news-item';
       itemDiv.innerHTML = `
-        <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
-        <div class="news-right">
-          <h3 class="news-title">${item.title}</h3>
-          <p class="news-time">${item.date}</p>
-          <p class="content">${item.content}</p>
-          <div class="tags-price-line">
-            <div class="tags">${tagsHTML}</div>
-            ${priceHTML}
-          </div>
-        </div>
-      `;
+
+    <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
+    <div class="news-right">
+      <h3 class="news-title">${item.title}</h3>
+      <p class="news-time">${item.date}</p>
+      <p class="content">${item.content}</p>
+      <div class="tags-price-line">
+        <div class="tags">${tagsHTML}</div>
+        ${priceHTML}
+      </div>
+    </div>
+  </div>
+`;
       mainContent.appendChild(itemDiv);
     });
   }
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </li>
     `).join('');
 
-       // 计算价格总和
+    // 计算价格总和
   const totalPrice = allPosts.reduce((sum, post) => {
     const price = parseFloat(post.price);
     return !isNaN(price) ? sum + price : sum;
@@ -145,7 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * 绑定标签统计链接事件 (使用事件委托)
    */
-  unction bindTagLinks() {
+  // ... 保持原代码不变
+
+function bindTagLinks() {
     const container = document.getElementById('tag-stats-container');
     container.addEventListener('click', e => {
       const link = e.target.closest('a[data-tag]');
@@ -169,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 }
+
   
   /**
    * 清除所有导航和标签链接的高亮状态
