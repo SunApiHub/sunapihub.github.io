@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>JSON 加载示例</title>
+</head>
+<body>
+  <h1>JSON 数据渲染</h1>
+  <div id="content"></div>
+
+  <script>
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('content');
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <h2>${item.title}</h2>
+            <p>${item.content}</p>
+            <p>日期: ${item.date}</p>
+            <p>价格: ${item.price}</p>
+            <p>标签: ${item.tags.join(', ')}</p>
+            <img src="${item.image}" alt="${item.title}">
+          `;
+          container.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>

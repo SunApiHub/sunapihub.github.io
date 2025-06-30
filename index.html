@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <title>日核</title>
@@ -7,45 +7,13 @@
 </head>
 <body>
   <div class="container">
-    <div class="sidebar">
-  <a> <img src="jpg/1.png" style="width:100px;">
-  </a>
-      <div class="logo">SunApiHub</div>
-      <button onclick="loadPage('home.html')" id="homeBtn" class="active">❖  首页</button>
-      <button onclick="loadPage('theme.html')" id="gameBtn">⌘  主题</button>
+    <aside id="sidebar"></aside>
 
-       <!-- 添加一条灰色短横线 -->
-     <hr class="divider">
-       <div id="tag-stats">统计加载中...</div>
-     <hr class="divider">
-      <!-- 链接区 图大小（860x260） -->
-      <a href="https://steamcommunity.com/profiles/76561198093096219/" target="_blank" rel="noopener noreferrer">
-        <img src="jpg/steam.jpg" class="color-toggle">
-      </a>
-      <a href="https://millionlive-theaterdays.idolmaster-official.jp" target="_blank" rel="noopener noreferrer">
-        <img src="jpg/bnr_01.png.webp" class="color-toggle">
-      </a>
-      
-    </div>
-
-     
-    <div class="content">
-      <iframe id="contentFrame" src="home.html" frameborder="0"></iframe>
-    </div>
+    <main id="main-content">
+      <p>加载中...</p>
+    </main>
   </div>
 
-    <!-- 引入脚本 -->
-  <script src="js/stats.js"></script>
-  <script>
-    function loadPage(page) {
-      document.getElementById('contentFrame').src = page;
-
-      document.querySelectorAll('.sidebar button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      if (page === 'home.html') document.getElementById('homeBtn').classList.add('active');
-      if (page === 'game.html') document.getElementById('gameBtn').classList.add('active');
-    }
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
