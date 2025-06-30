@@ -124,7 +124,7 @@ nav a:hover {
 .news-time {
   color: #888;
   font-size: 14px;
-  margin: 0px 0 0px;
+  margin: 0px 0 10px;
   text-align: left;
 }
 
@@ -281,4 +281,9 @@ nav a:hover {
   background-color: var(--news-border-color);
   border: none;
   margin: 20px auto;
+}
+
+.news-time {
+  font-size: 14px;
+  margin-bottom: 8px;
 }
