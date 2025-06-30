@@ -110,8 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </li>
     `).join('');
 
-    container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul>`;
-  }
+       // 计算价格总和
+  const totalPrice = allPosts.reduce((sum, post) => {
+    const price = parseFloat(post.price);
+    return !isNaN(price) ? sum + price : sum;
+  }, 0);
+  container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul><div class="total-price">价格总和：¥${totalPrice.toFixed(2)}</div>`;
+}
 
   /**
    * 绑定主导航链接事件
