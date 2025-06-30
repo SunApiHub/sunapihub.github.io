@@ -145,26 +145,30 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * 绑定标签统计链接事件 (使用事件委托)
    */
-  function bindTagLinks() {
+  unction bindTagLinks() {
     const container = document.getElementById('tag-stats-container');
     container.addEventListener('click', e => {
-      // 找到被点击的链接元素
       const link = e.target.closest('a[data-tag]');
-      if (!link) return;
+      const isTotalPrice = e.target.closest('.total-price');
+      if (link) {
+        e.preventDefault();
+        const tag = link.getAttribute('data-tag');
 
-      e.preventDefault();
-      const tag = link.getAttribute('data-tag');
+        const filteredPosts = allPosts.filter(post => post.tags.includes(tag));
+        renderPosts(filteredPosts);
 
-      // 根据标签筛选文章
-      const filteredPosts = allPosts.filter(post => post.tags.includes(tag));
-      renderPosts(filteredPosts);
+        clearAllActiveStates();
+        link.classList.add('active');
+        activeTagLink = link;
+      } else if (isTotalPrice) {
+        e.preventDefault();
+        const filteredPosts = allPosts.filter(post => post.price && Number(post.price) !== 0);
+        renderPosts(filteredPosts);
 
-      // 更新高亮状态
-      clearAllActiveStates();
-      link.classList.add('active');
-      activeTagLink = link;
+        clearAllActiveStates();
+      }
     });
-  }
+}
   
   /**
    * 清除所有导航和标签链接的高亮状态
