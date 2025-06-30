@@ -11,7 +11,7 @@
   --nav-active-bg: #ddd;       /* 导航激活项背景 */
   --nav-active-text: #000;     /* 导航激活项文字颜色 */
   --price-color: #f76c6c;      /* 价格颜色 */
-  --tag-color-default: #666;   /* 默认标签背景色 */
+  --tag-color-default: #ddd;   /* 默认标签背景色 */
   --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
 }
 
@@ -26,7 +26,7 @@
     --nav-active-bg: #444;     /* 导航激活项背景 */
     --nav-active-text: #fff;   /* 导航激活项文字颜色 */
     --price-color: #f76c6c;
-    --tag-color-default: #999;
+    --tag-color-default: #333;
     --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
   }
 
@@ -186,11 +186,11 @@ nav a:hover {
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 13px;
-  color: #fff;
+  color: var(--nav-text);
   background-color: var(--tag-color-default);
 }
 
-/* 不同标签的不同颜色 */
+/* 不同标签的不同颜色
 .tag-游戏 { background-color: #a4c34c; }
 .tag-动画 { background-color: #7b61ff; }
 .tag-公告 { background-color: #0088cc; }
@@ -200,10 +200,9 @@ nav a:hover {
 .tag-★★☆☆☆ { background-color: #9b9b9b; }
 .tag-★☆☆☆☆ { background-color: #c4c4c4; }
 .tag-☹作弊 { background-color: #333333; }
-
+ */
 
 .price {
-  color: var(--price-color);
   font-weight: bold;
   font-size: 24px;
   white-space: nowrap;
@@ -299,4 +298,9 @@ nav a:hover {
   font-weight: bold;
   position: relative;
   overflow: hidden;
+}
+
+.total-price span {
+  display: inline-block;
+  animation: roll-up 1s ease-out forwards;
 }
