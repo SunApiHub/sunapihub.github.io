@@ -174,7 +174,7 @@ nav a:hover {
   justify-content: space-between; /* 子元素两端对齐 */
   align-items: flex-end; /* 垂直底部对齐 */
   margin-top: 12px; /* 上边距为12px */
-  margin-bottom: 5px; /* 下边距为5px */
+  margin-bottom: 20px; /* 下边距为5px */
 }
 
 .tags {
