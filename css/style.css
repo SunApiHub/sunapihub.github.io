@@ -173,7 +173,7 @@ nav a:hover {
   display: flex;
   justify-content: space-between; /* 让标签和价格分布在两端 */
   align-items: flex-end; /* 垂直底部对齐 */
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 .tags {
