@@ -132,8 +132,8 @@ nav a:hover {
   display: flex; /* 使用弹性布局 */
   gap: 20px; /* 子元素之间的间距为20px */
   border-radius: 12px; /* 边框圆角为12px */
-  padding: 20px; /* 内边距为20px */
-  margin-bottom: 20px; /* 下边距为20px */
+  padding: 10px; /* 内边距为20px */
+  margin-bottom: 10px; /* 下边距为20px */
   border: 1px solid var(--news-border-color); /* 边框为1px实线，颜色由变量决定 */
   background-color: var(--nav-bg); /* 背景颜色由变量决定 */
 }
@@ -174,7 +174,7 @@ nav a:hover {
   justify-content: space-between; /* 子元素两端对齐 */
   align-items: flex-end; /* 垂直底部对齐 */
   margin-top: 12px; /* 上边距为12px */
-  margin-bottom: 20px; /* 下边距为5px */
+  margin-bottom: 5px; /* 下边距为5px */
 }
 
 .tags {
