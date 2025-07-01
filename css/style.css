@@ -139,7 +139,8 @@ nav a:hover {
 }
 
 .news-left {
-  flex: 0 0 350px; /* 左侧图片区域固定宽度 */
+  flex: 0 0 380px; /* 左侧图片区域固定宽度 */
+  height: 100%;
 }
 .news-left img {
   width: 100%;
