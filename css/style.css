@@ -115,80 +115,80 @@ nav a:hover {
    ======================= */
 #main-content {
   flex: 1; /* 占据剩余的所有空间 */
-  padding: 20px;
-  box-sizing: border-box;
-  max-width: 900px;
-  margin: 0 auto;
+  padding: 20px; /* 内边距为20px */
+  box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
+  max-width: 900px; /* 最大宽度为900px */
+  margin: 0 auto; /* 水平居中 */
 }
 
 .news-time {
-  color: #888;
-  font-size: 14px;
-  margin: 0px 0 10px;
-  text-align: left;
+  color: #888; /* 文字颜色为灰色 */
+  font-size: 14px; /* 字体大小为14px */
+  margin: 0px 0 10px; /* 上边距为0，下边距为10px */
+  text-align: left; /* 文本左对齐 */
 }
 
 .news-item {
-  display: flex;
-  gap: 20px; /* 图片和文字的间距 */
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  border: 1px solid var(--news-border-color);
-  background-color: var(--nav-bg);
+  display: flex; /* 使用弹性布局 */
+  gap: 20px; /* 子元素之间的间距为20px */
+  border-radius: 12px; /* 边框圆角为12px */
+  padding: 20px; /* 内边距为20px */
+  margin-bottom: 20px; /* 下边距为20px */
+  border: 1px solid var(--news-border-color); /* 边框为1px实线，颜色由变量决定 */
+  background-color: var(--nav-bg); /* 背景颜色由变量决定 */
 }
 
 .news-left {
-  flex: 0 0 380px; /* 左侧图片区域固定宽度 */
-  height: 100%;
+  flex: 0 0 380px; /* 左侧图片区域固定宽度为380px */
+  height: 100%; /* 高度占满整个容器 */
 }
 .news-left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 让图片填满容器，不变形 */
-  border-radius: 8px;
+  width: 100%; /* 图片宽度占满容器 */
+  height: 100%; /* 图片高度占满容器 */
+  object-fit: cover; /* 让图片填满容器，可能裁剪 */
+  border-radius: 8px; /* 图片圆角为8px */
 }
 
 .news-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  flex: 1; /* 右侧内容占据剩余空间 */
+  display: flex; /* 使用弹性布局 */
+  flex-direction: column; /* 子元素垂直排列 */
 }
 
 .news-title {
-  color: var(--title-color);
-  font-size: 22px;
-  font-weight: bold;
-  margin: 0 0 0px 0;
+  color: var(--title-color); /* 标题颜色由变量决定 */
+  font-size: 22px; /* 字体大小为22px */
+  font-weight: bold; /* 字体加粗 */
+  margin: 0 0 0px 0; /* 下边距为0 */
 }
 
 .content {
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 15px; /* 字体大小为15px */
+  line-height: 1.8; /* 行高为1.8 */
   white-space: pre-line; /* 保留换行符 */
-  flex-grow: 1; /* 让内容占据多余空间，将标签和价格推到底部 */
+  flex-grow: 1; /* 让内容占据多余空间 */
 }
 
 .tags-price-line {
-  display: flex;
-  justify-content: space-between; /* 让标签和价格分布在两端 */
+  display: flex; /* 使用弹性布局 */
+  justify-content: space-between; /* 子元素两端对齐 */
   align-items: flex-end; /* 垂直底部对齐 */
-  margin-top: 12px;
+  margin-top: 12px; /* 上边距为12px */
 }
 
 .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: flex; /* 使用弹性布局 */
+  flex-wrap: wrap; /* 允许子元素换行 */
+  gap: 8px; /* 子元素之间的间距为8px */
 }
 
 .tag {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  color: var(--nav-text);
-  background-color: var(--tag-color-default);
+  display: inline-block; /* 以行内块的形式显示 */
+  padding: 4px 12px; /* 内边距为4px上下，12px左右 */
+  border-radius: 20px; /* 边框圆角为20px */
+  font-size: 13px; /* 字体大小为13px */
+  color: var(--nav-text); /* 文字颜色由变量决定 */
+  background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
 }
 
 /* 不同标签的不同颜色
