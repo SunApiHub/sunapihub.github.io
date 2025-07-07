@@ -31,11 +31,11 @@
   }
 /* 超链接 */
 a {
-  color: var(--text-color);
-  text-decoration: underline;
-  text-decoration-color: var(--text-color);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
+  color: var(--text-color);     /* 和正文一样颜色 */
+  text-decoration: underline;   /* 添加下划线 */
+  text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
+  text-underline-offset: 5px;   /* 控制下划线与文字之间的距离 */
+  text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
 }
 
   /* 暗色模式下让logo变白 */
