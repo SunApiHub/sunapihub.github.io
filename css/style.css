@@ -29,6 +29,13 @@
     --tag-color-default: #333;
     --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
   }
+
+  /* 暗色模式下让logo变白 */
+  #logo {
+    filter: brightness(0) invert(1);
+  }
+}
+
 /* 超链接 */
 a {
   color: var(--text-color);     /* 和正文一样颜色 */
@@ -36,12 +43,6 @@ a {
   text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
   text-underline-offset: 5px;   /* 控制下划线与文字之间的距离 */
   text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
-}
-
-  /* 暗色模式下让logo变白 */
-  #logo {
-    filter: brightness(0) invert(1);
-  }
 }
 
 /* =======================
