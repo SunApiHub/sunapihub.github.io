@@ -29,6 +29,14 @@
     --tag-color-default: #333;
     --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
   }
+/* 超链接 */
+a {
+  color: var(--text-color);
+  text-decoration: underline;
+  text-decoration-color: var(--text-color);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
 
   /* 暗色模式下让logo变白 */
   #logo {
