@@ -341,7 +341,7 @@ nav a:hover {
   height: 35px; /* 图标的固定高度 */
   border-radius: 50%;
   overflow: hidden;
-  margin: 10px; /* 调整上下左右间距，确保换行后也有间距 */
+  margin: 5px; /* 调整上下左右间距，确保换行后也有间距 */
   display: flex;
   justify-content: center;
   align-items: center;
