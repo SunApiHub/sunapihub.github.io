@@ -321,3 +321,74 @@ nav a:hover {
   display: inline-block;
   animation: roll-up 1s ease-out forwards;
 }
+
+/* 链接样式 */
+.social-links-container {
+  display: flex;
+  flex-wrap: wrap; /* 允许项目换行 */
+  justify-content: center; /* 水平居中图标 */
+  margin-top: 30px;
+  padding-bottom: 20px;
+  /* 如果容器宽度不确定，可以考虑设置一个最大宽度 */
+  max-width: 600px; /* 示例：限制容器最大宽度，以便图标能换行 */
+  margin-left: auto; /* 自动居中容器 */
+  margin-right: auto; /* 自动居中容器 */
+}
+
+.social-icon {
+  display: block;
+  width: 50px; /* 图标的固定宽度 */
+  height: 50px; /* 图标的固定高度 */
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 10px; /* 调整上下左右间距，确保换行后也有间距 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease-in-out;
+
+  /* 关键：计算每个图标在 3 栏布局下的宽度 */
+  /* calc(100% / 3 - 20px) 假设左右 margin 各为 10px，所以总共 20px */
+  /* 如果你的 margin 设置不同，需要相应调整 */
+  flex: 0 0 calc(33.333% - 20px); /* 让每个图标占据容器宽度的约 1/3，并考虑 margin */
+  max-width: 80px; /* 限制每个图标容器的最大宽度，防止在超大屏幕上图标过大 */
+  min-width: 60px; /* 限制每个图标容器的最小宽度，防止在小屏幕上挤压过小 */
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.social-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: filter 0.3s ease-in-out;
+}
+
+/* 默认样式（浅色模式）：保持彩色 */
+.social-icon-img {
+  filter: none;
+}
+
+/* 深色模式下的样式 */
+@media (prefers-color-scheme: dark) {
+  .social-icon-img {
+    filter: grayscale(100%) brightness(200%);
+  }
+}
+
+/* 如果需要在更小的屏幕上每行显示更少的图标，可以添加媒体查询 */
+@media (max-width: 768px) {
+  .social-icon {
+    flex: 0 0 calc(50% - 20px); /* 在小屏幕上每行显示 2 个 */
+  }
+}
+
+@media (max-width: 480px) {
+  .social-icon {
+    flex: 0 0 calc(100% - 20px); /* 在更小的屏幕上每行显示 1 个 */
+  }
+}
+
+
