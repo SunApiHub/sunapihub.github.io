@@ -166,13 +166,13 @@ nav a:hover {
 
 .news-title {
   color: var(--title-color); /* 标题颜色由变量决定 */
-  font-size: 22px; /* 字体大小为22px */
+  font-size: 21px; /* 字体大小为22px */
   font-weight: bold; /* 字体加粗 */
   margin: 0 0 0px 0; /* 下边距为0 */
 }
 
 .content {
-  font-size: 15px; /* 字体大小为15px */
+  font-size: 13px; /* 字体大小为15px */
   line-height: 1.8; /* 行高为1.8 */
   white-space: pre-line; /* 保留换行符 */
   flex-grow: 1; /* 让内容占据多余空间 */
@@ -196,7 +196,7 @@ nav a:hover {
   display: inline-block; /* 以行内块的形式显示 */
   padding: 4px 12px; /* 内边距为4px上下，12px左右 */
   border-radius: 20px; /* 边框圆角为20px */
-  font-size: 13px; /* 字体大小为13px */
+  font-size: 11px; /* 字体大小为13px */
   color: var(--nav-text); /* 文字颜色由变量决定 */
   background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
 }
@@ -244,7 +244,7 @@ nav a:hover {
 #tag-stats-container h4 {
   margin-top: 0;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--title-color);
   font-weight: bold;
 }
@@ -261,7 +261,7 @@ nav a:hover {
 #tag-stats-container a {
   color: var(--nav-text);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between; /* 名字和数量两端对齐 */
   padding: 5px 10px;
@@ -278,7 +278,7 @@ nav a:hover {
 .tag-count {
   background-color: var(--nav-active-bg);
   color: var(--nav-active-text);
-  font-size: 12px;
+  font-size: 10px;
   padding: 1px 6px;
   border-radius: 8px;
   font-weight: normal;
@@ -294,7 +294,7 @@ nav a:hover {
 }
 
 .news-time {
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 8px;
 }
 
