@@ -355,22 +355,27 @@ nav a:hover {
   min-width: 40px; /* 限制每个图标容器的最小宽度，防止在小屏幕上挤压过小 */
 }
 
+/* 默认样式（浅色模式）：保持彩色 */
 .social-icon-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   transition: filter 0.3s ease-in-out;
+  filter: none; /* 默认浅色模式不应用滤镜 */
 }
 
-/* 默认样式（浅色模式）：保持彩色 */
-.social-icon-img {
-  filter: none;
+.social-icon-img:hover {
+  filter: brightness(70%); /* 鼠标悬停时降低亮度，使其变暗 */
 }
 
 /* 深色模式下的样式 */
 @media (prefers-color-scheme: dark) {
   .social-icon-img {
-    filter: grayscale(100%) brightness(800%);
+    filter: grayscale(200%) brightness(400%); /* 深色模式下的默认样式 */
+  }
+
+  .social-icon-img:hover {
+    filter: grayscale(200%) brightness(700%); /* 鼠标悬停时进一步提高亮度，使其更白 */
   }
 }
 
