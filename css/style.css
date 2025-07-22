@@ -326,7 +326,7 @@ nav a:hover {
 .social-links-container {
   display: flex;
   flex-wrap: wrap; /* 允许项目换行 */
-  justify-content: flex-start;/* 图标左对齐 */
+  justify-content: center; /* 水平居中图标 */
   margin-top: 20px;
   padding-bottom: 20px;
   /* 如果容器宽度不确定，可以考虑设置一个最大宽度 */
