@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let allPosts = []; // 用于存储所有文章数据
     let activeTagLink = null; // 用于跟踪当前激活的标签链接
 
+    // --- 新增常量：定义内容折叠的阈值高度 ---
+    const MAX_CONTENT_HEIGHT = 120; // 例如，120px，根据需要调整
+    // --- 结束新增常量 ---
+
     /**
      * 主初始化函数
      * 1. 加载侧边栏
@@ -15,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     async function initialize() {
         try {
-            // --- 新增代码：配置让链接在新标签页打开 ---
+            // --- marked.js 配置 (保持不变) ---
             const renderer = new marked.Renderer();
             const linkRenderer = renderer.link;
             renderer.link = (href, title, text) => {
@@ -25,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
             };
             marked.setOptions({ renderer: renderer });
-            // --- 结束新增代码 ---
-            
+            // --- 结束 marked.js 配置 ---
+
             // 并行加载导航和文章数据，提高效率
             const [navHtml, postsData] = await Promise.all([
                 fetch('nav.html').then(res => res.text()),
@@ -45,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTagStatistics(calculateTagCounts(allPosts));
 
             // 4. 默认渲染所有文章
-            renderPosts(allPosts);
+            renderPosts(allPosts); // 确保在 DOM 元素渲染后才绑定事件和检查高度
 
             // 5. 绑定事件
             bindNavLinks();
@@ -72,12 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
             const tagsHTML = item.tags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
 
-            // --- 关键修改部分：使用 marked.parse() 转换 Markdown 为 HTML ---
-            // 注意：marked.parse() 默认会处理基本的 HTML 标签，但为了安全考虑，
-            // 如果内容来自不可信的外部来源，建议额外使用 HTML 清理库（如 DOMPurify）
-            // 来防止 XSS 攻击。如果内容完全由您控制，则通常无需额外处理。
             const renderedContent = marked.parse(item.content);
-            // --- 关键修改部分结束 ---
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'news-item';
@@ -86,13 +85,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="news-right">
                     <h3 class="news-title">${item.title}</h3>
                     <p class="news-time">${item.date}</p>
-                    <div class="content">${renderedContent}</div> <div class="tags-price-line">
+                    <div class="content-wrapper"> <div class="content">${renderedContent}</div>
+                        </div>
+                    <div class="tags-price-line">
                         <div class="tags">${tagsHTML}</div>
                         ${priceHTML}
                     </div>
                 </div>
             `;
             mainContent.appendChild(itemDiv);
+
+            // --- 新增逻辑：在文章添加到 DOM 后检查并折叠内容 ---
+            const contentDiv = itemDiv.querySelector('.content');
+            const contentWrapper = itemDiv.querySelector('.content-wrapper'); // 获取新增的包裹器
+
+            // 使用 setTimeout 确保 DOM 渲染完成，以便正确获取 scrollHeight
+            // 延迟0ms是为了把这个任务放到事件队列的末尾，让浏览器有机会完成当前的渲染任务。
+            setTimeout(() => {
+                if (contentDiv.scrollHeight > MAX_CONTENT_HEIGHT) {
+                    contentWrapper.classList.add('collapsed'); // 添加折叠类
+                    const toggleButton = document.createElement('button');
+                    toggleButton.className = 'toggle-content-button';
+                    toggleButton.textContent = '展开全文';
+                    toggleButton.addEventListener('click', () => {
+                        contentWrapper.classList.toggle('collapsed');
+                        toggleButton.textContent = contentWrapper.classList.contains('collapsed') ? '展开全文' : '收起';
+                    });
+                    contentWrapper.appendChild(toggleButton); // 将按钮添加到内容包裹器内部
+                }
+            }, 0); 
+            // --- 结束新增逻辑 ---
         });
     }
 
