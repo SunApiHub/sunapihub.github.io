@@ -1,30 +1,30 @@
 /* =======================
-    全局变量定义 (亮色与暗色模式)
-    ======================= */
+   全局变量定义 (亮色与暗色模式)
+   ======================= */
 :root {
     /* 亮色模式变量 */
-    --bg-color: #ffffff;             /* 页面背景色 */
-    --text-color: #333;              /* 正文文字颜色 */
-    --title-color: #111;             /* 标题颜色 */
-    --nav-bg: #f4f4f4;               /* 侧边栏背景色 */
-    --nav-text: #222;                /* 侧边栏文字颜色 */
-    --nav-active-bg: #ddd;           /* 导航激活项背景 */
-    --nav-active-text: #000;         /* 导航激活项文字颜色 */
-    --price-color: #f76c6c;          /* 价格颜色 */
-    --tag-color-default: #ddd;       /* 默认标签背景色 */
+    --bg-color: #ffffff;           /* 页面背景色 */
+    --text-color: #333;            /* 正文文字颜色 */
+    --title-color: #111;           /* 标题颜色 */
+    --nav-bg: #f4f4f4;              /* 侧边栏背景色 */
+    --nav-text: #222;               /* 侧边栏文字颜色 */
+    --nav-active-bg: #ddd;          /* 导航激活项背景 */
+    --nav-active-text: #000;        /* 导航激活项文字颜色 */
+    --price-color: #f76c6c;         /* 价格颜色 */
+    --tag-color-default: #ddd;      /* 默认标签背景色 */
     --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
 }
 
 /* 暗色模式下的变量重写 */
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color: #111;            /* 页面背景色 */
-        --text-color: #ccc;          /* 正文文字颜色 */
-        --title-color: #eee;         /* 标题颜色 */
-        --nav-bg: #222;              /* 侧边栏背景色 */
-        --nav-text: #eee;            /* 侧边栏文字颜色 */
-        --nav-active-bg: #444;       /* 导航激活项背景 */
-        --nav-active-text: #fff;     /* 导航激活项文字颜色 */
+        --bg-color: #111;           /* 页面背景色 */
+        --text-color: #ccc;           /* 正文文字颜色 */
+        --title-color: #eee;          /* 标题颜色 */
+        --nav-bg: #222;               /* 侧边栏背景色 */
+        --nav-text: #eee;             /* 侧边栏文字颜色 */
+        --nav-active-bg: #444;        /* 导航激活项背景 */
+        --nav-active-text: #fff;      /* 导航激活项文字颜色 */
         --price-color: #f76c6c;
         --tag-color-default: #333;
         --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
@@ -38,18 +38,16 @@
 
 /* 超链接 */
 a {
-    color: var(--text-color);        /* 和正文一样颜色 */
-    text-decoration: underline;      /* 添加下划线 */
+    color: var(--text-color);       /* 和正文一样颜色 */
+    text-decoration: underline;     /* 添加下划线 */
     text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
-    text-underline-offset: 5px;      /* 控制下划线与文字之间的距离 */
-    text-decoration-thickness: 1px;  /* 可选：设置线条粗细 */
+    text-underline-offset: 5px;     /* 控制下划线与文字之间的距离 */
+    text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
 }
 
----
-
 /* =======================
-    基础页面布局
-    ======================= */
+   基础页面布局
+   ======================= */
 body {
     margin: 0;
     font-family: 'Noto Sans JP', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
@@ -58,28 +56,31 @@ body {
     line-height: 1.8;
     background-color: var(--bg-color);
     color: var(--text-color);
-    display: flex; /* 使用flex布局，让侧边栏和主内容并排 */
+    /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
 }
 
 .container {
-    display: flex;
+    /* 这个 .container 在侧边栏固定定位后可能不再需要 display: flex;，
+       但保留它不会影响当前方案，如果你将来需要它来包裹其他 flex 元素可以保留。*/
+    /* display: flex; */
     width: 100%;
 }
 
----
-
 /* =======================
-    侧边栏样式 (#sidebar)
-    ======================= */
+   侧边栏样式 (#sidebar)
+   ======================= */
 #sidebar {
     width: 220px;
     padding: 20px;
-    margin: 16px;
+    /* 侧边栏改为固定定位后，margin 属性将不再用于定位其与主内容的关系，故设为0 */
+    margin: 0;
     box-sizing: border-box;
     background-color: var(--nav-bg);
     border-radius: 12px;
-    position: sticky; /* 固定定位，页面滚动时保持位置 */
+    /* 关键更改：将 position 从 sticky 改为 fixed */
+    position: fixed; /* 固定定位，脱离文档流 */
     top: 16px;
+    left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
     height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
     overflow-y: auto;
     /* 新增：默认桌面端显示，并添加过渡 */
@@ -127,19 +128,26 @@ nav a:hover {
     color: var(--nav-active-text);
 }
 
----
-
 /* =======================
-    主内容区样式 (#main-content)
-    ======================= */
+   主内容区样式 (#main-content)
+   ======================= */
 #main-content {
-    flex: 1; /* 占据剩余的所有空间 */
+    /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
     padding: 20px; /* 内边距为20px */
     box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
     max-width: 900px; /* 最大宽度为900px */
-    margin: 0 auto; /* 水平居中 */
-    /* **修改：移除 margin-left: 250px; 允许 margin: 0 auto; 完全生效** */
-    transition: margin-left 0.3s ease-in-out; /* 平滑过渡 (虽然这里没有直接的 margin-left 变化，但保留了过渡属性) */
+
+    /* 核心更改：实现内容在侧边栏右侧居中 */
+    /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
+    margin-left: calc(220px + 16px + 20px);
+    /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    transition: margin-left 0.3s ease-in-out; /* 平滑过渡 */
+    /* 确保即使内容宽度小于 max-width，也能正确居中 */
+    width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
 }
 
 .news-time {
@@ -194,8 +202,8 @@ nav a:hover {
 
 .news-item .content img { /*文章内图片 */
     max-width: 100%; /* 确保图片不会超出其容器 */
-    height: auto;     /* 保持图片纵横比 */
-    display: block;   /* 移除图片底部的额外空间，使其更好地与文本对齐 */
+    height: auto;       /* 保持图片纵横比 */
+    display: block;     /* 移除图片底部的额外空间，使其更好地与文本对齐 */
     border-radius: 8px;
 }
 
@@ -239,21 +247,21 @@ nav a:hover {
     white-space: nowrap;
 }
 
-/* 导航切换按钮的样式 (已注释掉，因为JS中已移除按钮) */
-/* .menu-toggle {
-    display: none;
+/* 导航切换按钮的样式 */
+.menu-toggle {
+    display: none; /* 默认在桌面端隐藏 */
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 1001;
-    background-color: #007bff;
-    color: white;
+    z-index: 1001; /* 确保在侧边栏之上 */
+    background-color: #007bff; /* 菜单按钮背景色，您可以根据主题调整 */
+    color: white; /* 菜单按钮文字颜色 */
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2em;
-} */
+}
 
 
 /* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
@@ -267,9 +275,11 @@ nav a:hover {
            JavaScript 会通过添加/移除 .open 类来控制 transform。 */
         position: fixed; /* 确保它可以在屏幕外 */
         top: 0; /* 从屏幕顶部开始 */
+        left: 0; /* 确保它在屏幕左侧 */
         height: 100vh; /* 占满整个视口高度 */
         margin: 0; /* 移除桌面端的 margin */
         border-radius: 0; /* 移除桌面端的圆角 */
+        width: 250px; /* 移动端侧边栏的宽度 */
     }
 
     /* 当侧边栏在小屏幕上处于打开状态时 */
@@ -293,10 +303,10 @@ nav a:hover {
         overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
     }
 
-    /* 小屏幕模式下，菜单切换按钮显示 (已注释掉，因为JS中已移除按钮) */
-    /* .menu-toggle {
+    /* 小屏幕模式下，菜单切换按钮显示 */
+    .menu-toggle {
         display: block;
-    } */
+    }
 
     /* 手机端文章模块的垂直排列 */
     .news-item {
@@ -356,11 +366,9 @@ nav a:hover {
 }
 
 
----
-
 /* =======================
-    标签统计区域样式
-    ======================= */
+   标签统计区域样式
+   ======================= */
 #tag-stats-container {
     padding: 0 10px;
     margin-top: 15px;
