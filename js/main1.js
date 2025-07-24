@@ -6,8 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTagLink = null; // 用于跟踪当前激活的标签链接（例如，当前选中的标签）
 
     // --- 新增常量：定义内容折叠的阈值高度 ---
-    const MAX_CONTENT_HEIGHT = 140; // 当内容高度超过此值时将折叠
+    const MAX_CONTENT_HEIGHT = 120; // 例如，120px，当内容高度超过此值时将折叠
     // --- 结束新增常量 ---
+
+    // --- 新增无限滚动相关变量 ---
+    const INITIAL_LOAD_COUNT = 10; // 首次加载的文章数量
+    const LOAD_MORE_COUNT = 5;    // 每次滚动到底部时加载的文章数量
+    let currentLoadedCount = 0;   // 当前已加载的文章总数
+    let isLoading = false;        // 防止重复加载的标志
+    let currentFilteredPosts = []; // 用于存储当前过滤/显示的文章列表
+    // --- 结束新增无限滚动相关变量 ---
 
     /**
      * 主初始化函数
@@ -16,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * 2. 加载并处理文章数据 (data.json)
      * 3. 渲染标签统计信息
      * 4. 渲染所有文章到主内容区
-     * 5. 绑定所有必要的事件监听器 (导航链接、标签链接)
+     * 5. 绑定所有必要的事件监听器 (导航链接、标签链接, 滚动事件)
      */
     async function initialize() {
         try {
@@ -45,17 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. 存储并按日期降序排序文章数据（最新文章在前）
             allPosts = postsData.sort((a, b) => new Date(b.date.replace(/\//g, '-')) - new Date(a.date.replace(/\//g, '-')));
+            currentFilteredPosts = allPosts; // 初始时，当前过滤的文章就是所有文章
 
             // 3. 计算并渲染标签统计信息（例如每个标签的文章数量）
             renderTagStatistics(calculateTagCounts(allPosts));
 
-            // 4. 默认渲染所有文章到主内容区
-            // 确保在 DOM 元素渲染后才绑定事件和检查高度，因为折叠逻辑依赖于元素的实际高度
-            renderPosts(allPosts);
+            // 4. 默认渲染初始数量的文章
+            renderInitialPosts(allPosts); // 使用新函数渲染初始文章
 
             // 5. 绑定所有事件监听器
             bindNavLinks(); // 绑定主导航链接点击事件
             bindTagLinks(); // 绑定标签链接点击事件
+            bindScrollEvent(); // 新增：绑定滚动事件监听器
 
         } catch (err) {
             // 如果初始化过程中发生错误，显示错误信息
@@ -65,37 +74,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * 渲染指定文章列表到主内容区
-     * 为每篇文章创建 HTML 结构，并将其添加到页面中。
-     * @param {Array} posts - 需要被渲染的文章对象数组
+     * 渲染初始数量的文章到主内容区
+     * @param {Array} postsToRender - 需要被渲染的文章对象数组
      */
-    function renderPosts(posts) {
-        mainContent.innerHTML = ''; // 先清空主内容区，防止重复内容
-        if (posts.length === 0) {
-            mainContent.innerHTML = '<p>没有找到相关内容。</p>'; // 如果没有文章，显示提示信息
+    function renderInitialPosts(postsToRender) {
+        mainContent.innerHTML = ''; // 清空主内容区
+        currentLoadedCount = 0; // 重置已加载计数
+        currentFilteredPosts = postsToRender; // 更新当前要渲染的文章列表
+        loadMorePosts(); // 调用加载更多函数来加载初始文章
+    }
+
+    /**
+     * 加载更多文章并追加到主内容区
+     * 这是无限滚动的核心函数
+     */
+    function loadMorePosts() {
+        if (isLoading || currentLoadedCount >= currentFilteredPosts.length) {
+            // 如果正在加载中，或者所有文章都已加载，则不再加载
             return;
         }
 
-        // 遍历每篇文章数据，生成其 HTML 结构
-        posts.forEach(item => {
-            // 根据价格是否存在和是否为0，生成价格 HTML
-            const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
-            // 将文章标签转换为 HTML span 元素，并处理标签名中的空格以用于 CSS 类名
-            const tagsHTML = item.tags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
+        isLoading = true; // 设置加载标志，防止重复触发
 
-            // 使用 marked.js 将文章的 Markdown 内容转换为 HTML
+        const startIndex = currentLoadedCount;
+        const endIndex = Math.min(startIndex + LOAD_MORE_COUNT, currentFilteredPosts.length);
+        const postsBatch = currentFilteredPosts.slice(startIndex, endIndex);
+
+        if (postsBatch.length === 0) {
+            isLoading = false;
+            // 如果没有更多文章可加载，可以在这里显示“已加载全部”的提示
+            if (mainContent.querySelector('.no-more-posts') === null) {
+                 const noMoreDiv = document.createElement('div');
+                 noMoreDiv.className = 'no-more-posts';
+                 noMoreDiv.textContent = '没有更多内容了。';
+                 mainContent.appendChild(noMoreDiv);
+            }
+            return;
+        }
+
+        // 渲染这一批文章
+        postsBatch.forEach(item => {
+            const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
+            const tagsHTML = item.tags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
 
-            // 创建一个 div 元素作为单篇文章的容器
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'news-item'; // 添加 CSS 类名
-            // 设置文章的内部 HTML 结构
+            itemDiv.className = 'news-item';
             itemDiv.innerHTML = `
                 <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
                 <div class="news-right">
                     <h3 class="news-title">${item.title}</h3>
                     <p class="news-time">${item.date}</p>
-                    <div class="content-wrapper"> <div class="content">${renderedContent}</div>
+                    <div class="content-wrapper">
+                        <div class="content">${renderedContent}</div>
                     </div>
                     <div class="tags-price-line">
                         <div class="tags">${tagsHTML}</div>
@@ -103,35 +134,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            mainContent.appendChild(itemDiv); // 将生成的文章元素添加到主内容区
+            mainContent.appendChild(itemDiv);
 
-            // --- 新增逻辑：在文章添加到 DOM 后检查并折叠内容 ---
-            const contentDiv = itemDiv.querySelector('.content'); // 获取文章内容 div
-            const contentWrapper = itemDiv.querySelector('.content-wrapper'); // 获取内容包裹器
-
-            // 使用 setTimeout 确保 DOM 渲染完成，以便正确获取 scrollHeight
-            // 延迟0ms是为了把这个任务放到事件队列的末尾，让浏览器有机会完成当前的渲染任务，
-            // 从而能够准确计算元素的实际高度（scrollHeight）。
+            // 检查并折叠内容（保持不变）
+            const contentDiv = itemDiv.querySelector('.content');
+            const contentWrapper = itemDiv.querySelector('.content-wrapper');
             setTimeout(() => {
-                // 如果内容的实际高度超过了设定的最大高度
                 if (contentDiv.scrollHeight > MAX_CONTENT_HEIGHT) {
-                    contentWrapper.classList.add('collapsed'); // 给内容包裹器添加 'collapsed' 类，触发 CSS 折叠样式
-                    const toggleButton = document.createElement('button'); // 创建展开/收起按钮
-                    toggleButton.className = 'toggle-content-button'; // 添加 CSS 类名
-                    // 初始显示向下箭头（﹀，表示可以展开）
-                    toggleButton.innerHTML = '﹀';
-                    // 为按钮添加点击事件监听器
+                    contentWrapper.classList.add('collapsed');
+                    const toggleButton = document.createElement('button');
+                    toggleButton.className = 'toggle-content-button';
+                    toggleButton.innerHTML = '﹀'; // 初始显示向下箭头
                     toggleButton.addEventListener('click', () => {
-                        contentWrapper.classList.toggle('collapsed'); // 切换 'collapsed' 类，实现展开/收起
-                        // 根据当前是否折叠来切换按钮的箭头方向
+                        contentWrapper.classList.toggle('collapsed');
                         toggleButton.innerHTML = contentWrapper.classList.contains('collapsed') ? '﹀' : '︿';
                     });
-                    contentWrapper.appendChild(toggleButton); // 将按钮添加到内容包裹器内部
+                    contentWrapper.appendChild(toggleButton);
                 }
             }, 0);
-            // --- 结束新增逻辑 ---
         });
+
+        currentLoadedCount += postsBatch.length; // 更新已加载文章数量
+        isLoading = false; // 重置加载标志
     }
+
 
     /**
      * 计算所有文章中每个标签出现的次数
@@ -186,12 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // 阻止链接的默认跳转行为
                 const page = link.getAttribute('data-page'); // 获取链接的 data-page 属性值
 
-                // 清除所有导航和标签链接的高亮状态
+                // 清除所有高亮
                 clearAllActiveStates();
                 link.classList.add('active'); // 高亮当前点击的导航链接
 
                 if (page === 'home.html') {
-                    renderPosts(allPosts); // 如果点击的是首页，则显示所有文章
+                    renderInitialPosts(allPosts); // 点击首页，重新渲染初始数量的所有文章
                 } else {
                     // 如果点击的是其他页面（如 about.html），则显示加载提示
                     mainContent.innerHTML = `<p>加载 ${page}...</p>`;
@@ -202,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * 绑定标签统计链接的点击事件 (使用事件委托，提高性能)
+     * 绑定标签统计链接的点击事件 (使用事件委托)
      */
     function bindTagLinks() {
         const container = document.getElementById('tag-stats-container'); // 获取标签统计容器
@@ -214,9 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // 阻止链接的默认行为
                 const tag = link.getAttribute('data-tag'); // 获取点击的标签名
 
-                // 根据标签过滤文章
                 const filteredPosts = allPosts.filter(post => post.tags.includes(tag));
-                renderPosts(filteredPosts); // 渲染过滤后的文章
+                renderInitialPosts(filteredPosts); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
                 link.classList.add('active'); // 高亮当前点击的标签链接
@@ -225,9 +250,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // 阻止默认行为
                 // 过滤出所有有价格的文章
                 const filteredPosts = allPosts.filter(post => post.price && Number(post.price) !== 0);
-                renderPosts(filteredPosts); // 渲染过滤后的文章
+                renderInitialPosts(filteredPosts); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
+            }
+        });
+    }
+
+    /**
+     * 绑定滚动事件监听器
+     */
+    function bindScrollEvent() {
+        window.addEventListener('scroll', () => {
+            // 判断用户是否滚动到页面底部附近
+            // document.documentElement.scrollHeight: 整个页面的可滚动高度
+            // window.innerHeight: 浏览器窗口的可见高度
+            // window.scrollY: 当前页面滚动的垂直距离
+            // 当 (滚动距离 + 窗口高度 + 200px (阈值)) >= 整个页面高度时，认为接近底部
+            if ((window.scrollY + window.innerHeight + 200) >= document.documentElement.scrollHeight) {
+                loadMorePosts(); // 如果接近底部，加载更多文章
             }
         });
     }
