@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 4. 默认渲染所有文章到主内容区
             // 确保在 DOM 元素渲染后才绑定事件和检查高度，因为折叠逻辑依赖于元素的实际高度
-            renderPosts(allPosts); 
+            renderPosts(allPosts);
 
             // 5. 绑定所有事件监听器
             bindNavLinks(); // 绑定主导航链接点击事件
@@ -118,17 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     contentWrapper.classList.add('collapsed'); // 给内容包裹器添加 'collapsed' 类，触发 CSS 折叠样式
                     const toggleButton = document.createElement('button'); // 创建展开/收起按钮
                     toggleButton.className = 'toggle-content-button'; // 添加 CSS 类名
-                    // 初始显示向下箭头（表示可以展开）
-                    toggleButton.innerHTML = '&lt; &gt;'; 
+                    // 初始显示向下箭头（﹀，表示可以展开）
+                    toggleButton.innerHTML = '﹀';
                     // 为按钮添加点击事件监听器
                     toggleButton.addEventListener('click', () => {
                         contentWrapper.classList.toggle('collapsed'); // 切换 'collapsed' 类，实现展开/收起
                         // 根据当前是否折叠来切换按钮的箭头方向
-                        toggleButton.innerHTML = contentWrapper.classList.contains('collapsed') ? '&lt; &gt;' : '&gt; &lt;'; 
+                        toggleButton.innerHTML = contentWrapper.classList.contains('collapsed') ? '﹀' : '︿';
                     });
                     contentWrapper.appendChild(toggleButton); // 将按钮添加到内容包裹器内部
                 }
-            }, 0); 
+            }, 0);
             // --- 结束新增逻辑 ---
         });
     }
