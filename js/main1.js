@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTagLink = null; // 用于跟踪当前激活的标签链接（例如，当前选中的标签）
 
     // --- 新增常量：定义内容折叠的阈值高度 ---
-    const MAX_CONTENT_HEIGHT = 120; // 例如，120px，当内容高度超过此值时将折叠
+    const MAX_CONTENT_HEIGHT = 140; // 例如，120px，当内容高度超过此值时将折叠
     // --- 结束新增常量 ---
 
     // --- 新增无限滚动相关变量 ---
