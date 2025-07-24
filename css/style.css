@@ -50,7 +50,7 @@ a {
    ======================= */
 body {
   margin: 0;
-  font-family: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  font-family: "Hiragino Sans GB", "Yu Gothic UI", "Meiryo", "Noto Sans JP", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   letter-spacing: 0.05em; /* 文字间距 */
   font-weight: 300;/* 当前字体粗细 */
   line-height: 1.8;
