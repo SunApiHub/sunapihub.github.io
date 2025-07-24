@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTagLink = null; // 用于跟踪当前激活的标签链接（例如，当前选中的标签）
 
     // --- 新增常量：定义内容折叠的阈值高度 ---
-    const MAX_CONTENT_HEIGHT = 140; // 例如，120px，当内容高度超过此值时将折叠
+    const MAX_CONTENT_HEIGHT = 140; // 例如，140px，当内容高度超过此值时将折叠
     // --- 结束新增常量 ---
 
     // --- 新增无限滚动相关变量 ---
@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFilteredPosts = []; // 用于存储当前过滤/显示的文章列表
     // --- 结束新增无限滚动相关变量 ---
 
+    // --- 新增菜单切换按钮变量和断点 ---
+    let menuToggleBtn; // 声明菜单切换按钮变量
+    const MOBILE_BREAKPOINT = 1200; // 定义移动端断点，与CSS保持一致
+    // --- 结束新增菜单切换按钮变量和断点 ---
+
     /**
      * 主初始化函数
      * 负责应用的整体启动流程：
@@ -24,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * 2. 加载并处理文章数据 (data.json)
      * 3. 渲染标签统计信息
      * 4. 渲染所有文章到主内容区
-     * 5. 绑定所有必要的事件监听器 (导航链接、标签链接, 滚动事件)
+     * 5. 绑定所有必要的事件监听器 (导航链接、标签链接, 滚动事件, 菜单切换)
      */
     async function initialize() {
         try {
@@ -51,6 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const homeLink = sidebar.querySelector('a[data-page="home.html"]');
             if (homeLink) homeLink.classList.add('active'); // 如果找到首页链接，则添加 active 类
 
+            // --- 新增：创建并添加菜单切换按钮 ---
+            menuToggleBtn = document.createElement('button');
+            menuToggleBtn.className = 'menu-toggle';
+            menuToggleBtn.innerHTML = '☰ 菜单'; // 汉堡图标和文字
+            document.body.appendChild(menuToggleBtn); // 将按钮添加到 body 底部
+
+            // 为菜单切换按钮添加点击事件
+            menuToggleBtn.addEventListener('click', toggleSidebar);
+            // --- 结束新增 ---
+
             // 2. 存储并按日期降序排序文章数据（最新文章在前）
             allPosts = postsData.sort((a, b) => new Date(b.date.replace(/\//g, '-')) - new Date(a.date.replace(/\//g, '-')));
             currentFilteredPosts = allPosts; // 初始时，当前过滤的文章就是所有文章
@@ -64,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 5. 绑定所有事件监听器
             bindNavLinks(); // 绑定主导航链接点击事件
             bindTagLinks(); // 绑定标签链接点击事件
-            bindScrollEvent(); // 新增：绑定滚动事件监听器
+            bindScrollEvent(); // 绑定滚动事件监听器
 
         } catch (err) {
             // 如果初始化过程中发生错误，显示错误信息
@@ -136,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             mainContent.appendChild(itemDiv);
 
-            // 检查并折叠内容（保持不变）
+            // 检查并折叠内容
             const contentDiv = itemDiv.querySelector('.content');
             const contentWrapper = itemDiv.querySelector('.content-wrapper');
             setTimeout(() => {
@@ -223,6 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     mainContent.innerHTML = `<p>加载 ${page}...</p>`;
                     // TODO: 在这里可以添加实际加载其他页面内容的逻辑
                 }
+                // 在小屏幕上点击导航链接后自动关闭侧边栏
+                if (window.innerWidth <= MOBILE_BREAKPOINT) { // 判断是否在小屏幕模式
+                    closeSidebar();
+                }
             });
         });
     }
@@ -246,6 +265,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearAllActiveStates(); // 清除所有高亮状态
                 link.classList.add('active'); // 高亮当前点击的标签链接
                 activeTagLink = link; // 记录当前激活的标签链接
+                // 在小屏幕上点击标签链接后自动关闭侧边栏
+                if (window.innerWidth <= MOBILE_BREAKPOINT) { // 判断是否在小屏幕模式
+                    closeSidebar();
+                }
             } else if (isTotalPrice) {
                 e.preventDefault(); // 阻止默认行为
                 // 过滤出所有有价格的文章
@@ -253,6 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderInitialPosts(filteredPosts); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
+                 // 在小屏幕上点击总价格后自动关闭侧边栏
+                 if (window.innerWidth <= MOBILE_BREAKPOINT) { // 判断是否在小屏幕模式
+                    closeSidebar();
+                }
             }
         });
     }
@@ -279,6 +306,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearAllActiveStates() {
         // 移除所有带有 'active' 类的链接的 'active' 类
         sidebar.querySelectorAll('a.active').forEach(a => a.classList.remove('active'));
+    }
+
+    /**
+     * 切换侧边栏的显示/隐藏状态
+     */
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        document.body.classList.toggle('sidebar-open'); // 给body添加类，可能用于阻止内容滚动或移动内容
+    }
+
+    /**
+     * 关闭侧边栏
+     */
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        document.body.classList.remove('sidebar-open');
     }
 
     // 启动应用
