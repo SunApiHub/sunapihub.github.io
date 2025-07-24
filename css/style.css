@@ -237,7 +237,7 @@ nav a:hover {
 }
 
 /* 响应式设计：在小屏幕上隐藏侧边栏 */
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   #sidebar {
     display: none;
   }
@@ -447,12 +447,3 @@ nav a:hover {
     background-color: rgba(0, 0, 0, 0.05); /* 鼠标悬停时，添加一个轻微的背景色，增加可点击感 */
 }
 /* --- 结束展开/收起按钮样式 --- */
-
-/* 新增：“没有更多内容了”的提示样式 */
-.no-more-posts {
-    text-align: center;
-    padding: 20px;
-    color: #888;
-    font-size: 1em;
-    margin-top: 20px;
-}
