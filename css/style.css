@@ -132,9 +132,10 @@ nav a:hover {
 
 .news-time {
   color: #888; /* 文字颜色为灰色 */
-  font-size: 14px; /* 字体大小为14px */
+  font-size: 12px; /* 字体大小为14px */
   margin: 0px 0 10px; /* 上边距为0，下边距为10px */
   text-align: left; /* 文本左对齐 */
+  margin-bottom: 8px;
 }
 
 .news-item {
@@ -172,7 +173,7 @@ nav a:hover {
 }
 
 .content {
-  font-size: 13px; /* 字体大小为15px */
+  font-size: 14px; /* 这里定义了新闻内容的字体大小 */
   line-height: 1.8; /* 行高为1.8 */
   white-space: pre-line; /* 保留换行符 */
   flex-grow: 1; /* 让内容占据多余空间 */
@@ -292,12 +293,6 @@ nav a:hover {
   border: none;
   margin: 20px auto;
 }
-
-.news-time {
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
 /* 价格总和样式 */
 .total-price {
   margin-top: 20px;
