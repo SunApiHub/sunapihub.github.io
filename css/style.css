@@ -1,24 +1,24 @@
 /* =======================
-    全局变量定义 (亮色与暗色模式)
-    ======================= */
+   全局变量定义 (亮色与暗色模式)
+   ======================= */
 :root {
     /* 亮色模式变量 */
-    --bg-color: #ffffff;             /* 页面背景色 */
-    --text-color: #333;              /* 正文文字颜色 */
-    --title-color: #111;             /* 标题颜色 */
-    --nav-bg: #f4f4f4;               /* 侧边栏背景色 */
-    --nav-text: #222;                /* 侧边栏文字颜色 */
-    --nav-active-bg: #ddd;           /* 导航激活项背景 */
-    --nav-active-text: #000;         /* 导航激活项文字颜色 */
-    --price-color: #f76c6c;          /* 价格颜色 */
-    --tag-color-default: #ddd;       /* 默认标签背景色 */
+    --bg-color: #ffffff;          /* 页面背景色 */
+    --text-color: #333;           /* 正文文字颜色 */
+    --title-color: #111;          /* 标题颜色 */
+    --nav-bg: #f4f4f4;             /* 侧边栏背景色 */
+    --nav-text: #222;              /* 侧边栏文字颜色 */
+    --nav-active-bg: #ddd;         /* 导航激活项背景 */
+    --nav-active-text: #000;       /* 导航激活项文字颜色 */
+    --price-color: #f76c6c;        /* 价格颜色 */
+    --tag-color-default: #ddd;     /* 默认标签背景色 */
     --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
 }
 
 /* 暗色模式下的变量重写 */
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color: #111;            /* 页面背景色 */
+        --bg-color: #111;           /* 页面背景色 */
         --text-color: #ccc;          /* 正文文字颜色 */
         --title-color: #eee;         /* 标题颜色 */
         --nav-bg: #222;              /* 侧边栏背景色 */
@@ -38,18 +38,16 @@
 
 /* 超链接 */
 a {
-    color: var(--text-color);        /* 和正文一样颜色 */
-    text-decoration: underline;      /* 添加下划线 */
+    color: var(--text-color);      /* 和正文一样颜色 */
+    text-decoration: underline;    /* 添加下划线 */
     text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
-    text-underline-offset: 5px;      /* 控制下划线与文字之间的距离 */
-    text-decoration-thickness: 1px;  /* 可选：设置线条粗细 */
+    text-underline-offset: 5px;    /* 控制下划线与文字之间的距离 */
+    text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
 }
 
----
-
 /* =======================
-    基础页面布局
-    ======================= */
+   基础页面布局
+   ======================= */
 body {
     margin: 0;
     font-family: 'Noto Sans JP', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
@@ -66,11 +64,9 @@ body {
     width: 100%;
 }
 
----
-
 /* =======================
-    侧边栏样式 (#sidebar)
-    ======================= */
+   侧边栏样式 (#sidebar)
+   ======================= */
 #sidebar {
     width: 220px;
     padding: 20px;
@@ -82,6 +78,10 @@ body {
     top: 16px;
     height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
     overflow-y: auto;
+    /* 新增：默认桌面端显示，并添加过渡 */
+    transform: translateX(0); /* 默认不偏移 */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000; /* 确保侧边栏在内容之上 */
 }
 
 #logo {
@@ -98,8 +98,8 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: var(--title-color);
-    text-align: center; /* 让文字居中 */
-    margin-bottom: 40px; /* 给文字下方增加一些间距 */
+    text-align: center;
+    margin-bottom: 40px;
 }
 
 nav ul {
@@ -123,17 +123,18 @@ nav a:hover {
     color: var(--nav-active-text);
 }
 
----
-
 /* =======================
-    主内容区样式 (#main-content)
-    ======================= */
+   主内容区样式 (#main-content)
+   ======================= */
 #main-content {
     flex: 1; /* 占据剩余的所有空间 */
     padding: 20px; /* 内边距为20px */
     box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
     max-width: 900px; /* 最大宽度为900px */
     margin: 0 auto; /* 水平居中 */
+    /* 新增：默认桌面端与侧边栏的间距 */
+    margin-left: 250px; /* 假设的桌面侧边栏宽度 */
+    transition: margin-left 0.3s ease-in-out; /* 平滑过渡 */
 }
 
 .news-time {
@@ -186,26 +187,17 @@ nav a:hover {
     flex-grow: 1; /* 让内容占据多余空间 */
 }
 
-.news-item .content img { /* 文章内图片 */
+.news-item .content img { /*文章内图片 */
     max-width: 100%; /* 确保图片不会超出其容器 */
-    height: auto;     /* 保持图片纵横比 */
-    display: block;   /* 移除图片底部的额外空间，使其更好地与文本对齐 */
-    border-radius: 8px;   /* 您可以调整这里的数值来控制圆角的程度 */
-    /* 您可以根据需要添加更多样式 */
-    /* 例如： */
-    /* width: 300px; */ /* 如果您想设定一个固定的宽度 */
-    /* height: 200px; */ /* 如果您想设定一个固定的高度（不推荐，容易导致图片变形） */
-    /* object-fit: cover; */ /* 如果您设定了固定高度，可以裁剪图片以适应 */
-    /* border-radius: 8px; */ /* 圆角 */
-    /* margin-top: 10px; */ /* 上方间距 */
-    /* margin-bottom: 10px; */ /* 下方间距 */
+    height: auto;      /* 保持图片纵横比 */
+    display: block;    /* 移除图片底部的额外空间，使其更好地与文本对齐 */
+    border-radius: 8px;
 }
 
 .tags-price-line {
     display: flex; /* 使用弹性布局 */
     justify-content: space-between; /* 子元素两端对齐 */
     align-items: flex-end; /* 垂直底部对齐 */
-    /* margin-top: 12px; /* 上边距为12px */
     margin-bottom: 6px; /* 下边距为5px */
 }
 
@@ -224,7 +216,7 @@ nav a:hover {
     background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
 }
 
-/* 不同标签的不同颜色
+/* 不同标签的不同颜色 (保持不变)
 .tag-游戏 { background-color: #a4c34c; }
 .tag-动画 { background-color: #7b61ff; }
 .tag-公告 { background-color: #0088cc; }
@@ -242,27 +234,128 @@ nav a:hover {
     white-space: nowrap;
 }
 
-/* 响应式设计：在小屏幕上隐藏侧边栏 */
+/* 导航切换按钮的样式 */
+.menu-toggle {
+    display: none; /* 默认在桌面端隐藏 */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001; /* 确保在侧边栏之上 */
+    background-color: #007bff; /* 菜单按钮背景色，您可以根据主题调整 */
+    color: white; /* 菜单按钮文字颜色 */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+
+/* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
 @media (max-width: 1200px) {
     #sidebar {
-        display: none; /* 当屏幕宽度小于1200px时，隐藏侧边栏 */
+        /* 在小屏幕上默认隐藏侧边栏 */
+        transform: translateX(-100%); /* 将侧边栏移出屏幕左侧 */
+        box-shadow: none; /* 隐藏阴影，因为在屏幕外 */
+        /* 移除 display: none; 而使用 transform 来控制显示/隐藏，
+           这样可以配合 transition 实现动画效果。
+           JavaScript 会通过添加/移除 .open 类来控制 transform。 */
+        position: fixed; /* 确保它可以在屏幕外 */
+        top: 0; /* 从屏幕顶部开始 */
+        height: 100vh; /* 占满整个视口高度 */
+        margin: 0; /* 移除桌面端的 margin */
+        border-radius: 0; /* 移除桌面端的圆角 */
     }
+
+    /* 当侧边栏在小屏幕上处于打开状态时 */
+    #sidebar.open {
+        transform: translateX(0); /* 移回屏幕内，显示侧边栏 */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* 显示阴影 */
+    }
+
+    /* 在小屏幕上，主内容区不应有左边距 */
+    #main-content {
+        margin-left: 0; /* 移除左边距，让内容占满宽度 */
+        max-width: none; /* 移除最大宽度限制，让内容适应手机屏幕宽度 */
+        padding: 15px; /* 调整内边距，手机上通常可以小一些 */
+        /* 新增：增大正文和标题字体大小 */
+        font-size: 1.1em; /* 增大正文字体大小，例如 1.1 倍 */
+        line-height: 1.6; /* 增加行高，提高可读性 */
+    }
+
+    /* 当侧边栏打开时，给 body 添加一个类，防止主页面滚动 */
+    body.sidebar-open {
+        overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
+    }
+
+    /* 小屏幕模式下，菜单切换按钮显示 */
+    .menu-toggle {
+        display: block;
+    }
+
+    /* 手机端文章模块的垂直排列 */
     .news-item {
         flex-direction: column; /* 在移动端将图文垂直排列 */
+        gap: 15px; /* 调整间距 */
+        padding: 15px; /* 调整内边距 */
     }
     .news-left {
         flex-basis: auto; /* 取消固定宽度 */
-        width: 100%;
+        width: 100%; /* 图片容器宽度占满 */
+        margin-bottom: 0; /* 间距由 gap 控制 */
+    }
+    .news-left img {
+        width: 100%; /* 图片在手机端占满宽度 */
+        height: auto; /* 保持图片纵横比 */
+    }
+
+    /* 调整标题在小屏幕上的大小 */
+    .news-item .news-title {
+        font-size: 1.5em; /* 手机端标题字体稍微大一些 */
+        margin-bottom: 5px; /* 调整标题下边距 */
+    }
+
+    /* 调整内容区字体大小 */
+    .news-item .content {
+        font-size: 1.05em; /* 确保内容字体大小增大，可以根据实际效果调整 */
+        line-height: 1.7; /* 适当调整行高 */
+    }
+
+    /* 调整时间字体大小 */
+    .news-time {
+        font-size: 0.9em;
+    }
+
+    /* 标签和价格行在小屏幕上的调整 */
+    .tags-price-line {
+        flex-direction: column; /* 标签和价格垂直排列 */
+        align-items: flex-start; /* 左对齐 */
+        margin-top: 10px; /* 调整上边距 */
+    }
+    .tags {
+        margin-bottom: 10px; /* 标签和价格之间的间距 */
+    }
+    .price {
+        font-size: 1.8em; /* 价格字体适当增大 */
+    }
+
+    /* 标签统计容器的调整 */
+    #tag-stats-container {
+        padding: 0 10px; /* 保持 */
+    }
+
+    /* 标签统计列表项字体大小 */
+    #tag-stats-container a {
+        font-size: 1.1em; /* 标签统计列表项字体增大 */
     }
 }
 
----
 
 /* =======================
-    标签统计区域样式
-    ======================= */
+   标签统计区域样式
+   ======================= */
 #tag-stats-container {
-    padding: 0 10px; /* 左右留出一些边距 */
+    padding: 0 10px;
     margin-top: 15px;
 }
 
@@ -279,23 +372,23 @@ nav a:hover {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column; /* 垂直排列 */
-    gap: 8px; /* 标签之间的间距 */
+    flex-direction: column;
+    gap: 8px;
 }
 
 #tag-stats-container a {
     color: var(--nav-text);
     text-decoration: none;
-    font-size: 12px;
+    font-size: 12px; /* 桌面端默认字体大小 */
     display: flex;
-    justify-content: space-between; /* 名字和数量两端对齐 */
+    justify-content: space-between;
     padding: 5px 10px;
     border-radius: 6px;
     transition: background-color 0.2s;
 }
 
 #tag-stats-container a:hover,
-#tag-stats-container a.active { /* 增加一个 active 状态 */
+#tag-stats-container a.active {
     background-color: var(--nav-active-bg);
     color: var(--nav-active-text);
 }
@@ -323,12 +416,12 @@ nav a:hover {
     padding: 10px;
     border: 2px solid var(--news-border-color);
     border-radius: 8px;
-    font-size: 20px; /* 可自定义大小 */
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
     position: relative;
     overflow: hidden;
-    cursor: pointer;/* 点击样式 */
+    cursor: pointer;
 }
 
 .total-price:hover {
@@ -344,34 +437,30 @@ nav a:hover {
 /* 链接样式 */
 .social-links-container {
     display: flex;
-    flex-wrap: wrap; /* 允许项目换行 */
-    justify-content: center; /* 水平居中图标 */
+    flex-wrap: wrap;
+    justify-content: center;
     margin-top: 20px;
     padding-bottom: 20px;
-    /* 如果容器宽度不确定，可以考虑设置一个最大宽度 */
-    max-width: 900px; /* 示例：限制容器最大宽度，以便图标能换行 */
-    margin-left: auto; /* 自动居中容器 */
-    margin-right: auto; /* 自动居中容器 */
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .social-icon {
     display: block;
-    width: 35px; /* 图标的固定宽度 */
-    height: 35px; /* 图标的固定高度 */
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     overflow: hidden;
-    margin: 5px; /* 调整上下左右间距，确保换行后也有间距 */
+    margin: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform 0.2s ease-in-out;
 
-    /* 关键：计算每个图标在 3 栏布局下的宽度 */
-    /* calc(100% / 3 - 20px) 假设左右 margin 各为 10px，所以总共 20px */
-    /* 如果你的 margin 设置不同，需要相应调整 */
-    flex: 0 0 calc(33.333% - 20px); /* 让每个图标占据容器宽度的约 1/3，并考虑 margin */
-    max-width: 60px; /* 限制每个图标容器的最大宽度，防止在超大屏幕上图标过大 */
-    min-width: 40px; /* 限制每个图标容器的最小宽度，防止在小屏幕上挤压过小 */
+    flex: 0 0 calc(33.333% - 20px);
+    max-width: 60px;
+    min-width: 40px;
 }
 
 /* 默认样式（浅色模式）：保持彩色 */
@@ -380,79 +469,67 @@ nav a:hover {
     height: 100%;
     object-fit: contain;
     transition: filter 0.3s ease-in-out;
-    filter: none; /* 默认浅色模式不应用滤镜 */
+    filter: none;
 }
 
 .social-icon-img:hover {
-    filter: brightness(70%); /* 鼠标悬停时降低亮度，使其变暗 */
+    filter: brightness(70%);
 }
 
 /* 深色模式下的样式 */
 @media (prefers-color-scheme: dark) {
     .social-icon-img {
-        filter: grayscale(100%) brightness(200%); /* 深色模式下的默认样式 */
+        filter: grayscale(100%) brightness(200%);
     }
 
     .social-icon-img:hover {
-        filter: grayscale(200%) brightness(700%); /* 鼠标悬停时进一步提高亮度，使其更白 */
+        filter: grayscale(200%) brightness(700%);
     }
 }
 
 /* 如果需要在更小的屏幕上每行显示更少的图标，可以添加媒体查询 */
 @media (max-width: 700px) {
     .social-icon {
-        flex: 0 0 calc(50% - 20px); /* 在小屏幕上每行显示 2 个 */
+        flex: 0 0 calc(50% - 20px);
     }
 }
 
 @media (max-width: 480px) {
     .social-icon {
-        flex: 0 0 calc(100% - 20px); /* 在更小的屏幕上每行显示 1 个 */
+        flex: 0 0 calc(100% - 20px);
     }
 }
 
----
-
 /* --- 内容折叠样式 --- */
 
-/* 新增的 content-wrapper 包裹器：用于包裹文章内容和展开/收起按钮的容器 */
 .content-wrapper {
-    position: relative; /* 相对定位，以便内部的伪元素（渐变层，如果需要）能正确定位 */
-    overflow: hidden;   /* 隐藏超出容器的内容 */
-    /* 添加一个平滑的过渡效果，让展开/收起动画更流畅 */
-    transition: max-height 0.5s ease-out; /* 为 max-height 属性的变化添加0.5秒的缓出过渡 */
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
 }
 
-/* 当 content-wrapper 有 'collapsed' 类时，折叠其内部的 .content */
 .content-wrapper.collapsed .content {
-    max-height: 120px; /* 设置折叠后的最大高度，请确保与 JS 中的 MAX_CONTENT_HEIGHT 值匹配 */
-    overflow: hidden;   /* 再次确保溢出隐藏 */
+    max-height: 120px;
+    overflow: hidden;
 }
-
-/* 移除渐变条：直接删除 .content-wrapper.collapsed::after 规则 */
-/* 如果您以后需要，可以再添加回来 */
 
 /* --- 展开/收起按钮样式 --- */
 .toggle-content-button {
-    display: block; /* 将按钮设置为块级元素，这样 margin: auto 才能使其水平居中 */
-    width: fit-content; /* 按钮的宽度适应其内容（即箭头符号）的宽度 */
-    margin: 10px auto 0; /* 上边距 10px，左右边距自动计算以实现水平居中，下边距 0 */
-    padding: 5px 12px; /* 按钮的内边距，调整以使箭头在按钮内看起来居中且舒适 */
-    background-color: transparent; /* 背景透明 */
-    color: inherit; /* 调用父元素的字体颜色，即正文的颜色 */
-    border: none; /* 移除边框 */
-    /* border-radius: 5px; /* 保留圆角，虽然没有边框，但可能在 hover 状态下有背景色 */
-    cursor: pointer; /* 鼠标悬停时显示手型光标，表示可点击 */
-    font-size: 1.2em; /* 调整字体大小，使箭头更明显 */
-    font-weight: bold; /* 箭头文字加粗 */
-    line-height: 1; /* 确保文本行高不影响按钮的垂直对齐 */
-    /* 添加过渡效果，使鼠标悬停时的样式变化更平滑 */
+    display: block;
+    width: fit-content;
+    margin: 10px auto 0;
+    padding: 5px 12px;
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1;
     transition: color 0.3s ease, background-color 0.3s ease;
 }
 
-/* 鼠标悬停在按钮上时的样式 */
 .toggle-content-button:hover {
-    color: #666; /* 鼠标悬停时，颜色可以稍微变深一些，提供视觉反馈 */
-    background-color: rgba(0, 0, 0, 0.05); /* 鼠标悬停时，添加一个轻微的背景色，增加可点击感 */
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.05);
 }
-/* --- 结束展开/收起按钮样式 --- */
