@@ -15,6 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     async function initialize() {
         try {
+            // --- 新增代码：配置让链接在新标签页打开 ---
+            const renderer = new marked.Renderer();
+            const linkRenderer = renderer.link;
+            renderer.link = (href, title, text) => {
+                const html = linkRenderer.call(renderer, href, title, text);
+                // 检查链接是否是外部链接，或者你希望所有链接都新开
+                // 这里我们假设所有通过 Markdown 解析的链接都新开
+                return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
+            };
+            marked.setOptions({ renderer: renderer });
+            // --- 结束新增代码 ---
+            
             // 并行加载导航和文章数据，提高效率
             const [navHtml, postsData] = await Promise.all([
                 fetch('nav.html').then(res => res.text()),
