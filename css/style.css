@@ -404,50 +404,46 @@ nav a:hover {
 }
 
 
-/* --- 内容折叠样式 (保持不变) --- */
+/* --- 内容折叠样式 --- */
+
+/* 新增的 content-wrapper 包裹器：用于包裹文章内容和展开/收起按钮的容器 */
 .content-wrapper {
-    position: relative;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
+    position: relative; /* 相对定位，以便内部的伪元素（渐变层，如果需要）能正确定位 */
+    overflow: hidden;   /* 隐藏超出容器的内容 */
+    /* 添加一个平滑的过渡效果，让展开/收起动画更流畅 */
+    transition: max-height 0.5s ease-out; /* 为 max-height 属性的变化添加0.5秒的缓出过渡 */
 }
 
+/* 当 content-wrapper 有 'collapsed' 类时，折叠其内部的 .content */
 .content-wrapper.collapsed .content {
-    max-height: 120px;
-    overflow: hidden;
+    max-height: 120px; /* 设置折叠后的最大高度，请确保与 JS 中的 MAX_CONTENT_HEIGHT 值匹配 */
+    overflow: hidden;   /* 再次确保溢出隐藏 */
 }
 
-.content-wrapper.collapsed::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-    pointer-events: none;
-}
+/* 移除渐变条：直接删除 .content-wrapper.collapsed::after 规则 */
+/* 如果您以后需要，可以再添加回来 */
 
 /* --- 展开/收起按钮样式 --- */
 .toggle-content-button {
-    display: block; /* 确保按钮占据一行，这样 margin: auto 才能居中 */
-    width: fit-content; /* 宽度适应内容，避免占满整行 */
-    margin: 10px auto 0; /* 顶部间距10px，左右自动，实现水平居中 */
-    padding: 5px 12px; /* 调整内边距，使箭头看起来居中且不被挤压 */
+    display: block; /* 将按钮设置为块级元素，这样 margin: auto 才能使其水平居中 */
+    width: fit-content; /* 按钮的宽度适应其内容（即箭头符号）的宽度 */
+    margin: 10px auto 0; /* 上边距 10px，左右边距自动计算以实现水平居中，下边距 0 */
+    padding: 5px 12px; /* 按钮的内边距，调整以使箭头在按钮内看起来居中且舒适 */
     background-color: transparent; /* 背景透明 */
-    color: #007bff; /* 蓝色箭头颜色，可根据主题调整 */
-    border: 1px solid #007bff; /* 细边框 */
-    border-radius: 5px;
-    cursor: pointer;
+    color: inherit; /* 调用父元素的字体颜色，即正文的颜色 */
+    border: none; /* 移除边框 */
+    /*  border-radius: 5px; /* 保留圆角，虽然没有边框，但可能在 hover 状态下有背景色 */
+    cursor: pointer; /* 鼠标悬停时显示手型光标，表示可点击 */
     font-size: 1.2em; /* 调整字体大小，使箭头更明显 */
-    font-weight: bold; /* 箭头加粗 */
-    line-height: 1; /* 确保文本行高不影响按钮高度 */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    font-weight: bold; /* 箭头文字加粗 */
+    line-height: 1; /* 确保文本行高不影响按钮的垂直对齐 */
+    /* 添加过渡效果，使鼠标悬停时的样式变化更平滑 */
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
+/* 鼠标悬停在按钮上时的样式 */
 .toggle-content-button:hover {
-    background-color: #007bff; /* 鼠标悬停时背景变为蓝色 */
-    color: white; /* 鼠标悬停时文字变为白色 */
-    border-color: #0056b3; /* 鼠标悬停时边框颜色也变化 */
+    color: #666; /* 鼠标悬停时，颜色可以稍微变深一些，提供视觉反馈 */
+    background-color: rgba(0, 0, 0, 0.05); /* 鼠标悬停时，添加一个轻微的背景色，增加可点击感 */
 }
-/* --- 结束修改样式 --- */
-
+/* --- 结束展开/收起按钮样式 --- */
