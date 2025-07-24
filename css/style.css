@@ -52,7 +52,7 @@ body {
   margin: 0;
   font-family: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   letter-spacing: 0.02em;
-  font-weight: 400;
+  font-weight: 300;/* 当前字体粗细 */
   line-height: 1.8;
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -371,7 +371,7 @@ nav a:hover {
 /* 深色模式下的样式 */
 @media (prefers-color-scheme: dark) {
   .social-icon-img {
-    filter: grayscale(200%) brightness(400%); /* 深色模式下的默认样式 */
+    filter: grayscale(100%) brightness(200%); /* 深色模式下的默认样式 */
   }
 
   .social-icon-img:hover {
