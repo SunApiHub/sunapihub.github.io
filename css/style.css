@@ -51,7 +51,7 @@ a {
 body {
   margin: 0;
   font-family: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em; /* 文字间距 */
   font-weight: 300;/* 当前字体粗细 */
   line-height: 1.8;
   background-color: var(--bg-color);
