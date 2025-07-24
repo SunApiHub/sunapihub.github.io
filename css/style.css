@@ -167,7 +167,7 @@ nav a:hover {
 
 .news-title {
   color: var(--title-color); /* 标题颜色由变量决定 */
-  letter-spacing: 0.15em; /* 文字间距 */
+  letter-spacing: 0.1em; /* 文字间距 */
   font-size: 21px; /* 字体大小为22px */
   font-weight: bold; /* 字体加粗 */
   margin: 0 0 0px 0; /* 下边距为0 */
