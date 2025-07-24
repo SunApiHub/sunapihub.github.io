@@ -180,6 +180,21 @@ nav a:hover {
   flex-grow: 1; /* 让内容占据多余空间 */
 }
 
+.news-item .content img { /*文章内图片 */
+    max-width: 100%; /* 确保图片不会超出其容器 */
+    height: auto;    /* 保持图片纵横比 */
+    display: block;  /* 移除图片底部的额外空间，使其更好地与文本对齐 */
+    border-radius: 8px;  /*您可以调整这里的数值来控制圆角的程度 */
+    /* 您可以根据需要添加更多样式 */
+    /* 例如： */
+    /* width: 300px; */ /* 如果您想设定一个固定的宽度 */
+    /* height: 200px; */ /* 如果您想设定一个固定的高度（不推荐，容易导致图片变形） */
+    /* object-fit: cover; */ /* 如果您设定了固定高度，可以裁剪图片以适应 */
+    /* border-radius: 8px; */ /* 圆角 */
+    /* margin-top: 10px; */ /* 上方间距 */
+    /* margin-bottom: 10px; */ /* 下方间距 */
+}
+
 .tags-price-line {
   display: flex; /* 使用弹性布局 */
   justify-content: space-between; /* 子元素两端对齐 */
