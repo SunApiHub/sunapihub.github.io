@@ -83,10 +83,12 @@ body {
     left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
     height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
     overflow-y: auto;
-    /* 新增：默认桌面端显示，并添加过渡 */
-    transform: translateX(0); /* 默认不偏移 */
-    transition: transform 0.3s ease-in-out;
-    z-index: 1000; /* 确保侧边栏在内容之上 */
+   
+   /* 添加以下两行，用于平滑过渡 */
+    transition: width 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
+    /* 初始状态可见 */
+    opacity: 1;
+    visibility: visible;
 }
 
 #logo {
@@ -248,16 +250,15 @@ nav a:hover {
 
 /* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
 @media (max-width: 1450px) {
-    #sidebar {
-        transform: translateX(-100%); /* 将侧边栏移出屏幕左侧，隐藏 */
-        box-shadow: none; /* 隐藏阴影 */
-        position: fixed; /* 确保它可以在屏幕外 */
-        top: 0;
-        left: 0;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
-        width: 250px; /* 移动端侧边栏的宽度 */
+   #sidebar {
+        /* display: none; */ /* 注释或删除这一行 */
+        width: 0;          /* 宽度变为0，让它折叠起来 */
+        padding: 0;        /* 内边距也设为0 */
+        margin: 0;         /* 外边距也设为0 */
+        opacity: 0;        /* 完全透明 */
+        visibility: hidden; /* 不可见，不响应事件 */
+        /* 如果希望不占用空间，可以考虑加上 position: absolute; 或 height: 0; */
+        /* 但 width: 0; 和 opacity: 0; 通常已经能达到隐藏目的，且能过渡 */
     }
 
     /* 当侧边栏在小屏幕上处于打开状态时 */
