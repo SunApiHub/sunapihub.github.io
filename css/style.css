@@ -206,6 +206,10 @@ nav a:hover {
     border-radius: 8px;
 }
 
+.tag {
+        font-size: 0.6em; /* 在小屏幕上将标签字体大小调整为0.7em */
+}
+
 .tags-price-line {
     display: flex; /* 使用弹性布局 */
     justify-content: space-between; /* 子元素两端对齐 */
