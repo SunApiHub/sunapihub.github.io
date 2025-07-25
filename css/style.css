@@ -252,28 +252,36 @@ nav a:hover {
 @media (max-width: 1450px) {
     #sidebar {
         /* 在小屏幕上默认隐藏侧边栏 */
-        transform: translateX(-100%); /* 将侧边栏移出屏幕左侧 */
-        box-shadow: none; /* 隐藏阴影，因为在屏幕外 */
-        /* 移除 display: none; 而使用 transform 来控制显示/隐藏，
-           这样可以配合 transition 实现动画效果。
-           JavaScript 会通过添加/移除 .open 类来控制 transform。 */
+        width: 0;           /* 宽度直接变为0 */
+        padding: 0;         /* 内边距直接变为0 */
+        opacity: 0;         /* 完全透明 */
+        visibility: hidden; /* 不可见，不响应事件 */
+        transform: translateX(-100%); /* 确保在屏幕外 */
+        box-shadow: none;   /* 隐藏阴影 */
+
         position: fixed; /* 确保它可以在屏幕外 */
         top: 0; /* 从屏幕顶部开始 */
         left: 0; /* 确保它在屏幕左侧 */
         height: 100vh; /* 占满整个视口高度 */
         margin: 0; /* 移除桌面端的 margin */
         border-radius: 0; /* 移除桌面端的圆角 */
-        width: 0 !important;           /* 宽度直接变为0 */
-        padding: 0 !important;          /* 内边距直接变为0 */
-        opacity: 0 !important;          /* 完全透明 */
-        visibility: hidden !important;  /* 不可见 */
-        transition: none !important;    /* 移除所有过渡动画 */
+
+        /* 关键修改：显示和隐藏都不要动画，所以这里直接设置为 none */
+        transition: none;
     }
 
     /* 当侧边栏在小屏幕上处于打开状态时 */
     #sidebar.open {
-        transform: translateX(0); /* 移回屏幕内，显示侧边栏 */
+        /* 恢复正常值，但也不要有动画 */
+        width: 220px;
+        padding: 20px;
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0); /* 移回屏幕内 */
         box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* 显示阴影 */
+
+        /* 关键修改：打开时也设置为 none，确保没有动画 */
+        transition: none;
     }
 
     #main-content {
