@@ -135,7 +135,7 @@ nav a:hover {
     /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
     padding: 20px; /* 内边距为20px */
     box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
-    max-width: 1150px; /* 最大宽度为900px */
+    max-width: 900px; /* 最大宽度为900px */
 
     /* 核心更改：实现内容在侧边栏右侧居中 */
     /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
@@ -264,7 +264,7 @@ nav a:hover {
 
 
 /* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
-@media (max-width: 1200px) {
+@media (max-width: 1100px) {
     #sidebar {
         /* 在小屏幕上默认隐藏侧边栏 */
         transform: translateX(-100%); /* 将侧边栏移出屏幕左侧 */
