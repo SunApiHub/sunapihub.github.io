@@ -274,7 +274,7 @@ nav a:hover {
     #main-content {
         margin-left: 0; /* 移除左边距，让内容占满宽度 */
         max-width: none; /* 移除最大宽度限制，让内容适应手机屏幕宽度 */
-        padding: 15px; /* 调整内边距，手机上通常可以小一些 */
+        padding: 30px; /* 调整内边距，手机上通常可以小一些 */
         /* 新增：增大正文和标题字体大小 */
         font-size: 2.1em; /* 增大正文字体大小，例如 1.1 倍 */
         line-height: 1.6; /* 增加行高，提高可读性 */
@@ -297,7 +297,7 @@ nav a:hover {
         margin-bottom: 0; /* 间距由 gap 控制 */
     }
     .news-left img {
-        width: 60%; /* 图片在手机端占满宽度 */
+        width: 70%; /* 图片在手机端占满宽度 */
         height: auto; /* 保持图片纵横比 */
     }
 
