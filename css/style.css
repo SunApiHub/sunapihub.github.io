@@ -263,7 +263,10 @@ nav a:hover {
         height: 100vh; /* 占满整个视口高度 */
         margin: 0; /* 移除桌面端的 margin */
         border-radius: 0; /* 移除桌面端的圆角 */
-        width: 250px; /* 移动端侧边栏的宽度 */
+        width: 0;          /* 宽度变为0，让它折叠起来 */
+        padding: 0;        /* 内边距也设为0 */
+        opacity: 0;        /* 完全透明 */
+        visibility: hidden; /* 不可见，不响应事件 */
     }
 
     /* 当侧边栏在小屏幕上处于打开状态时 */
