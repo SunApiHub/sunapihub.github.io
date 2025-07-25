@@ -83,9 +83,6 @@ body {
     left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
     height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
     overflow-y: auto;
-   
-   /* 添加以下两行，用于平滑过渡 */
-    transition: width 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
     /* 初始状态可见 */
     opacity: 1;
     visibility: visible;
