@@ -330,7 +330,7 @@ nav a:hover {
         margin-bottom: 10px; /* 标签和价格之间的间距 */
     }
     .price {
-        font-size: 0.8em; /* 价格字体适当增大 */
+        font-size: 1.0em; /* 价格字体适当增大 */
     }
 
     /* 标签统计容器的调整 */
