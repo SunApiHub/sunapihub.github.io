@@ -142,9 +142,8 @@ nav a:hover {
     /* margin-left: calc(220px + 16px + 20px);*/
     /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
     /* margin-right: auto;*/
-    margin-top: 0;
-    margin-bottom: 0;
-
+    margin: 0 auto;
+   
     transition: margin-left 0.3s ease-in-out; /* 平滑过渡 */
     /* 确保即使内容宽度小于 max-width，也能正确居中 */
     width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
