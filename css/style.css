@@ -247,7 +247,7 @@ nav a:hover {
 }
 
 /* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
-@media (max-width: 1200px) {
+@media (max-width: 1350px) {
     #sidebar {
         transform: translateX(-100%); /* 将侧边栏移出屏幕左侧，隐藏 */
         box-shadow: none; /* 隐藏阴影 */
