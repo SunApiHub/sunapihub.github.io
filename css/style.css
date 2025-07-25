@@ -1,230 +1,231 @@
 /* =======================
-   全局变量定义 (亮色与暗色模式)
-   ======================= */
+   全局变量定义 (亮色与暗色模式)
+   ======================= */
 :root {
-    /* 亮色模式变量 */
-    --bg-color: #ffffff;           /* 页面背景色 */
-    --text-color: #333;            /* 正文文字颜色 */
-    --title-color: #111;           /* 标题颜色 */
-    --nav-bg: #f4f4f4;              /* 侧边栏背景色 */
-    --nav-text: #222;               /* 侧边栏文字颜色 */
-    --nav-active-bg: #ddd;          /* 导航激活项背景 */
-    --nav-active-text: #000;        /* 导航激活项文字颜色 */
-    --price-color: #f76c6c;         /* 价格颜色 */
-    --tag-color-default: #ddd;      /* 默认标签背景色 */
-    --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
+    /* 亮色模式变量 */
+    --bg-color: #ffffff;           /* 页面背景色 */
+    --text-color: #333;            /* 正文文字颜色 */
+    --title-color: #111;           /* 标题颜色 */
+    --nav-bg: #f4f4f4;              /* 侧边栏背景色 */
+    --nav-text: #222;               /* 侧边栏文字颜色 */
+    --nav-active-bg: #ddd;          /* 导航激活项背景 */
+    --nav-active-text: #000;        /* 导航激活项文字颜色 */
+    --price-color: #f76c6c;         /* 价格颜色 */
+    --tag-color-default: #ddd;      /* 默认标签背景色 */
+    --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
 }
 
 /* 暗色模式下的变量重写 */
 @media (prefers-color-scheme: dark) {
-    :root {
-        --bg-color: #111;           /* 页面背景色 */
-        --text-color: #ccc;           /* 正文文字颜色 */
-        --title-color: #eee;          /* 标题颜色 */
-        --nav-bg: #222;               /* 侧边栏背景色 */
-        --nav-text: #eee;             /* 侧边栏文字颜色 */
-        --nav-active-bg: #444;        /* 导航激活项背景 */
-        --nav-active-text: #fff;      /* 导航激活项文字颜色 */
-        --price-color: #f76c6c;
-        --tag-color-default: #333;
-        --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
-    }
+    :root {
+        --bg-color: #111;           /* 页面背景色 */
+        --text-color: #ccc;           /* 正文文字颜色 */
+        --title-color: #eee;          /* 标题颜色 */
+        --nav-bg: #222;               /* 侧边栏背景色 */
+        --nav-text: #eee;             /* 侧边栏文字颜色 */
+        --nav-active-bg: #444;        /* 导航激活项背景 */
+        --nav-active-text: #fff;      /* 导航激活项文字颜色 */
+        --price-color: #f76c6c;
+        --tag-color-default: #333;
+        --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
+    }
 
-    /* 暗色模式下让logo变白 */
-    #logo {
-        filter: brightness(0) invert(1);
-    }
+    /* 暗色模式下让logo变白 */
+    #logo {
+        filter: brightness(0) invert(1);
+    }
 }
 
 /* 超链接 */
 a {
-    color: var(--text-color);       /* 和正文一样颜色 */
-    text-decoration: underline;     /* 添加下划线 */
-    text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
-    text-underline-offset: 5px;     /* 控制下划线与文字之间的距离 */
-    text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
+    color: var(--text-color);       /* 和正文一样颜色 */
+    text-decoration: underline;     /* 添加下划线 */
+    text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
+    text-underline-offset: 5px;     /* 控制下划线与文字之间的距离 */
+    text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
 }
 
 /* =======================
-   基础页面布局
-   ======================= */
+   基础页面布局
+   ======================= */
 body {
-    margin: 0;
-    font-family: 'Noto Sans JP', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-    letter-spacing: 0.05em; /* 文字间距 */
-    font-weight: 300;/* 当前字体粗细 */
-    line-height: 1.8;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
+    margin: 0;
+    font-family: 'Noto Sans JP', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    letter-spacing: 0.05em; /* 文字间距 */
+    font-weight: 300;/* 当前字体粗细 */
+    line-height: 1.8;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
 }
 
 .container {
-    /* 这个 .container 在侧边栏固定定位后可能不再需要 display: flex;，
-       但保留它不会影响当前方案，如果你将来需要它来包裹其他 flex 元素可以保留。*/
-    /* display: flex; */
-    width: 100%;
+    /* 这个 .container 在侧边栏固定定位后可能不再需要 display: flex;，
+       但保留它不会影响当前方案，如果你将来需要它来包裹其他 flex 元素可以保留。*/
+    /* display: flex; */
+    width: 100%;
 }
 
 /* =======================
-   侧边栏样式 (#sidebar)
-   ======================= */
+   侧边栏样式 (#sidebar)
+   ======================= */
 #sidebar {
-    width: 220px;
-    padding: 20px;
-    /* 侧边栏改为固定定位后，margin 属性将不再用于定位其与主内容的关系，故设为0 */
-    margin: 0;
-    box-sizing: border-box;
-    background-color: var(--nav-bg);
-    border-radius: 12px;
-    /* 关键更改：将 position 从 sticky 改为 fixed */
-    position: fixed; /* 固定定位，脱离文档流 */
-    top: 16px;
-    left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
-    height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
-    overflow-y: auto;
-    /* 新增：默认桌面端显示，并添加过渡 */
-    transform: translateX(0); /* 默认不偏移 */
-    transition: transform 0.3s ease-in-out;
-    z-index: 1000; /* 确保侧边栏在内容之上 */
+    width: 220px;
+    padding: 20px;
+    /* 侧边栏改为固定定位后，margin 属性将不再用于定位其与主内容的关系，故设为0 */
+    margin: 0;
+    box-sizing: border-box;
+    background-color: var(--nav-bg);
+    border-radius: 12px;
+    /* 关键更改：将 position 从 sticky 改为 fixed */
+    position: fixed; /* 固定定位，脱离文档流 */
+    top: 16px;
+    left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
+    height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
+    overflow-y: auto;
+    /* 新增：默认桌面端显示，并添加过渡 */
+    transform: translateX(0); /* 默认不偏移 */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000; /* 确保侧边栏在内容之上 */
 }
 
 #logo {
-    display: block;
-    margin: 30px auto 0px;
+    display: block;
+    margin: 30px auto 0px;
 }
 
 .logo-container {
-    text-align: center;
-    margin-bottom: 0px;
+    text-align: center;
+    margin-bottom: 0px;
 }
 
 .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--title-color);
-    text-align: center;
-    margin-bottom: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--title-color);
+    text-align: center;
+    margin-bottom: 40px;
 }
 
 nav ul {
-    list-style: none;
-    padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 nav a {
-    display: block;
-    padding: 8px 18px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    text-decoration: none;
-    color: var(--nav-text);
-    transition: background 0.3s;
+    display: block;
+    padding: 8px 18px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: var(--nav-text);
+    transition: background 0.3s;
 }
 
 nav a.active,
 nav a:hover {
-    background-color: var(--nav-active-bg);
-    color: var(--nav-active-text);
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
 }
 
 /* =======================
-   主内容区样式 (#main-content)
-   ======================= */
+   主内容区样式 (#main-content)
+   ======================= */
 #main-content {
-    /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
-    padding: 20px; /* 内边距为20px */
-    box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
-    max-width: 900px; /* 最大宽度为900px */
+    /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
+    padding: 20px; /* 内边距为20px */
+    box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
+    max-width: 900px; /* 最大宽度为900px */
 
-    /* 核心更改：实现内容在侧边栏右侧居中 */
-    /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
-    margin-left: calc(220px + 16px + 20px); /* 默认左边距 */
-    /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
-    margin-right: auto;
-   
-    transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out; /* 平滑过渡 */
-    /* 确保即使内容宽度小于 max-width，也能正确居中 */
-    width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
+    /* 核心更改：实现内容在侧边栏右侧居中 */
+    /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
+    /* margin-left: calc(220px + 16px + 20px);*/
+    /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
+    /* margin-right: auto;*/
+    margin: 0 auto;
+   
+    transition: margin-left 0.3s ease-in-out; /* 平滑过渡 */
+    /* 确保即使内容宽度小于 max-width，也能正确居中 */
+    width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
 }
 
 .news-time {
-    color: #888; /* 文字颜色为灰色 */
-    font-size: 12px; /* 字体大小为14px */
-    margin: 0px 0 10px; /* 上边距为0，下边距为10px */
-    text-align: left; /* 文本左对齐 */
-    margin-bottom: 8px;
+    color: #888; /* 文字颜色为灰色 */
+    font-size: 12px; /* 字体大小为14px */
+    margin: 0px 0 10px; /* 上边距为0，下边距为10px */
+    text-align: left; /* 文本左对齐 */
+    margin-bottom: 8px;
 }
 
 .news-item {
-    display: flex; /* 使用弹性布局 */
-    gap: 20px; /* 子元素之间的间距为20px */
-    border-radius: 12px; /* 边框圆角为12px */
-    padding: 10px; /* 内边距为20px */
-    margin-bottom: 10px; /* 下边距为20px */
-    border: 1px solid var(--news-border-color); /* 边框为1px实线，颜色由变量决定 */
-    background-color: var(--nav-bg); /* 背景颜色由变量决定 */
+    display: flex; /* 使用弹性布局 */
+    gap: 20px; /* 子元素之间的间距为20px */
+    border-radius: 12px; /* 边框圆角为12px */
+    padding: 10px; /* 内边距为20px */
+    margin-bottom: 10px; /* 下边距为20px */
+    border: 1px solid var(--news-border-color); /* 边框为1px实线，颜色由变量决定 */
+    background-color: var(--nav-bg); /* 背景颜色由变量决定 */
 }
 
 .news-left {
-    flex: 0 0 350px; /* 左侧图片区域固定宽度为380px */
-    height: 100%; /* 高度占满整个容器 */
+    flex: 0 0 350px; /* 左侧图片区域固定宽度为380px */
+    height: 100%; /* 高度占满整个容器 */
 }
 .news-left img {
-    width: 100%; /* 图片宽度占满容器 */
-    height: 100%; /* 图片高度占满容器 */
-    object-fit: cover; /* 让图片填满容器，可能裁剪 */
-    border-radius: 8px; /* 图片圆角为8px */
+    width: 100%; /* 图片宽度占满容器 */
+    height: 100%; /* 图片高度占满容器 */
+    object-fit: cover; /* 让图片填满容器，可能裁剪 */
+    border-radius: 8px; /* 图片圆角为8px */
 }
 
 .news-right {
-    flex: 1; /* 右侧内容占据剩余空间 */
-    display: flex; /* 使用弹性布局 */
-    flex-direction: column; /* 子元素垂直排列 */
+    flex: 1; /* 右侧内容占据剩余空间 */
+    display: flex; /* 使用弹性布局 */
+    flex-direction: column; /* 子元素垂直排列 */
 }
 
 .news-title {
-    color: var(--title-color); /* 标题颜色由变量决定 */
-    letter-spacing: 0.1em; /* 文字间距 */
-    font-size: 21px; /* 字体大小为22px */
-    font-weight: bold; /* 字体加粗 */
-    margin: 0 0 0px 0; /* 下边距为0 */
+    color: var(--title-color); /* 标题颜色由变量决定 */
+    letter-spacing: 0.1em; /* 文字间距 */
+    font-size: 21px; /* 字体大小为22px */
+    font-weight: bold; /* 字体加粗 */
+    margin: 0 0 0px 0; /* 下边距为0 */
 }
 
 .content {
-    font-size: 14px; /* 这里定义了新闻内容的字体大小 */
-    line-height: 1.8; /* 行高为1.8 */
-    white-space: pre-line; /* 保留换行符 */
-    flex-grow: 1; /* 让内容占据多余空间 */
+    font-size: 14px; /* 这里定义了新闻内容的字体大小 */
+    line-height: 1.8; /* 行高为1.8 */
+    white-space: pre-line; /* 保留换行符 */
+    flex-grow: 1; /* 让内容占据多余空间 */
 }
 
 .news-item .content img { /*文章内图片 */
-    max-width: 100%; /* 确保图片不会超出其容器 */
-    height: auto;       /* 保持图片纵横比 */
-    display: block;     /* 移除图片底部的额外空间，使其更好地与文本对齐 */
-    border-radius: 8px;
+    max-width: 100%; /* 确保图片不会超出其容器 */
+    height: auto;       /* 保持图片纵横比 */
+    display: block;     /* 移除图片底部的额外空间，使其更好地与文本对齐 */
+    border-radius: 8px;
 }
 
 .tags-price-line {
-    display: flex; /* 使用弹性布局 */
-    justify-content: space-between; /* 子元素两端对齐 */
-    align-items: flex-end; /* 垂直底部对齐 */
-    margin-bottom: 6px; /* 下边距为5px */
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 子元素两端对齐 */
+    align-items: flex-end; /* 垂直底部对齐 */
+    margin-bottom: 6px; /* 下边距为5px */
 }
 
 .tags {
-    display: flex; /* 使用弹性布局 */
-    flex-wrap: wrap; /* 允许子元素换行 */
-    gap: 8px; /* 子元素之间的间距为8px */
+    display: flex; /* 使用弹性布局 */
+    flex-wrap: wrap; /* 允许子元素换行 */
+    gap: 8px; /* 子元素之间的间距为8px */
 }
 
 .tag {
-    display: inline-block; /* 以行内块的形式显示 */
-    padding: 4px 12px; /* 内边距为4px上下，12px左右 */
-    border-radius: 20px; /* 边框圆角为20px */
-    font-size: 11px; /* 字体大小为13px */
-    color: var(--nav-text); /* 文字颜色由变量决定 */
-    background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
+    display: inline-block; /* 以行内块的形式显示 */
+    padding: 4px 12px; /* 内边距为4px上下，12px左右 */
+    border-radius: 20px; /* 边框圆角为20px */
+    font-size: 11px; /* 字体大小为13px */
+    color: var(--nav-text); /* 文字颜色由变量决定 */
+    background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
 }
 
 /* 不同标签的不同颜色 (保持不变)
@@ -240,295 +241,292 @@ nav a:hover {
 */
 
 .price {
-    font-weight: bold;
-    font-size: 24px;
-    white-space: nowrap;
+    font-weight: bold;
+    font-size: 24px;
+    white-space: nowrap;
 }
 
-/* --- 响应式设计 --- */
-
-/* 当屏幕宽度小于或等于 1200px 时：隐藏侧边栏，主内容保持最大宽度并居中 */
+/* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
 @media (max-width: 1200px) {
-    #sidebar {
-        transform: translateX(-100%); /* 将侧边栏移出屏幕左侧 */
-        box-shadow: none; /* 隐藏阴影 */
-        position: fixed; /* 确保它可以在屏幕外 */
-        top: 0;
-        left: 0;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
-        width: 250px; /* 移动端侧边栏的宽度 */
-    }
+    #sidebar {
+        transform: translateX(-100%); /* 将侧边栏移出屏幕左侧，隐藏 */
+        box-shadow: none; /* 隐藏阴影 */
+        position: fixed; /* 确保它可以在屏幕外 */
+        top: 0;
+        left: 0;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        width: 250px; /* 移动端侧边栏的宽度 */
+    }
 
-    /* 当侧边栏在小屏幕上处于打开状态时 */
-    #sidebar.open {
-        transform: translateX(0); /* 移回屏幕内，显示侧边栏 */
-        box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* 显示阴影 */
-    }
+    /* 当侧边栏在小屏幕上处于打开状态时 */
+    #sidebar.open {
+        transform: translateX(0); /* 移回屏幕内，显示侧边栏 */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* 显示阴影 */
+    }
 
-    #main-content {
-        margin-left: auto; /* 移除左边距，并使内容居中 */
-        margin-right: auto;
-        max-width: 900px; /* 保持最大宽度不变 */
-        padding: 20px; /* 保持原内边距 */
-    }
+    #main-content {
+        margin-left: auto; /* 移除左边距，并使内容居中 */
+        margin-right: auto;
+        max-width: 900px; /* 保持最大宽度不变 */
+        padding: 20px; /* 保持原内边距 */
+    }
 
-    body.sidebar-open {
-        overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
-    }
+    body.sidebar-open {
+        overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
+    }
 }
 
-/* 当屏幕宽度小于或等于 900px 时：主内容区拉伸适配窗口 */
 @media (max-width: 900px) {
-    #main-content {
-        max-width: none; /* 移除最大宽度限制，让内容适应手机屏幕宽度 */
-        padding: 20px; /* 调整内边距，手机上通常可以小一些 */
-        margin-left: 0; /* 确保没有左边距，占满整个宽度 */
-        margin-right: 0;
-        /* 新增：增大正文和标题字体大小 */
-        font-size: 1em; /* 调整正文字体大小 */
-        line-height: 1.6; /* 增加行高，提高可读性 */
-    }
+    #main-content {
+        max-width: none; /* 移除最大宽度限制，让内容适应手机屏幕宽度 */
+        padding: 20px; /* 调整内边距，手机上通常可以小一些 */
+        margin-left: 0; /* 确保没有左边距，占满整个宽度 */
+        margin-right: 0;
+        font-size: 1em; /* 调整正文字体大小 */
+        line-height: 1.6; /* 增加行高，提高可读性 */
+    }
 
-    /* 手机端文章模块的垂直排列 */
-    .news-item {
-        flex-direction: column; /* 在移动端将图文垂直排列 */
-        gap: 15px; /* 调整间距 */
-        padding: 15px; /* 调整内边距 */
-    }
-    .news-left {
-        flex-basis: auto; /* 取消固定宽度 */
-        width: 100%; /* 图片容器宽度占满 */
-        margin-bottom: 0; /* 间距由 gap 控制 */
-    }
-    .news-left img {
-        width: 100%; /* 图片在手机端占满宽度 */
-        height: auto; /* 保持图片纵横比 */
-    }
+    /* 手机端文章模块的垂直排列 */
+    .news-item {
+        flex-direction: column; /* 在移动端将图文垂直排列 */
+        gap: 15px; /* 调整间距 */
+        padding: 15px; /* 调整内边距 */
+    }
+    .news-left {
+        flex-basis: auto; /* 取消固定宽度 */
+        width: 100%; /* 图片容器宽度占满 */
+        margin-bottom: 0; /* 间距由 gap 控制 */
+    }
+    .news-left img {
+        width: 70%; /* 图片在手机端占满宽度 */
+        height: auto; /* 保持图片纵横比 */
+    }
 
-    /* 调整标题在小屏幕上的大小 */
-    .news-item .news-title {
-        font-size: 1.1em; /* 手机端标题字体稍微大一些 */
-        margin-bottom: 5px; /* 调整标题下边距 */
-    }
+    /* 调整标题在小屏幕上的大小 */
+    .news-item .news-title {
+        font-size: 1.2em; /* 手机端标题字体稍微大一些 */
+        margin-bottom: 5px; /* 调整标题下边距 */
+    }
 
-    /* 调整内容区字体大小 */
-    .news-item .content {
-        font-size: 0.9em; /* 确保内容字体大小增大，可以根据实际效果调整 */
-        line-height: 1.7; /* 适当调整行高 */
-    }
+    /* 调整内容区字体大小 */
+    .news-item .content {
+        font-size: 0.8em; /* 确保内容字体大小增大，可以根据实际效果调整 */
+        line-height: 1.7; /* 适当调整行高 */
+    }
 
-    /* 调整时间字体大小 */
-    .news-time {
-        font-size: 0.8em;
-    }
-    .tag {
-        font-size: 0.8em; /* 在小屏幕上将标签字体大小调整为0.7em */
-    }
-    /* 标签和价格行在小屏幕上的调整 */
-    .tags-price-line {
-        flex-direction: column; /* 标签和价格垂直排列 */
-        align-items: flex-start; /* 左对齐 */
-        margin-top: 10px; /* 调整上边距 */
-    }
-    .tags {
-        margin-bottom: 10px; /* 标签和价格之间的间距 */
-    }
-    .price {
-        font-size: 1.1em; /* 价格字体适当增大 */
-    }
+    /* 调整时间字体大小 */
+    .news-time {
+        font-size: 0.7em;
+    }
+    .tag {
+        font-size: 0.7em; /* 在小屏幕上将标签字体大小调整为0.7em */
+    }
+    /* 标签和价格行在小屏幕上的调整 */
+    .tags-price-line {
+        flex-direction: column; /* 标签和价格垂直排列 */
+        align-items: flex-start; /* 左对齐 */
+        margin-top: 10px; /* 调整上边距 */
+    }
+    .tags {
+        margin-bottom: 10px; /* 标签和价格之间的间距 */
+    }
+    .price {
+        font-size: 1.0em; /* 价格字体适当增大 */
+    }
 
-    /* 标签统计容器的调整 */
-    #tag-stats-container {
-        padding: 0 10px; /* 保持 */
-    }
+    /* 标签统计容器的调整 */
+    #tag-stats-container {
+        padding: 0 10px; /* 保持 */
+    }
 
-    /* 标签统计列表项字体大小 */
-    #tag-stats-container a {
-        font-size: 1em; /* 标签统计列表项字体增大 */
-    }
+    /* 标签统计列表项字体大小 */
+    #tag-stats-container a {
+        font-size: 1.1em; /* 标签统计列表项字体增大 */
+    }
 }
 
-/* If you need even smaller screen adjustments (e.g., for very narrow phones) */
-@media (max-width: 700px) {
-    .social-icon {
-        flex: 0 0 calc(50% - 20px);
-    }
-}
-
-@media (max-width: 480px) {
-    .social-icon {
-        flex: 0 0 calc(100% - 20px);
-    }
-}
 
 /* =======================
-   标签统计区域样式
-   ======================= */
+   标签统计区域样式
+   ======================= */
 #tag-stats-container {
-    padding: 0 10px;
-    margin-top: 15px;
+    padding: 0 10px;
+    margin-top: 15px;
 }
 
 #tag-stats-container h4 {
-    margin-top: 0;
-    margin-bottom: 12px;
-    font-size: 12px;
-    color: var(--title-color);
-    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--title-color);
+    font-weight: bold;
 }
 
 #tag-stats-container ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 #tag-stats-container a {
-    color: var(--nav-text);
-    text-decoration: none;
-    font-size: 12px; /* 桌面端默认字体大小 */
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 10px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+    color: var(--nav-text);
+    text-decoration: none;
+    font-size: 12px; /* 桌面端默认字体大小 */
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
 }
 
 #tag-stats-container a:hover,
 #tag-stats-container a.active {
-    background-color: var(--nav-active-bg);
-    color: var(--nav-active-text);
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
 }
 
 .tag-count {
-    background-color: var(--nav-active-bg);
-    color: var(--nav-active-text);
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 8px;
-    font-weight: normal;
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: normal;
 }
 
 /* 分隔线样式 */
 .short-line {
-    width: 80%;
-    height: 1px;
-    background-color: var(--news-border-color);
-    border: none;
-    margin: 20px auto;
+    width: 80%;
+    height: 1px;
+    background-color: var(--news-border-color);
+    border: none;
+    margin: 20px auto;
 }
 /* 价格总和样式 */
 .total-price {
-    margin-top: 20px;
-    padding: 10px;
-    border: 2px solid var(--news-border-color);
-    border-radius: 8px;
-    font-size: 20px;
-    text-align: center;
-    font-weight: bold;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid var(--news-border-color);
+    border-radius: 8px;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .total-price:hover {
-    background-color: var(--nav-active-bg);
-    color: var(--nav-active-text);
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
 }
 
 .total-price span {
-    display: inline-block;
-    animation: roll-up 1s ease-out forwards;
+    display: inline-block;
+    animation: roll-up 1s ease-out forwards;
 }
 
 /* 链接样式 */
 .social-links-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-    padding-bottom: 20px;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .social-icon {
-    display: block;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s ease-in-out;
+    display: block;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
 
-    flex: 0 0 calc(33.333% - 20px);
-    max-width: 60px;
-    min-width: 40px;
+    flex: 0 0 calc(33.333% - 20px);
+    max-width: 60px;
+    min-width: 40px;
 }
 
 /* 默认样式（浅色模式）：保持彩色 */
 .social-icon-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: filter 0.3s ease-in-out;
-    filter: none;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: filter 0.3s ease-in-out;
+    filter: none;
 }
 
 .social-icon-img:hover {
-    filter: brightness(70%);
+    filter: brightness(70%);
 }
 
 /* 深色模式下的样式 */
 @media (prefers-color-scheme: dark) {
-    .social-icon-img {
-        filter: grayscale(100%) brightness(200%);
-    }
+    .social-icon-img {
+        filter: grayscale(100%) brightness(200%);
+    }
 
-    .social-icon-img:hover {
-        filter: grayscale(200%) brightness(700%);
-    }
+    .social-icon-img:hover {
+        filter: grayscale(200%) brightness(700%);
+    }
+}
+
+/* 如果需要在更小的屏幕上每行显示更少的图标，可以添加媒体查询 */
+@media (max-width: 700px) {
+    .social-icon {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .social-icon {
+        flex: 0 0 calc(100% - 20px);
+    }
 }
 
 /* --- 内容折叠样式 --- */
 
 .content-wrapper {
-    position: relative;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
 }
 
 .content-wrapper.collapsed .content {
-    max-height: 120px;
-    overflow: hidden;
+    max-height: 120px;
+    overflow: hidden;
 }
 
 /* --- 展开/收起按钮样式 --- */
 .toggle-content-button {
-    display: block;
-    width: fit-content;
-    margin: 10px auto 0;
-    padding: 5px 12px;
-    background-color: transparent;
-    color: inherit;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    font-weight: bold;
-    line-height: 1;
-    transition: color 0.3s ease, background-color 0.3s ease;
+    display: block;
+    width: fit-content;
+    margin: 10px auto 0;
+    padding: 5px 12px;
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .toggle-content-button:hover {
-    color: #666;
-    background-color: rgba(0, 0, 0, 0.05);
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.05);
 }
