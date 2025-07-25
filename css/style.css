@@ -141,7 +141,7 @@ nav a:hover {
     /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
     margin-left: calc(220px + 16px + 20px);
     /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
-    margin-right: auto;
+    /* margin-right: auto;*/
     margin-top: 0;
     margin-bottom: 0;
 
