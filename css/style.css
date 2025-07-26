@@ -545,3 +545,17 @@ nav a:hover {
     color: #666;
     background-color: rgba(0, 0, 0, 0.05);
 }
+
+blockquote {
+    border-left: 4px solid var(--primary-color, #007bff); /* 添加左侧边框 */
+    padding-left: 15px; /* 增加边框和文本之间的间距 */
+    margin: 1em 0; /* 默认的上下边距，可以根据需要调整 */
+    color: var(--text-color-secondary, #555); /* 可以调整引用文本颜色 */
+    background-color: var(--blockquote-bg, #f9f9f9); /* 也可以添加一个浅色背景 */
+    border-radius: 4px; /* 轻微圆角 */
+}
+
+/* 如果您的主题有 --primary-color 和 --text-color-secondary 变量，
+   它会使用主题颜色。否则，会使用默认的蓝色和灰色。
+   您可以根据您的网站主题颜色调整这些值。
+*/
