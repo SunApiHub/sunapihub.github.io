@@ -1,7 +1,7 @@
 [
    {
     "title": "检查电脑电池健康度报告",
-    "content": "终端：powercfg /batteryreport /output C:\\battery_report.html",
+    "content": "终端：\n> - powercfg /batteryreport /output C:\\battery_report.html",
     "date": "2025-08-14",
     "price":0,
     "tags": ["终端"],
