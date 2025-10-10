@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 新增无限滚动相关变量 ---
     const INITIAL_LOAD_COUNT = 20; // 首次加载的文章数量 - 此变量未在当前JS中使用，但保留作为配置
-    const LOAD_MORE_COUNT = 5;     // 每次滚动到底部时加载的文章数量
+    const LOAD_MORE_COUNT = 10;    // 每次滚动到底部时加载的文章数量
     let currentLoadedCount = 0;    // 当前已加载的文章总数
     let isLoading = false;         // 防止重复加载的标志
     let currentFilteredPosts = []; // 用于存储当前过滤/显示的文章列表
