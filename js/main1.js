@@ -4,10 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content'); // 获取主内容区元素
     let allPosts = []; // 用于存储所有文章数据
     let activeTagLink = null; // 用于跟踪当前激活的标签链接（例如，当前选中的标签）
+    const STEAM_PROXY_BASE = 'https://nameless-sky-1205.sun-api.workers.dev';
+    const steamCache = new Map();
+    const STEAM_TITLE_MAP = {
+        '帝国时代4': '1466860',
+        '勇者斗恶龙 建造者2': '1072420',
+        '刺客信条 影': '3159330',
+        '刺客信条：影': '3159330',
+        'MGS1终于降价了': '2131630',
+        'MGS1': '2131630'
+    };
 
     // --- 新增常量：定义内容折叠的阈值高度 ---
     const MAX_CONTENT_HEIGHT = 140; // 例如，140px，当内容高度超过此值时将折叠
     // --- 结束新增常量 ---
+
+    // --- 侧边栏自动收起阈值 ---
+    const SIDEBAR_WIDTH = 220;
+    const SIDEBAR_LEFT = 16;
+    const SIDEBAR_GAP = 20;
+    const CONTENT_MAX_WIDTH = 900;
+    const MOBILE_BREAKPOINT = 900;
+    const SIDEBAR_HIDE_AT = SIDEBAR_LEFT + SIDEBAR_WIDTH + SIDEBAR_GAP + CONTENT_MAX_WIDTH + 40;
+    // --- 结束阈值 ---
 
     // --- 新增无限滚动相关变量 ---
     const INITIAL_LOAD_COUNT = 20; // 首次加载的文章数量 - 此变量未在当前JS中使用，但保留作为配置
@@ -21,6 +40,187 @@ document.addEventListener('DOMContentLoaded', () => {
     // let menuToggleBtn; // 声明菜单切换按钮变量 - 已移除
     // const MOBILE_BREAKPOINT = 1200; // 定义移动端断点，与CSS保持一致 - 已移除
     // --- 结束移除 ---
+
+    function resolveSteamAppId(item) {
+        const explicitId = item.steamAppId ?? item.steam_appid ?? item.appid;
+        if (explicitId !== undefined && explicitId !== null && String(explicitId).trim() !== '') {
+            return String(explicitId).trim();
+        }
+        const mappedId = STEAM_TITLE_MAP[item.title];
+        return mappedId ? String(mappedId) : null;
+    }
+
+    function formatSteamHours(minutes) {
+        const value = Number(minutes);
+        if (!Number.isFinite(value) || value <= 0) return '0h';
+        const hours = value / 60;
+        return hours >= 10 ? `${hours.toFixed(1)}h` : `${hours.toFixed(2)}h`;
+    }
+
+    function augmentPost(item) {
+        const steamAppId = resolveSteamAppId(item);
+        const tags = Array.isArray(item.tags) ? [...item.tags] : [];
+
+        if (steamAppId && !tags.includes('Steam')) {
+            tags.push('Steam');
+        }
+
+        return {
+            ...item,
+            steamAppId,
+            tags
+        };
+    }
+
+    function fetchSteamGameInfo(appid) {
+        if (steamCache.has(appid)) {
+            return steamCache.get(appid);
+        }
+
+        const request = fetch(`${STEAM_PROXY_BASE}/steam/game?appid=${encodeURIComponent(appid)}`)
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`Steam proxy HTTP ${res.status}`);
+                }
+                return res.json();
+            })
+            .catch((err) => ({ error: err.message || String(err) }));
+
+        steamCache.set(appid, request);
+        return request;
+    }
+
+    async function hydrateSteamMeta(targetEl, item) {
+        const appid = resolveSteamAppId(item);
+        if (!appid || !targetEl) return;
+
+        const card = targetEl.closest('.news-right');
+        const newsItem = card ? card.closest('.news-item') : null;
+        const steamNameEl = card ? card.querySelector('[data-steam-name]') : null;
+        const steamProgressEl = card ? card.querySelector('[data-steam-progress]') : null;
+        const tagsEl = card ? card.querySelector('.tags') : null;
+        const priceEl = card ? card.querySelector('.price') : null;
+        const footerRightEl = card ? card.querySelector('.footer-right') : null;
+
+        targetEl.classList.add('steam-loading');
+        targetEl.innerHTML = '<span class="steam-note">加载中...</span>';
+        if (steamProgressEl) {
+            steamProgressEl.classList.add('steam-loading');
+            steamProgressEl.innerHTML = '';
+            steamProgressEl.style.display = '';
+        }
+
+        const data = await fetchSteamGameInfo(appid);
+        if (data.error) {
+            targetEl.classList.remove('steam-loading');
+            targetEl.classList.add('steam-error');
+            targetEl.innerHTML = `<span class="steam-note">${data.error}</span>`;
+            if (steamProgressEl) {
+                steamProgressEl.classList.remove('steam-loading');
+                steamProgressEl.classList.add('steam-error');
+                steamProgressEl.innerHTML = `<span class="steam-note">${data.error}</span>`;
+            }
+            return;
+        }
+
+        const storeName = data.store?.name || item.title;
+        const playtimeForever = data.owned ? formatSteamHours(data.owned.playtime_forever) : null;
+        const achievements = Array.isArray(data.achievements?.achievements) ? data.achievements.achievements : [];
+        const unlocked = achievements.length > 0
+            ? achievements.filter((achievement) => Number(achievement.achieved) === 1).length
+            : null;
+        const isAllComplete = unlocked !== null && achievements.length > 0 && unlocked === achievements.length;
+
+        if (steamNameEl) {
+            steamNameEl.textContent = storeName;
+            steamNameEl.classList.remove('steam-loading');
+        }
+
+        const metaParts = [];
+        const metaLineParts = [];
+        if (playtimeForever !== null) {
+            metaLineParts.push(`<span class="steam-pill">总时长 ${playtimeForever}</span>`);
+        }
+        if (unlocked !== null) {
+            metaLineParts.push(`<span class="steam-pill">成就 ${unlocked}/${achievements.length}</span>`);
+        }
+        if (metaLineParts.length) {
+            metaParts.unshift(`<div class="steam-meta-line">${metaLineParts.join('')}</div>`);
+        }
+        if (data.note) {
+            metaParts.push(`<span class="steam-note">${data.note}</span>`);
+        }
+
+        targetEl.classList.remove('steam-loading');
+        targetEl.innerHTML = metaParts.join('');
+
+        if (steamProgressEl) {
+            steamProgressEl.classList.remove('steam-loading', 'steam-error');
+            const progress = (unlocked !== null && achievements.length > 0)
+                ? Math.max(0, Math.min(100, (unlocked / achievements.length) * 100))
+                : 0;
+            steamProgressEl.innerHTML = unlocked !== null
+                ? `
+                    <div class="steam-achievement-block${isAllComplete ? ' steam-achievement-block--complete' : ''}">
+                        <div class="steam-achievement-bar${isAllComplete ? ' steam-achievement-bar--complete' : ''}" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progress)}">
+                            <div class="steam-achievement-fill${isAllComplete ? ' steam-achievement-fill--complete' : ''}" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                `
+                : '';
+
+            if (unlocked === null) {
+                steamProgressEl.style.display = 'none';
+                if (newsItem) {
+                    newsItem.classList.add('steam-no-achievements');
+                }
+                if (footerRightEl) {
+                    footerRightEl.style.flexWrap = 'nowrap';
+                    footerRightEl.style.alignItems = 'center';
+                    footerRightEl.style.justifyContent = 'flex-end';
+                }
+                if (priceEl && footerRightEl && priceEl.parentElement !== footerRightEl) {
+                    priceEl.style.display = 'inline-flex';
+                    priceEl.style.marginTop = '0';
+                    priceEl.style.marginLeft = 'auto';
+                    priceEl.style.alignSelf = 'center';
+                    footerRightEl.appendChild(priceEl);
+                }
+            } else {
+                steamProgressEl.style.display = '';
+                if (newsItem) {
+                    newsItem.classList.remove('steam-no-achievements');
+                }
+                if (footerRightEl) {
+                    footerRightEl.style.flexWrap = '';
+                    footerRightEl.style.alignItems = '';
+                    footerRightEl.style.justifyContent = '';
+                }
+                if (priceEl && priceEl.parentElement === footerRightEl) {
+                    priceEl.style.display = '';
+                    priceEl.style.marginTop = '';
+                    priceEl.style.marginLeft = '';
+                    priceEl.style.alignSelf = '';
+                    card.appendChild(priceEl);
+                }
+            }
+        }
+
+        if (tagsEl) {
+            if (isAllComplete) {
+                if (!item.tags.includes('全成就')) {
+                    item.tags.push('全成就');
+                    renderTagStatistics(calculateTagCounts(allPosts));
+                }
+            } else {
+                const existingIndex = item.tags.indexOf('全成就');
+                if (existingIndex !== -1) {
+                    item.tags.splice(existingIndex, 1);
+                    renderTagStatistics(calculateTagCounts(allPosts));
+                }
+            }
+        }
+    }
 
     /**
      * 主初始化函数
@@ -64,8 +264,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // menuToggleBtn.addEventListener('click', toggleSidebar);
             // --- 结束移除 ---
 
-            // 2. 存储并按日期降序排序文章数据（最新文章在前）
-            allPosts = postsData.sort((a, b) => new Date(b.date.replace(/\//g, '-')) - new Date(a.date.replace(/\//g, '-')));
+            // 2. 存储、补充 Steam 标签，并按日期降序排序文章数据（最新文章在前）
+            allPosts = postsData
+                .map(augmentPost)
+                .sort((a, b) => new Date(b.date.replace(/\//g, '-')) - new Date(a.date.replace(/\//g, '-')));
             currentFilteredPosts = allPosts; // 初始时，当前过滤的文章就是所有文章
 
             // 3. 计算并渲染标签统计信息（例如每个标签的文章数量）
@@ -78,6 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bindNavLinks(); // 绑定主导航链接点击事件
             bindTagLinks(); // 绑定标签链接点击事件
             bindScrollEvent(); // 绑定滚动事件监听器
+            updateSidebarVisibility(); // 初始化时根据窗口宽度决定边栏显示状态
+            window.addEventListener('resize', updateSidebarVisibility);
 
         } catch (err) {
             // 如果初始化过程中发生错误，显示错误信息
@@ -130,6 +334,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
             const tagsHTML = item.tags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
+            const steamAppId = item.steamAppId || resolveSteamAppId(item);
+            const steamMetaHTML = steamAppId
+                ? `<div class="steam-meta steam-loading" data-steam-appid="${steamAppId}"><span class="steam-note">加载中...</span></div>`
+                : "";
+            const steamNameHTML = steamAppId
+                ? `<div class="steam-name steam-loading" data-steam-name>Steam 加载中...</div>`
+                : "";
+            const steamProgressHTML = steamAppId
+                ? `<div class="steam-progress steam-loading" data-steam-progress></div>`
+                : "";
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'news-item';
@@ -137,17 +351,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
                 <div class="news-right">
                     <h3 class="news-title">${item.title}</h3>
+                    ${steamNameHTML}
                     <p class="news-time">${item.date}</p>
                     <div class="content-wrapper">
                         <div class="content">${renderedContent}</div>
                     </div>
                     <div class="tags-price-line">
                         <div class="tags">${tagsHTML}</div>
-                        ${priceHTML}
+                        <div class="footer-right">
+                            ${steamMetaHTML}
+                        </div>
                     </div>
+                    ${steamProgressHTML}
+                    ${priceHTML}
                 </div>
             `;
             mainContent.appendChild(itemDiv);
+
+            if (steamAppId) {
+                const steamMeta = itemDiv.querySelector('.steam-meta');
+                hydrateSteamMeta(steamMeta, item);
+            }
 
             // 检查并折叠内容
             const contentDiv = itemDiv.querySelector('.content');
@@ -194,6 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTagStatistics(tagCounts) {
         const container = document.getElementById('tag-stats-container'); // 获取标签统计容器
         if (!container) return; // 如果容器不存在，则退出
+        const activeTagName = activeTagLink ? activeTagLink.getAttribute('data-tag') : null;
 
         // 将标签按其计数降序排序
         const sortedTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
@@ -214,6 +439,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 0); // 初始总和为0
         // 将标签列表和总价格注入到容器中
         container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul><div class="total-price">¥${totalPrice.toFixed(2)}</div>`;
+        if (activeTagName) {
+            const activeLink = container.querySelector(`a[data-tag="${CSS.escape(activeTagName)}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                activeTagLink = activeLink;
+            }
+        }
     }
 
     /**
@@ -296,6 +528,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMorePosts(); // 如果接近底部，加载更多文章
             }
         });
+    }
+
+    /**
+     * 根据窗口宽度控制侧边栏显示状态
+     * 在桌面端，当可用空间不足以容纳主内容时自动隐藏侧边栏。
+     */
+    function updateSidebarVisibility() {
+        if (!sidebar) return;
+
+        const shouldHideSidebar = window.innerWidth > MOBILE_BREAKPOINT && window.innerWidth < SIDEBAR_HIDE_AT;
+        document.body.classList.toggle('sidebar-hidden', shouldHideSidebar);
     }
 
     /**

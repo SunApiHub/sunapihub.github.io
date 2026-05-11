@@ -13,6 +13,12 @@
     --price-color: #f76c6c;         /* 价格颜色 */
     --tag-color-default: #ddd;      /* 默认标签背景色 */
     --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
+    --sidebar-width: 220px;
+    --sidebar-left: 16px;
+    --sidebar-top: 16px;
+    --sidebar-gap: 20px;
+    --layout-padding: 20px;
+    --content-max-width: 900px;
 }
 
 /* 暗色模式下的变量重写 */
@@ -56,21 +62,29 @@ body {
     line-height: 1.8;
     background-color: var(--bg-color);
     color: var(--text-color);
+    overflow-x: hidden;
     /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
 }
 
 .container {
-    /* 这个 .container 在侧边栏固定定位后可能不再需要 display: flex;，
-       但保留它不会影响当前方案，如果你将来需要它来包裹其他 flex 元素可以保留。*/
-    /* display: flex; */
+    box-sizing: border-box;
+    min-height: 100vh;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: var(--layout-padding) var(--layout-padding) var(--layout-padding)
+        calc(var(--sidebar-left) + var(--sidebar-width) + var(--sidebar-gap));
+}
+
+body.sidebar-hidden .container {
+    padding-left: var(--layout-padding);
 }
 
 /* =======================
    侧边栏样式 (#sidebar)
    ======================= */
 #sidebar {
-    width: 220px;
+    width: var(--sidebar-width);
     padding: 20px;
     /* 侧边栏改为固定定位后，margin 属性将不再用于定位其与主内容的关系，故设为0 */
     margin: 0;
@@ -79,9 +93,9 @@ body {
     border-radius: 12px;
     /* 关键更改：将 position 从 sticky 改为 fixed */
     position: fixed; /* 固定定位，脱离文档流 */
-    top: 16px;
-    left: 16px; /* 确保侧边栏距离左侧有 16px 边距 */
-    height: calc(100vh - 32px); /* 高度为视口高度减去上下边距 */
+    top: var(--sidebar-top);
+    left: var(--sidebar-left); /* 确保侧边栏距离左侧有 16px 边距 */
+    height: calc(100vh - (var(--sidebar-top) * 2)); /* 高度为视口高度减去上下边距 */
     overflow-y: auto;
     /* 初始状态可见 */
     opacity: 1;
@@ -132,19 +146,10 @@ nav a:hover {
    ======================= */
 #main-content {
     /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
-    padding: 20px; /* 内边距为20px */
+    padding: 0; /* 内边距由 container 统一控制 */
     box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
-    max-width: 900px; /* 最大宽度为900px */
-
-    /* 核心更改：实现内容在侧边栏右侧居中 */
-    /* 计算主内容区左侧的偏移量：侧边栏宽度(220px) + 侧边栏左边距(16px) + 侧边栏与主内容之间的间距(20px) */
-    /* margin-left: calc(220px + 16px + 20px);*/
-    /* 左右自动边距将使内容在上述 margin-left 之后，剩余的视口空间内居中 */
-    /* margin-right: auto;*/
+    max-width: var(--content-max-width); /* 最大宽度为900px */
     margin: 0 auto;
-   
-    transition: margin-left 0.3s ease-in-out; /* 平滑过渡 */
-    /* 确保即使内容宽度小于 max-width，也能正确居中 */
     width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
 }
 
@@ -181,6 +186,7 @@ nav a:hover {
     flex: 1; /* 右侧内容占据剩余空间 */
     display: flex; /* 使用弹性布局 */
     flex-direction: column; /* 子元素垂直排列 */
+    min-height: 100%;
 }
 
 .news-title {
@@ -195,7 +201,7 @@ nav a:hover {
     font-size: 14px; /* 这里定义了新闻内容的字体大小 */
     line-height: 1.8; /* 行高为1.8 */
     white-space: pre-line; /* 保留换行符 */
-    flex-grow: 1; /* 让内容占据多余空间 */
+    flex-grow: 0; /* 由底部信息行负责撑开剩余空间 */
 }
 
 .news-item .content img { /*文章内图片 */
@@ -207,8 +213,10 @@ nav a:hover {
 
 .tags-price-line {
     display: flex; /* 使用弹性布局 */
-    justify-content: space-between; /* 子元素两端对齐 */
-    align-items: flex-end; /* 垂直底部对齐 */
+    justify-content: space-between; /* 左右分离 */
+    align-items: flex-start; /* 让右侧 Steam 行和左侧标签从顶部对齐 */
+    gap: 16px;
+    margin-top: auto; /* 把这一行推到卡片底部 */
     margin-bottom: 6px; /* 下边距为5px */
 }
 
@@ -218,11 +226,21 @@ nav a:hover {
     gap: 8px; /* 子元素之间的间距为8px */
 }
 
+.footer-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-left: auto;
+}
+
 .tag {
     display: inline-block; /* 以行内块的形式显示 */
     padding: 4px 12px; /* 内边距为4px上下，12px左右 */
     border-radius: 20px; /* 边框圆角为20px */
     font-size: 11px; /* 字体大小为13px */
+    line-height: 1; /* 避免标签文字撑高整行 */
     color: var(--nav-text); /* 文字颜色由变量决定 */
     background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
 }
@@ -242,65 +260,197 @@ nav a:hover {
 .price {
     font-weight: bold;
     font-size: 24px;
+    line-height: 1; /* 让金额和标签的垂直节奏一致 */
     white-space: nowrap;
+    display: block;
+    text-align: right;
+    margin-top: 8px;
 }
 
-/* --- 响应式设计：当屏幕宽度小于或等于 1200px 时 --- */
-@media (max-width: 1250px) {
-    #sidebar {
-        /* 在小屏幕上默认隐藏侧边栏 */
-        width: 0;           /* 宽度直接变为0 */
-        padding: 0;         /* 内边距直接变为0 */
-        opacity: 0;         /* 完全透明 */
-        visibility: hidden; /* 不可见，不响应事件 */
-        transform: translateX(-100%); /* 确保在屏幕外 */
-        box-shadow: none;   /* 隐藏阴影 */
+.steam-name {
+    margin: 4px 0 2px;
+    color: var(--title-color);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    line-height: 1.05;
+}
 
-        position: fixed; /* 确保它可以在屏幕外 */
-        top: 0; /* 从屏幕顶部开始 */
-        left: 0; /* 确保它在屏幕左侧 */
+.steam-loading.steam-name {
+    opacity: 0.6;
+}
+
+.steam-meta {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-color);
+    text-align: right;
+    width: auto;
+}
+
+.steam-loading {
+    opacity: 0.85;
+}
+
+.steam-pill,
+.steam-note {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    line-height: 1.2;
+}
+
+.steam-game,
+.steam-pill {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.steam-game-name {
+    font-size: 12px;
+    color: var(--text-color);
+    margin-bottom: 6px;
+}
+
+.steam-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+}
+
+.steam-progress {
+    margin-top: 14px;
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.steam-progress.steam-loading {
+    min-height: 8px;
+}
+
+.steam-achievement-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(107, 115, 128, 0.16);
+}
+
+.steam-achievement-bar--complete {
+    background: rgba(191, 155, 48, 0.2);
+}
+
+.steam-achievement-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #9aa3af;
+}
+
+.steam-achievement-fill--complete {
+    background: linear-gradient(90deg, #d4af37, #f1d77a);
+}
+
+.steam-note {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    background: none;
+    color: #888;
+}
+
+.steam-error .steam-note {
+    color: #c66;
+}
+
+.tag-全成就,
+.tag-auto-complete {
+    background: linear-gradient(180deg, #d4af37, #b8871f);
+    color: #1f1603;
+}
+
+@media (prefers-color-scheme: dark) {
+    .steam-game-name {
+        color: var(--title-color);
+    }
+
+    .steam-pill {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .steam-achievement-bar {
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+    .steam-achievement-bar--complete {
+        background: rgba(214, 184, 80, 0.22);
+    }
+
+    .steam-achievement-fill {
+        background: #d4d9e0;
+    }
+
+    .steam-achievement-fill--complete {
+        background: linear-gradient(90deg, #dcb84b, #f4de92);
+    }
+
+    .tag-全成就,
+    .tag-auto-complete {
+        background: linear-gradient(180deg, #d7b64f, #b28a2d);
+        color: #1f1603;
+    }
+}
+
+.tag-Steam {
+    background-color: #1b2838;
+    color: #fff;
+}
+
+body.sidebar-hidden #sidebar {
+    display: none;
+}
+
+body.sidebar-hidden #main-content {
+    margin: 0 auto;
+}
+
+/* --- 响应式设计：移动端布局 --- */
+@media (max-width: 900px) {
+    .container {
+        padding: var(--layout-padding);
+    }
+
+    #sidebar {
+        width: 0;            /* 宽度直接变为0 */
+        padding: 0;          /* 内边距直接变为0 */
+        opacity: 0;          /* 完全透明 */
+        visibility: hidden;  /* 不可见，不响应事件 */
+        transform: translateX(-100%); /* 确保在屏幕外 */
+        box-shadow: none;    /* 隐藏阴影 */
+
+        position: fixed;     /* 确保它可以在屏幕外 */
+        top: 0;              /* 从屏幕顶部开始 */
+        left: 0;             /* 确保它在屏幕左侧 */
         height: 100vh; /* 占满整个视口高度 */
         margin: 0; /* 移除桌面端的 margin */
         border-radius: 0; /* 移除桌面端的圆角 */
-
-        /* 关键修改：显示和隐藏都不要动画，所以这里直接设置为 none */
-        transition: none;
-    }
-
-    /* 当侧边栏在小屏幕上处于打开状态时 */
-    #sidebar.open {
-        /* 恢复正常值，但也不要有动画 */
-        width: 220px;
-        padding: 20px;
-        opacity: 1;
-        visibility: visible;
-        transform: translateX(0); /* 移回屏幕内 */
-        box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* 显示阴影 */
-
-        /* 关键修改：打开时也设置为 none，确保没有动画 */
-        transition: none;
     }
 
     #main-content {
-        margin-left: auto; /* 移除左边距，并使内容居中 */
-        margin-right: auto;
-        max-width: 900px; /* 保持最大宽度不变 */
         padding: 20px; /* 保持原内边距 */
+        max-width: none;
+        margin: 0;
     }
 
     body.sidebar-open {
         overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
-    }
-}
-
-@media (max-width: 900px) {
-    #main-content {
-        max-width: none; /* 移除最大宽度限制，让内容适应手机屏幕宽度 */
-        padding: 20px; /* 调整内边距，手机上通常可以小一些 */
-        margin-left: 0; /* 确保没有左边距，占满整个宽度 */
-        margin-right: 0;
-        font-size: 1em; /* 调整正文字体大小 */
-        line-height: 1.6; /* 增加行高，提高可读性 */
     }
 
     /* 手机端文章模块的垂直排列 */
@@ -325,6 +475,10 @@ nav a:hover {
         margin-bottom: 5px; /* 调整标题下边距 */
     }
 
+    .steam-meta {
+        align-items: flex-end;
+    }
+
     /* 调整内容区字体大小 */
     .news-item .content {
         font-size: 0.8em; /* 确保内容字体大小增大，可以根据实际效果调整 */
@@ -340,12 +494,52 @@ nav a:hover {
     }
     /* 标签和价格行在小屏幕上的调整 */
     .tags-price-line {
-        flex-direction: column; /* 标签和价格垂直排列 */
-        align-items: flex-start; /* 左对齐 */
-        margin-top: 10px; /* 调整上边距 */
+        flex-direction: row; /* 紧凑页面保持同一行 */
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
     }
     .tags {
-        margin-bottom: 10px; /* 标签和价格之间的间距 */
+        margin-bottom: 0;
+        flex-wrap: wrap;
+    }
+    .footer-right {
+        margin-left: 0;
+        justify-content: flex-start;
+        width: auto;
+    }
+    .steam-meta {
+        align-items: flex-start;
+        text-align: left;
+    }
+    .steam-meta-line {
+        justify-content: flex-start;
+    }
+    .steam-progress {
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+    .steam-no-achievements .tags-price-line {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+    .steam-no-achievements .footer-right {
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(107, 115, 128, 0.25);
+        justify-content: flex-end;
+    }
+    .steam-no-achievements .price {
+        margin-top: 0;
+    }
+    .price {
+        display: block;
+        text-align: right;
+        margin-top: 8px;
     }
     .price {
         font-size: 1.0em; /* 价格字体适当增大 */
