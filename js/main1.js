@@ -163,11 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `
                     <div class="steam-achievement-block${isAllComplete ? ' steam-achievement-block--complete' : ''}">
                         <div class="steam-achievement-bar${isAllComplete ? ' steam-achievement-bar--complete' : ''}" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progress)}">
-                            <div class="steam-achievement-fill${isAllComplete ? ' steam-achievement-fill--complete' : ''}" style="width: ${progress}%"></div>
+                            <div class="steam-achievement-fill${isAllComplete ? ' steam-achievement-fill--complete' : ''}" data-target-width="${progress}"></div>
                         </div>
                     </div>
                 `
                 : '';
+
+            if (unlocked !== null) {
+                const fillEl = steamProgressEl.querySelector('.steam-achievement-fill');
+                if (fillEl) {
+                    fillEl.style.width = '0%';
+                    requestAnimationFrame(() => {
+                        fillEl.style.width = `${progress}%`;
+                    });
+                }
+            }
 
             if (unlocked === null) {
                 steamProgressEl.style.display = 'none';
