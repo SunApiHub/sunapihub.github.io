@@ -83,6 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    function getDisplayTags(item) {
+        const tags = Array.isArray(item.tags) ? [...item.tags] : [];
+        const steamIndex = tags.indexOf('Steam');
+        if (steamIndex > 0) {
+            tags.splice(steamIndex, 1);
+            tags.unshift('Steam');
+        }
+        return tags;
+    }
+
     function fetchSteamGameInfo(appid) {
         if (steamCache.has(appid)) {
             return steamCache.get(appid);
@@ -456,7 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 渲染这一批文章
         postsBatch.forEach(item => {
             const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
-            const tagsHTML = item.tags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
+            const displayTags = getDisplayTags(item);
+            const tagsHTML = displayTags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
             const steamAppId = item.steamAppId || resolveSteamAppId(item);
             const steamMetaHTML = steamAppId
