@@ -657,10 +657,11 @@ body.sidebar-hidden #main-content {
     margin: 20px auto;
 }
 /* 价格总和样式 */
-.total-price {
+.total-price,
+.sidebar-total-time-box {
     margin-top: 20px;
-    padding: 10px;
-    border: 2px solid var(--news-border-color);
+    padding: 8px 10px;
+    border: 1px solid var(--news-border-color);
     border-radius: 8px;
     font-size: 20px;
     text-align: center;
@@ -675,9 +676,73 @@ body.sidebar-hidden #main-content {
     color: var(--nav-active-text);
 }
 
+.total-price {
+    border-color: rgba(212, 175, 55, 0.75);
+    color: #d4af37;
+}
+
+.sidebar-total-time-box {
+    cursor: default;
+    border-color: rgba(122, 129, 136, 0.75);
+    color: #7a8188;
+}
+
+.sidebar-total-time-box:hover {
+    background-color: transparent;
+    color: inherit;
+}
+
 .total-price span {
     display: inline-block;
     animation: roll-up 1s ease-out forwards;
+}
+
+.sidebar-total-time-group {
+    margin-top: 8px;
+}
+
+.sidebar-total-caption {
+    margin-top: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #7a8188;
+    line-height: 1.2;
+    text-align: left;
+    width: 100%;
+}
+
+.sidebar-total-time-box {
+    margin-top: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    font-weight: 400;
+    color: #7a8188;
+}
+
+.sidebar-total-time-box span {
+    color: #7a8188;
+    font-weight: 400;
+}
+
+.sidebar-total-time-box span[data-steam-recent-time-value],
+.sidebar-total-time-box span[data-steam-total-time-value] {
+    font-weight: 300;
+    letter-spacing: 0;
+}
+
+.sidebar-time-icon {
+    font-size: 0.95em;
+    line-height: 1;
+    flex: 0 0 auto;
+    color: #7a8188;
+}
+
+.total-price[data-total-price] .sidebar-time-icon {
+    color: #d4af37;
 }
 
 /* 链接样式 */
