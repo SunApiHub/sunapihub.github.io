@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
         'MGS1终于降价了': '2131630',
         'MGS1': '2131630'
     };
+    let steamTotalsCache = {
+        loading: false,
+        totalMinutes: null,
+        recentMinutes: null,
+        error: null
+    };
+    let steamTotalsPromise = null;
 
     // --- 新增常量：定义内容折叠的阈值高度 ---
     const MAX_CONTENT_HEIGHT = 140; // 例如，140px，当内容高度超过此值时将折叠
@@ -57,6 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return hours >= 10 ? `${hours.toFixed(1)}h` : `${hours.toFixed(2)}h`;
     }
 
+    function getSteamAppIds(posts = allPosts) {
+        return [...new Set(posts.map(resolveSteamAppId).filter(Boolean))];
+    }
+
     function augmentPost(item) {
         const steamAppId = resolveSteamAppId(item);
         const tags = Array.isArray(item.tags) ? [...item.tags] : [];
@@ -88,6 +99,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
         steamCache.set(appid, request);
         return request;
+    }
+
+    function renderSteamTotals(container = document.getElementById('tag-stats-container')) {
+        if (!container) return;
+
+        const totalTimeValue = container.querySelector('[data-steam-total-time-value]');
+        const recentTimeValue = container.querySelector('[data-steam-recent-time-value]');
+        const totalTimeBox = container.querySelector('[data-steam-total-time-box]');
+        const recentTimeBox = container.querySelector('[data-steam-recent-time-box]');
+
+        if (totalTimeValue) {
+            totalTimeValue.textContent = steamTotalsCache.loading
+                ? '-'
+                : steamTotalsCache.error
+                    ? '读取失败'
+                    : `${formatSteamHours(steamTotalsCache.totalMinutes)}`
+        }
+
+        if (recentTimeValue) {
+            recentTimeValue.textContent = steamTotalsCache.loading
+                ? '-'
+                : steamTotalsCache.error
+                    ? '读取失败'
+                    : `${formatSteamHours(steamTotalsCache.recentMinutes)}`
+        }
+
+        if (totalTimeBox) {
+            totalTimeBox.classList.toggle('is-loading', steamTotalsCache.loading);
+            totalTimeBox.classList.toggle('is-error', !!steamTotalsCache.error);
+        }
+
+        if (recentTimeBox) {
+            recentTimeBox.classList.toggle('is-loading', steamTotalsCache.loading);
+            recentTimeBox.classList.toggle('is-error', !!steamTotalsCache.error);
+        }
+    }
+
+    async function refreshSteamTotals() {
+        if (steamTotalsPromise) {
+            return steamTotalsPromise;
+        }
+
+        const appids = getSteamAppIds();
+        if (!appids.length) {
+            steamTotalsCache = {
+                loading: false,
+                totalMinutes: 0,
+                recentMinutes: 0,
+                error: null
+            };
+            renderSteamTotals();
+            return steamTotalsCache;
+        }
+
+        steamTotalsCache = {
+            loading: true,
+            totalMinutes: null,
+            recentMinutes: null,
+            error: null
+        };
+        renderSteamTotals();
+
+        steamTotalsPromise = (async () => {
+            try {
+                const results = await Promise.all(appids.map(async (appid) => {
+                    const data = await fetchSteamGameInfo(appid);
+                    if (data.error) return null;
+                    const owned = data.owned || null;
+                    return {
+                        total: Number(owned?.playtime_forever) || 0,
+                        recent: Number(owned?.playtime_2weeks) || 0
+                    };
+                }));
+
+                const totals = results.reduce((acc, item) => {
+                    if (!item) return acc;
+                    acc.total += item.total;
+                    acc.recent += item.recent;
+                    return acc;
+                }, { total: 0, recent: 0 });
+
+                steamTotalsCache = {
+                    loading: false,
+                    totalMinutes: totals.total,
+                    recentMinutes: totals.recent,
+                    error: null
+                };
+            } catch (error) {
+                steamTotalsCache = {
+                    loading: false,
+                    totalMinutes: null,
+                    recentMinutes: null,
+                    error: error?.message || String(error)
+                };
+            } finally {
+                steamTotalsPromise = null;
+                renderSteamTotals();
+            }
+
+            return steamTotalsCache;
+        })();
+
+        return steamTotalsPromise;
     }
 
     async function hydrateSteamMeta(targetEl, item) {
@@ -448,7 +562,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return !isNaN(price) ? sum + price : sum; // 如果是有效数字则累加，否则跳过
         }, 0); // 初始总和为0
         // 将标签列表和总价格注入到容器中
-        container.innerHTML = `<h4>标签统计</h4><ul>${listHtml}</ul><div class="total-price">¥${totalPrice.toFixed(2)}</div>`;
+        container.innerHTML = `
+            <h4>标签统计</h4>
+            <ul>${listHtml}</ul>
+            <div class="total-price" data-total-price>¥${totalPrice.toFixed(2)}</div>
+            <div class="sidebar-total-time-group">
+                <div class="sidebar-total-caption">近两周</div>
+                <div class="total-price sidebar-total-time-box" data-steam-recent-time-box>
+                    <span class="sidebar-time-icon">⏱</span>
+                    <span data-steam-recent-time-value>-</span>
+                </div>
+                <div class="sidebar-total-caption">总时间</div>
+                <div class="total-price sidebar-total-time-box" data-steam-total-time-box>
+                    <span class="sidebar-time-icon">⏱</span>
+                    <span data-steam-total-time-value>-</span>
+                </div>
+            </div>
+        `;
+        renderSteamTotals(container);
+        refreshSteamTotals();
         if (activeTagName) {
             const activeLink = container.querySelector(`a[data-tag="${CSS.escape(activeTagName)}"]`);
             if (activeLink) {
@@ -494,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 为容器添加点击事件监听器，利用事件冒泡处理子元素的点击
         container.addEventListener('click', e => {
             const link = e.target.closest('a[data-tag]'); // 查找被点击元素最近的 data-tag 链接
-            const isTotalPrice = e.target.closest('.total-price'); // 检查是否点击了总价格区域
+            const isTotalPrice = e.target.closest('[data-total-price]'); // 检查是否点击了总价格区域
             if (link) {
                 e.preventDefault(); // 阻止链接的默认行为
                 const tag = link.getAttribute('data-tag'); // 获取点击的标签名
