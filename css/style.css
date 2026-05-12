@@ -352,10 +352,36 @@ nav a:hover {
     height: 100%;
     border-radius: 999px;
     background: #9aa3af;
+    width: 0%;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: width, background-position;
 }
 
 .steam-achievement-fill--complete {
-    background: linear-gradient(90deg, #d4af37, #f1d77a);
+    background: #c79f34;
+    position: relative;
+    overflow: hidden;
+}
+
+.steam-achievement-fill--complete::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 80%;
+    left: -90%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 248, 210, 0.14) 28%, rgba(255, 255, 255, 0.58) 50%, rgba(255, 248, 210, 0.14) 72%, rgba(255, 255, 255, 0) 100%);
+    transform: translateX(0);
+    animation: steam-gold-sheen 5.8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes steam-gold-sheen {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(280%);
+    }
 }
 
 .steam-note {
@@ -398,7 +424,21 @@ nav a:hover {
     }
 
     .steam-achievement-fill--complete {
-        background: linear-gradient(90deg, #dcb84b, #f4de92);
+        background: #c79f34;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .steam-achievement-fill--complete::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        width: 80%;
+        left: -90%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 251, 231, 0.12) 28%, rgba(255, 255, 255, 0.50) 50%, rgba(255, 251, 231, 0.12) 72%, rgba(255, 255, 255, 0) 100%);
+        transform: translateX(0);
+        animation: steam-gold-sheen 5.8s linear infinite;
+        pointer-events: none;
     }
 
     .tag-全成就,
