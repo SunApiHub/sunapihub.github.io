@@ -174,16 +174,20 @@ nav a:hover {
 
 .news-left {
     flex: 0 0 350px; /* 左侧图片区域固定宽度为380px */
-    align-self: stretch;
+    align-self: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
     border-radius: 8px;
     overflow: hidden;
+    background: var(--nav-bg);
 }
 .news-left img {
     display: block;
     width: 100%; /* 图片宽度占满容器 */
-    height: 100%; /* 图片高度占满容器 */
+    height: auto; /* 按原比例显示，不拉伸到整列高度 */
     object-fit: contain; /* 保持完整显示，不裁切左右边缘 */
-    object-position: center center;
+    object-position: left top;
     background: var(--nav-bg);
     border-radius: 8px;
 }
