@@ -163,6 +163,7 @@ nav a:hover {
 
 .news-item {
     display: flex; /* 使用弹性布局 */
+    align-items: stretch;
     gap: 20px; /* 子元素之间的间距为20px */
     border-radius: 12px; /* 边框圆角为12px */
     padding: 10px; /* 内边距为20px */
@@ -173,13 +174,18 @@ nav a:hover {
 
 .news-left {
     flex: 0 0 350px; /* 左侧图片区域固定宽度为380px */
-    height: 100%; /* 高度占满整个容器 */
+    align-self: stretch;
+    border-radius: 8px;
+    overflow: hidden;
 }
 .news-left img {
+    display: block;
     width: 100%; /* 图片宽度占满容器 */
     height: 100%; /* 图片高度占满容器 */
-    object-fit: cover; /* 让图片填满容器，可能裁剪 */
-    border-radius: 8px; /* 图片圆角为8px */
+    object-fit: contain; /* 保持完整显示，不裁切左右边缘 */
+    object-position: center center;
+    background: var(--nav-bg);
+    border-radius: 8px;
 }
 
 .news-right {
@@ -264,7 +270,8 @@ nav a:hover {
     white-space: nowrap;
     display: block;
     text-align: right;
-    margin-top: 8px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .steam-name {
@@ -505,8 +512,10 @@ body.sidebar-hidden #main-content {
         margin-bottom: 0; /* 间距由 gap 控制 */
     }
     .news-left img {
+        display: block;
         width: 70%; /* 图片在手机端占满宽度 */
         height: auto; /* 保持图片纵横比 */
+        border-radius: 8px;
     }
 
     /* 调整标题在小屏幕上的大小 */
@@ -579,7 +588,8 @@ body.sidebar-hidden #main-content {
     .price {
         display: block;
         text-align: right;
-        margin-top: 8px;
+        margin-top: 0;
+        margin-bottom: 0;
     }
     .price {
         font-size: 1.0em; /* 价格字体适当增大 */
