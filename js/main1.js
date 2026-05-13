@@ -22,10 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let steamTotalsPromise = null;
 
-    // --- 新增常量：定义内容折叠的阈值高度 ---
-    const MAX_CONTENT_HEIGHT = 140; // 例如，140px，当内容高度超过此值时将折叠
-    // --- 结束新增常量 ---
-
     // --- 侧边栏自动收起阈值 ---
     const SIDEBAR_WIDTH = 220;
     const SIDEBAR_LEFT = 16;
@@ -66,6 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getSteamAppIds(posts = allPosts) {
         return [...new Set(posts.map(resolveSteamAppId).filter(Boolean))];
+    }
+
+    function countRenderedLines(element) {
+        if (!element) return 0;
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const rects = Array.from(range.getClientRects()).filter(rect => rect.width > 0 && rect.height > 0);
+        if (!rects.length) return 0;
+
+        const lineTops = [];
+        const tolerance = 2;
+        rects.forEach(rect => {
+            const top = rect.top;
+            if (!lineTops.some(existingTop => Math.abs(existingTop - top) <= tolerance)) {
+                lineTops.push(top);
+            }
+        });
+        return lineTops.length;
     }
 
     function augmentPost(item) {
@@ -511,19 +525,25 @@ document.addEventListener('DOMContentLoaded', () => {
             // 检查并折叠内容
             const contentDiv = itemDiv.querySelector('.content');
             const contentWrapper = itemDiv.querySelector('.content-wrapper');
-            setTimeout(() => {
-                if (contentDiv.scrollHeight > MAX_CONTENT_HEIGHT) {
-                    contentWrapper.classList.add('collapsed');
-                    const toggleButton = document.createElement('button');
-                    toggleButton.className = 'toggle-content-button';
-                    toggleButton.innerHTML = '﹀'; // 初始显示向下箭头
-                    toggleButton.addEventListener('click', () => {
-                        contentWrapper.classList.toggle('collapsed');
-                        toggleButton.innerHTML = contentWrapper.classList.contains('collapsed') ? '﹀' : '︿';
-                    });
-                    contentWrapper.appendChild(toggleButton);
+            requestAnimationFrame(() => {
+                const renderedLines = countRenderedLines(contentDiv);
+
+                if (renderedLines <= 2) {
+                    contentWrapper.classList.remove('collapsed');
+                    return;
                 }
-            }, 0);
+
+                contentWrapper.classList.add('collapsed');
+
+                const toggleButton = document.createElement('button');
+                toggleButton.className = 'toggle-content-button';
+                toggleButton.innerHTML = '﹀'; // 初始显示向下箭头
+                toggleButton.addEventListener('click', () => {
+                    contentWrapper.classList.toggle('collapsed');
+                    toggleButton.innerHTML = contentWrapper.classList.contains('collapsed') ? '﹀' : '︿';
+                });
+                contentWrapper.appendChild(toggleButton);
+            });
         });
 
         currentLoadedCount += postsBatch.length; // 更新已加载文章数量
