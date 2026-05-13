@@ -566,6 +566,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return counts;
     }
 
+    function getTagSortGroup(tag) {
+        if (/[\u4e00-\u9fff]/.test(tag)) return 0; // 中文优先
+        if (/^[A-Za-z]/.test(tag)) return 1; // 英文第二
+        return 2; // 其它放最后
+    }
+
+    function compareTags(a, b) {
+        const groupDiff = getTagSortGroup(a) - getTagSortGroup(b);
+        if (groupDiff !== 0) return groupDiff;
+
+        const group = getTagSortGroup(a);
+        if (group === 0) {
+            return a.localeCompare(b, 'zh-Hans-u-co-pinyin', { sensitivity: 'base', numeric: true });
+        }
+        if (group === 1) {
+            return a.localeCompare(b, 'en', { sensitivity: 'base', numeric: true });
+        }
+        return a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });
+    }
+
     /**
      * 渲染标签统计信息到侧边栏
      * @param {Object} tagCounts - 包含标签计数的对象
@@ -575,8 +595,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return; // 如果容器不存在，则退出
         const activeTagName = activeTagLink ? activeTagLink.getAttribute('data-tag') : null;
 
-        // 将标签按其计数降序排序
-        const sortedTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+        // 将标签按“中文 -> 英文 -> 其它”分组，并在组内按字母/拼音排序
+        const sortedTags = Object.keys(tagCounts).sort(compareTags);
         // 生成标签列表的 HTML 字符串
         const listHtml = sortedTags.map(tag => `
             <li>
