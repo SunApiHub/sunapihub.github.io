@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const SIDEBAR_LEFT = 16;
     const SIDEBAR_GAP = 20;
     const CONTENT_MAX_WIDTH = 900;
-    const MOBILE_BREAKPOINT = 900;
     const SIDEBAR_HIDE_AT = SIDEBAR_LEFT + SIDEBAR_WIDTH + SIDEBAR_GAP + CONTENT_MAX_WIDTH + 40;
     // --- 结束阈值 ---
 
@@ -729,6 +728,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 将标签列表和总价格注入到容器中
         container.innerHTML = `
             <h4>标签统计</h4>
+            <ul class="tag-home-list">
+                <li>
+                    <a href="#" data-tag-home>
+                        <span>首页</span>
+                    </a>
+                </li>
+            </ul>
             <ul>${listHtml}</ul>
             <div class="total-price" data-total-price>¥${totalPrice.toFixed(2)}</div>
             <div class="sidebar-total-time-group">
@@ -746,6 +752,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         renderSteamTotals(container);
         refreshSteamTotals();
+        if (!activeTagName) {
+            const homeStatsLink = container.querySelector('a[data-tag-home]');
+            if (homeStatsLink) homeStatsLink.classList.add('active');
+        }
         if (activeTagName) {
             const activeLink = container.querySelector(`a[data-tag="${CSS.escape(activeTagName)}"]`);
             if (activeLink) {
@@ -791,8 +801,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // 为容器添加点击事件监听器，利用事件冒泡处理子元素的点击
         container.addEventListener('click', e => {
             const link = e.target.closest('a[data-tag]'); // 查找被点击元素最近的 data-tag 链接
+            const homeLink = e.target.closest('a[data-tag-home]');
             const isTotalPrice = e.target.closest('[data-total-price]'); // 检查是否点击了总价格区域
-            if (link) {
+            if (homeLink) {
+                e.preventDefault();
+                renderInitialPosts(allPosts);
+                clearAllActiveStates();
+                homeLink.classList.add('active');
+                activeTagLink = null;
+            } else if (link) {
                 e.preventDefault(); // 阻止链接的默认行为
                 const tag = link.getAttribute('data-tag'); // 获取点击的标签名
 
@@ -837,14 +854,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function isMobileBrowser() {
+        if (navigator.userAgentData && typeof navigator.userAgentData.mobile === 'boolean') {
+            return navigator.userAgentData.mobile;
+        }
+
+        return /Mobi|Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
     /**
-     * 根据窗口宽度控制侧边栏显示状态
-     * 在桌面端，当可用空间不足以容纳主内容时自动隐藏侧边栏。
+     * 手机浏览器使用手机排版；桌面端只根据可用宽度决定是否隐藏侧边栏。
      */
     function updateSidebarVisibility() {
         if (!sidebar) return;
 
-        const shouldHideSidebar = window.innerWidth > MOBILE_BREAKPOINT && window.innerWidth < SIDEBAR_HIDE_AT;
+        const isMobile = isMobileBrowser();
+        const shouldHideSidebar = isMobile || window.innerWidth < SIDEBAR_HIDE_AT;
+
+        document.body.classList.toggle('mobile-browser', isMobile);
+        document.body.classList.toggle('desktop-browser', !isMobile);
         document.body.classList.toggle('sidebar-hidden', shouldHideSidebar);
     }
 

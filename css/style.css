@@ -66,6 +66,11 @@ body {
     /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
 }
 
+body.desktop-browser {
+    min-width: calc(var(--content-max-width) + (var(--layout-padding) * 2));
+    overflow-x: auto;
+}
+
 .container {
     box-sizing: border-box;
     min-height: 100vh;
@@ -635,141 +640,189 @@ body.sidebar-hidden #main-content {
     margin: 0 auto;
 }
 
-/* --- 响应式设计：移动端布局 --- */
-@media (max-width: 900px) {
-    .container {
-        padding: var(--layout-padding);
-    }
+/* JS 精准识别到手机浏览器后，恢复手机端卡片排版。 */
+body.mobile-browser .container {
+    padding: var(--layout-padding);
+}
 
-    #sidebar {
-        width: 0;            /* 宽度直接变为0 */
-        padding: 0;          /* 内边距直接变为0 */
-        opacity: 0;          /* 完全透明 */
-        visibility: hidden;  /* 不可见，不响应事件 */
-        transform: translateX(-100%); /* 确保在屏幕外 */
-        box-shadow: none;    /* 隐藏阴影 */
+body.mobile-browser #main-content {
+    padding: 20px;
+    max-width: none;
+    margin: 0;
+}
 
-        position: fixed;     /* 确保它可以在屏幕外 */
-        top: 0;              /* 从屏幕顶部开始 */
-        left: 0;             /* 确保它在屏幕左侧 */
-        height: 100vh; /* 占满整个视口高度 */
-        margin: 0; /* 移除桌面端的 margin */
-        border-radius: 0; /* 移除桌面端的圆角 */
-    }
+body.mobile-browser.sidebar-open {
+    overflow: hidden;
+}
 
-    #main-content {
-        padding: 20px; /* 保持原内边距 */
-        max-width: none;
-        margin: 0;
-    }
+body.mobile-browser .news-item {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 40px;
+}
 
-    body.sidebar-open {
-        overflow: hidden; /* 防止主页面在侧边栏打开时滚动 */
-    }
+body.mobile-browser .news-left {
+    flex-basis: auto;
+    width: 100%;
+    margin-bottom: 0;
+}
 
-    /* 手机端文章模块的垂直排列 */
-    .news-item {
-        flex-direction: column; /* 在移动端将图文垂直排列 */
-        gap: 15px; /* 调整间距 */
-        padding: 15px; /* 调整内边距 */
-    }
-    .news-left {
-        flex-basis: auto; /* 取消固定宽度 */
-        width: 100%; /* 图片容器宽度占满 */
-        margin-bottom: 0; /* 间距由 gap 控制 */
-    }
-    .news-left img {
-        display: block;
-        width: 70%; /* 图片在手机端占满宽度 */
-        height: auto; /* 保持图片纵横比 */
-        border-radius: 8px;
-    }
+body.mobile-browser .news-left img {
+    display: block;
+    width: 70%;
+    height: auto;
+    border-radius: 8px;
+}
 
-    /* 调整标题在小屏幕上的大小 */
-    .news-item .news-title {
-        font-size: 1.2em; /* 手机端标题字体稍微大一些 */
-        margin-bottom: 5px; /* 调整标题下边距 */
-    }
+body.mobile-browser .music-artwork {
+    width: 70%;
+    aspect-ratio: auto;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-    .steam-meta {
-        align-items: flex-end;
-    }
+body.mobile-browser .news-item.music-playing .music-artwork {
+    width: 70%;
+}
 
-    /* 调整内容区字体大小 */
-    .news-item .content {
-        font-size: 0.8em; /* 确保内容字体大小增大，可以根据实际效果调整 */
-        line-height: 1.7; /* 适当调整行高 */
-    }
+body.mobile-browser .news-left .music-cover-base {
+    width: 100%;
+    height: auto;
+}
 
-    /* 调整时间字体大小 */
-    .news-time {
-        font-size: 0.7em;
-    }
-    .tag {
-        font-size: 0.7em; /* 在小屏幕上将标签字体大小调整为0.7em */
-    }
-    /* 标签和价格行在小屏幕上的调整 */
-    .tags-price-line {
-        flex-direction: row; /* 紧凑页面保持同一行 */
-        align-items: center;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 10px;
-    }
-    .tags {
-        margin-bottom: 0;
-        flex-wrap: wrap;
-    }
-    .footer-right {
-        margin-left: 0;
-        justify-content: flex-start;
-        width: auto;
-    }
-    .steam-meta {
-        align-items: flex-start;
-        text-align: left;
-    }
-    .steam-meta-line {
-        justify-content: flex-start;
-    }
-    .steam-progress {
-        margin-top: 12px;
-        margin-bottom: 10px;
-    }
-    .steam-no-achievements .tags-price-line {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-    }
-    .steam-no-achievements .footer-right {
-        width: 100%;
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(107, 115, 128, 0.25);
-        justify-content: flex-end;
-    }
-    .steam-no-achievements .price {
-        margin-top: 0;
-    }
-    .price {
-        display: block;
-        text-align: right;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    .price {
-        font-size: 1.0em; /* 价格字体适当增大 */
-    }
+body.mobile-browser .music-disc {
+    width: auto;
+    height: calc((100% - 20px) * 0.8);
+    max-width: calc((100% - 20px) * 0.8);
+    padding: 15px;
+}
 
-    /* 标签统计容器的调整 */
-    #tag-stats-container {
-        padding: 0 10px; /* 保持 */
-    }
+body.mobile-browser .music-disc::before {
+    inset: -15px;
+    border-width: 6px;
+}
 
-    /* 标签统计列表项字体大小 */
-    #tag-stats-container a {
-        font-size: 1.1em; /* 标签统计列表项字体增大 */
+body.mobile-browser .news-left .music-disc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+body.mobile-browser .music-toggle {
+    width: 112px;
+    height: 112px;
+    right: 10px;
+    bottom: 0;
+    font-size: 64px;
+}
+
+body.mobile-browser .music-toggle-icon {
+    font-size: 52px;
+}
+
+body.mobile-browser .news-item .news-title {
+    font-size: 3.6em;
+    margin-bottom: 5px;
+}
+
+body.mobile-browser .news-item .content {
+    font-size: 2.4em;
+    line-height: 1.7;
+}
+
+body.mobile-browser .news-time {
+    font-size: 2.1em;
+}
+
+body.mobile-browser .tag {
+    font-size: 2.1em;
+}
+
+body.mobile-browser .tags-price-line {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+body.mobile-browser .tags {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+body.mobile-browser .footer-right {
+    margin-left: 0;
+    justify-content: flex-start;
+    width: auto;
+}
+
+body.mobile-browser .steam-meta {
+    align-items: flex-start;
+    text-align: left;
+}
+
+body.mobile-browser .steam-meta-line {
+    justify-content: flex-start;
+}
+
+body.mobile-browser .steam-progress {
+    margin-top: 12px;
+    margin-bottom: 10px;
+}
+
+body.mobile-browser .steam-no-achievements .tags-price-line {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+}
+
+body.mobile-browser .steam-no-achievements .footer-right {
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(107, 115, 128, 0.25);
+    justify-content: flex-end;
+}
+
+body.mobile-browser .steam-no-achievements .price {
+    margin-top: 0;
+}
+
+body.mobile-browser .price {
+    display: block;
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 3.0em;
+}
+
+body.mobile-browser .steam-name {
+    font-size: 33px;
+}
+
+body.mobile-browser .steam-meta {
+    font-size: 33px;
+}
+
+body.mobile-browser .toggle-content-button {
+    font-size: 3em;
+}
+
+body.mobile-browser #tag-stats-container {
+    padding: 0 10px;
+}
+
+body.mobile-browser #tag-stats-container a {
+    font-size: 1.1em;
+}
+
+@media (max-width: 900px) and (hover: hover) and (pointer: fine) {
+    .music-disc {
+        width: min(260px, calc(100% - 20px));
     }
 }
 
@@ -797,6 +850,10 @@ body.sidebar-hidden #main-content {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+#tag-stats-container .tag-home-list {
+    margin-bottom: 8px;
 }
 
 #tag-stats-container a {
