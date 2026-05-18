@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         error: null
     };
     let steamTotalsPromise = null;
+    let activeMusicCard = null;
 
     // --- 侧边栏自动收起阈值 ---
     const SIDEBAR_WIDTH = 220;
@@ -82,12 +83,89 @@ document.addEventListener('DOMContentLoaded', () => {
         return lineTops.length;
     }
 
+    function normalizeMusicUrl(url) {
+        if (!url) return '';
+        const trimmed = String(url).trim();
+        return trimmed.startsWith('//') ? `https:${trimmed}` : trimmed;
+    }
+
+    function buildMusicAutoplayUrl(url) {
+        const normalized = normalizeMusicUrl(url);
+        if (!normalized) return '';
+
+        try {
+            const parsed = new URL(normalized, window.location.href);
+            parsed.searchParams.set('autoplay', '1');
+            return parsed.toString();
+        } catch {
+            const joiner = normalized.includes('?') ? '&' : '?';
+            return `${normalized}${joiner}autoplay=1`;
+        }
+    }
+
+    function stopMusicPlayer(state) {
+        if (!state) return;
+        state.card.classList.remove('music-playing');
+        state.button.classList.remove('is-playing');
+        state.button.setAttribute('aria-label', '播放音乐');
+        if (state.icon) {
+            state.icon.textContent = '♪';
+        }
+        state.iframe.src = 'about:blank';
+        if (activeMusicCard === state.card) {
+            activeMusicCard = null;
+        }
+    }
+
+    function playMusicPlayer(state) {
+        if (!state) return;
+        if (activeMusicCard && activeMusicCard !== state.card) {
+            stopMusicPlayer(activeMusicCard.__musicState);
+        }
+        state.card.classList.add('music-playing');
+        state.button.classList.add('is-playing');
+        state.button.setAttribute('aria-label', '停止音乐');
+        if (state.icon) {
+            state.icon.textContent = '⏹';
+        }
+        state.iframe.src = state.autoplaySrc;
+        activeMusicCard = state.card;
+    }
+
+    function setupMusicPlayer(card, musicUrl) {
+        if (!card || !musicUrl) return;
+        const button = card.querySelector('[data-music-toggle]');
+        const iframe = card.querySelector('[data-music-frame]');
+        if (!button || !iframe) return;
+
+        const state = {
+            card,
+            button,
+            iframe,
+            icon: button.querySelector('[data-music-icon]'),
+            autoplaySrc: buildMusicAutoplayUrl(musicUrl),
+        };
+        card.__musicState = state;
+
+        button.addEventListener('click', () => {
+            if (card.classList.contains('music-playing')) {
+                stopMusicPlayer(state);
+            } else {
+                playMusicPlayer(state);
+            }
+        });
+    }
+
     function augmentPost(item) {
         const steamAppId = resolveSteamAppId(item);
         const tags = Array.isArray(item.tags) ? [...item.tags] : [];
+        const hasMusic = Boolean(item.musicUrl || item.musicIframe || item.musicSrc);
 
         if (steamAppId && !tags.includes('Steam')) {
             tags.push('Steam');
+        }
+        if (hasMusic && !tags.includes('Music')) {
+            tags.push('Music');
         }
 
         return {
@@ -103,6 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (steamIndex > 0) {
             tags.splice(steamIndex, 1);
             tags.unshift('Steam');
+        }
+        const musicIndex = tags.indexOf('Music');
+        if (musicIndex > -1) {
+            tags.splice(musicIndex, 1);
+            const nextSteamIndex = tags.indexOf('Steam');
+            if (nextSteamIndex >= 0) {
+                tags.splice(nextSteamIndex + 1, 0, 'Music');
+            } else {
+                tags.unshift('Music');
+            }
         }
         return tags;
     }
@@ -443,6 +531,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {Array} postsToRender - 需要被渲染的文章对象数组
      */
     function renderInitialPosts(postsToRender) {
+        if (activeMusicCard && activeMusicCard.__musicState) {
+            stopMusicPlayer(activeMusicCard.__musicState);
+        }
         mainContent.innerHTML = ''; // 清空主内容区
         currentLoadedCount = 0; // 重置已加载计数
         currentFilteredPosts = postsToRender; // 更新当前要渲染的文章列表
@@ -484,6 +575,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const tagsHTML = displayTags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
             const steamAppId = item.steamAppId || resolveSteamAppId(item);
+            const musicUrl = normalizeMusicUrl(item.musicUrl || item.musicIframe || item.musicSrc);
+            const musicButtonHTML = musicUrl ? `
+                <button class="music-toggle" type="button" data-music-toggle aria-label="播放音乐"><span class="music-toggle-icon" data-music-icon>♪</span></button>
+            ` : "";
+            const musicFrameHTML = musicUrl ? `
+                <iframe class="music-frame" data-music-frame title="${item.title} 音乐播放器" allow="autoplay; encrypted-media" scrolling="no" frameborder="0"></iframe>
+            ` : "";
             const steamMetaHTML = steamAppId
                 ? `<div class="steam-meta steam-loading" data-steam-appid="${steamAppId}"><span class="steam-note">加载中...</span></div>`
                 : "";
@@ -497,7 +595,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'news-item';
             itemDiv.innerHTML = `
-                <div class="news-left"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
+                <div class="news-left${musicUrl ? ' has-music' : ''}">
+                    ${musicButtonHTML}
+                    ${musicUrl ? `
+                        <div class="music-artwork">
+                            <img class="music-cover-base" src="${item.image}" alt="${item.title}" loading="lazy" />
+                            <div class="music-disc" aria-hidden="true">
+                                <img src="${item.image}" alt="" loading="lazy" />
+                            </div>
+                        </div>
+                    ` : `
+                        <img src="${item.image}" alt="${item.title}" loading="lazy" />
+                    `}
+                    ${musicFrameHTML}
+                </div>
                 <div class="news-right">
                     <h3 class="news-title">${item.title}</h3>
                     ${steamNameHTML}
@@ -520,6 +631,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (steamAppId) {
                 const steamMeta = itemDiv.querySelector('.steam-meta');
                 hydrateSteamMeta(steamMeta, item);
+            }
+            if (musicUrl) {
+                setupMusicPlayer(itemDiv, musicUrl);
             }
 
             // 检查并折叠内容
