@@ -1,0 +1,1536 @@
+/* =======================
+   全局变量定义 (亮色与暗色模式)
+   ======================= */
+:root {
+    /* 亮色模式变量 */
+    --bg-color: #ffffff;           /* 页面背景色 */
+    --text-color: #333;            /* 正文文字颜色 */
+    --title-color: #111;           /* 标题颜色 */
+    --nav-bg: #f4f4f4;              /* 侧边栏背景色 */
+    --nav-text: #222;               /* 侧边栏文字颜色 */
+    --nav-active-bg: #ddd;          /* 导航激活项背景 */
+    --nav-active-text: #000;        /* 导航激活项文字颜色 */
+    --price-color: #f76c6c;         /* 价格颜色 */
+    --tag-color-default: #ddd;      /* 默认标签背景色 */
+    --news-border-color: rgba(0, 0, 0, 0.1); /* 内容边框颜色 */
+    --panel-border-color: rgba(0, 0, 0, 0.06);
+    --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset, 0 6px 16px rgba(0, 0, 0, 0.04);
+    --sidebar-width: 220px;
+    --sidebar-left: 16px;
+    --sidebar-top: 16px;
+    --sidebar-gap: 20px;
+    --layout-padding: 20px;
+    --content-max-width: 900px;
+    --mac-window-radius: 24px;
+    --mac-card-radius: 18px;
+    --mac-media-radius: 16px;
+    --mac-chip-radius: 999px;
+}
+
+/* 暗色模式下的变量重写 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #111;           /* 页面背景色 */
+        --text-color: #ccc;           /* 正文文字颜色 */
+        --title-color: #eee;          /* 标题颜色 */
+        --nav-bg: #222;               /* 侧边栏背景色 */
+        --nav-text: #eee;             /* 侧边栏文字颜色 */
+        --nav-active-bg: #444;        /* 导航激活项背景 */
+        --nav-active-text: #fff;      /* 导航激活项文字颜色 */
+        --price-color: #f76c6c;
+        --tag-color-default: #333;
+        --news-border-color: rgba(255, 255, 255, 0.1); /* 内容边框颜色 */
+        --panel-border-color: rgba(255, 255, 255, 0.06);
+        --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    /* 暗色模式下让logo变白 */
+    #logo {
+        filter: brightness(0) invert(1);
+    }
+}
+
+/* 超链接 */
+a {
+    color: var(--text-color);       /* 和正文一样颜色 */
+    text-decoration: underline;     /* 添加下划线 */
+    text-decoration-color: var(--text-color); /* 下划线颜色与文字一致 */
+    text-underline-offset: 5px;     /* 控制下划线与文字之间的距离 */
+    text-decoration-thickness: 1px; /* 可选：设置线条粗细 */
+}
+
+/* =======================
+   基础页面布局
+   ======================= */
+body {
+    margin: 0;
+    font-family: 'Noto Sans JP', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    letter-spacing: 0.05em; /* 文字间距 */
+    font-weight: 300;/* 当前字体粗细 */
+    line-height: 1.8;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+    /* 移除 display: flex; 这一行，让侧边栏和主内容有更灵活的布局方式 */
+}
+
+body.desktop-browser {
+    min-width: calc(var(--content-max-width) + (var(--layout-padding) * 2));
+    overflow-x: auto;
+}
+
+.container {
+    box-sizing: border-box;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: var(--layout-padding) var(--layout-padding) var(--layout-padding)
+        calc(var(--sidebar-left) + var(--sidebar-width) + var(--sidebar-gap));
+}
+
+body.sidebar-hidden .container {
+    padding-left: var(--layout-padding);
+}
+
+/* =======================
+   侧边栏样式 (#sidebar)
+   ======================= */
+#sidebar {
+    width: var(--sidebar-width);
+    padding: 20px;
+    /* 侧边栏改为固定定位后，margin 属性将不再用于定位其与主内容的关系，故设为0 */
+    margin: 0;
+    box-sizing: border-box;
+    background-color: var(--nav-bg);
+    border-radius: var(--mac-window-radius);
+    border: 1px solid var(--panel-border-color);
+    box-shadow: var(--panel-shadow);
+    /* 关键更改：将 position 从 sticky 改为 fixed */
+    position: fixed; /* 固定定位，脱离文档流 */
+    top: var(--sidebar-top);
+    left: var(--sidebar-left); /* 确保侧边栏距离左侧有 16px 边距 */
+    height: calc(100vh - (var(--sidebar-top) * 2)); /* 高度为视口高度减去上下边距 */
+    overflow-y: auto;
+    /* 初始状态可见 */
+    opacity: 1;
+    visibility: visible;
+}
+
+#logo {
+    display: block;
+    margin: 30px auto 0px;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--title-color);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav a {
+    display: block;
+    padding: 8px 18px;
+    border-radius: 14px;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: var(--nav-text);
+    border: 1px solid transparent;
+    transition: background 0.3s;
+}
+
+nav a.active,
+nav a:hover {
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
+}
+
+/* =======================
+   主内容区样式 (#main-content)
+   ======================= */
+#main-content {
+    /* 移除 flex: 1; 因为 body 不再是 flex 容器 */
+    padding: 0; /* 内边距由 container 统一控制 */
+    box-sizing: border-box; /* 确保内边距和边框包含在宽度和高度内 */
+    max-width: var(--content-max-width); /* 最大宽度为900px */
+    margin: 0 auto;
+    width: 100%; /* 确保在 max-width 之前先占据所有可用空间 */
+}
+
+.news-time {
+    color: #888; /* 文字颜色为灰色 */
+    font-size: 12px; /* 字体大小为14px */
+    margin: 0px 0 10px; /* 上边距为0，下边距为10px */
+    text-align: left; /* 文本左对齐 */
+    margin-bottom: 8px;
+}
+
+.news-item {
+    display: flex; /* 使用弹性布局 */
+    align-items: stretch;
+    gap: 20px; /* 子元素之间的间距为20px */
+    border-radius: var(--mac-window-radius); /* 边框圆角为12px */
+    padding: 10px; /* 内边距为20px */
+    margin-bottom: 20px; /* 下边距为20px */
+    border: 1px solid var(--panel-border-color); /* 边框为1px实线，颜色由变量决定 */
+    box-shadow: var(--panel-shadow);
+    background-color: var(--nav-bg); /* 背景颜色由变量决定 */
+}
+
+.news-left {
+    flex: 0 0 350px; /* 左侧图片区域固定宽度为380px */
+    align-self: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--mac-media-radius);
+    overflow: hidden;
+    background: var(--nav-bg);
+    transition: border-radius 0.25s ease, transform 0.25s ease;
+}
+
+.news-left img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%; /* 图片宽度占满容器 */
+    height: auto; /* 按原比例显示，不拉伸到整列高度 */
+    object-fit: contain; /* 保持完整显示，不裁切左右边缘 */
+    object-position: left top;
+    background: var(--nav-bg);
+    border-radius: var(--mac-media-radius);
+    transition: border-radius 0.25s ease, transform 0.25s ease, height 0.25s ease;
+}
+
+.music-artwork {
+    position: relative;
+    width: 100%;
+    border-radius: var(--mac-media-radius);
+    overflow: hidden;
+    background: var(--nav-bg);
+    transition: border-radius 0.25s ease, opacity 0.25s ease;
+}
+
+.music-cover-base {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: left top;
+    border-radius: var(--mac-media-radius);
+    transition: opacity 0.2s ease, border-radius 0.25s ease;
+}
+
+.music-disc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(235px, calc(100% - 20px));
+    height: min(235px, calc(100% - 20px));
+    aspect-ratio: 1 / 1;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--nav-bg);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 2;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0 5%, rgba(255, 255, 255, 0.02) 12%, rgba(0, 0, 0, 0) 28%),
+        repeating-radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.025) 0 1px, rgba(0, 0, 0, 0) 1px 7px),
+        radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 42%, #050505 72%, #000 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 0 24px rgba(255, 255, 255, 0.03),
+        inset 0 -20px 30px rgba(0, 0, 0, 0.35);
+}
+
+.music-disc::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border: 1.5px solid rgba(255, 36, 94, 0.92);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(1.08);
+    box-shadow: 0 0 12px rgba(255, 36, 94, 0.18);
+    transform-origin: center center;
+}
+
+.music-disc img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    animation: none;
+    filter:
+        contrast(1.12)
+        saturate(0.84)
+        brightness(0.92)
+        drop-shadow(0 0 0.5px rgba(255, 255, 255, 0.06));
+}
+
+.music-toggle {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 20;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 36, 94, 0.58);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.music-toggle-icon {
+    display: block;
+    line-height: 1;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.music-toggle:hover {
+    background: rgba(255, 36, 94, 0.72);
+}
+
+.music-toggle.is-playing {
+    color: #fff;
+    background: rgba(255, 36, 94, 0.58);
+    border: none;
+    border-radius: 50%;
+}
+
+.music-frame {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    border: 0;
+}
+
+.news-item.music-playing .music-cover-base {
+    opacity: 0;
+}
+
+.news-item.music-playing .music-disc {
+    opacity: 1;
+}
+
+.news-item.music-playing .music-disc::before {
+    opacity: 1;
+    animation: music-ring-shrink 0.45s ease-out both;
+}
+
+.news-item.music-playing .music-disc img {
+    animation: music-spin 22s linear infinite;
+    transform-origin: center center;
+}
+
+@keyframes music-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes music-ring-shrink {
+    0% {
+        opacity: 0;
+        transform: scale(1.08);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.news-item.music-playing .music-toggle {
+    color: #fff;
+    background: rgba(255, 36, 94, 0.58);
+    border: none;
+    z-index: 20;
+}
+
+.tag.tag-Music {
+    background: rgba(255, 36, 94, 0.16);
+    color: #FF245E;
+    border: 1px solid rgba(255, 36, 94, 0.24);
+}
+
+.news-right {
+    flex: 1; /* 右侧内容占据剩余空间 */
+    display: flex; /* 使用弹性布局 */
+    flex-direction: column; /* 子元素垂直排列 */
+    min-height: 100%;
+}
+
+.news-title {
+    color: var(--title-color); /* 标题颜色由变量决定 */
+    letter-spacing: 0.1em; /* 文字间距 */
+    font-size: 21px; /* 字体大小为22px */
+    font-weight: bold; /* 字体加粗 */
+    margin: 0 0 0px 0; /* 下边距为0 */
+}
+
+.content {
+    font-size: 14px; /* 这里定义了新闻内容的字体大小 */
+    line-height: 1.8; /* 行高为1.8 */
+    white-space: pre-line; /* 保留换行符 */
+    flex-grow: 0; /* 由底部信息行负责撑开剩余空间 */
+}
+
+.news-item .content img { /*文章内图片 */
+    max-width: 100%; /* 确保图片不会超出其容器 */
+    height: auto;       /* 保持图片纵横比 */
+    display: block;     /* 移除图片底部的额外空间，使其更好地与文本对齐 */
+    border-radius: 14px;
+}
+
+.tags-price-line {
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 左右分离 */
+    align-items: flex-start; /* 让右侧 Steam 行和左侧标签从顶部对齐 */
+    gap: 16px;
+    margin-top: auto; /* 把这一行推到卡片底部 */
+    margin-bottom: 6px; /* 下边距为5px */
+}
+
+.tags {
+    display: flex; /* 使用弹性布局 */
+    flex-wrap: wrap; /* 允许子元素换行 */
+    gap: 6px; /* 子元素之间的间距为8px */
+}
+
+.footer-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.tag {
+    display: inline-block; /* 以行内块的形式显示 */
+    padding: 3px 10px; /* 内边距为4px上下，12px左右 */
+    border-radius: var(--mac-chip-radius); /* 边框圆角为20px */
+    font-size: 10px; /* 字体大小为13px */
+    line-height: 1; /* 避免标签文字撑高整行 */
+    color: var(--nav-text); /* 文字颜色由变量决定 */
+    background-color: var(--tag-color-default); /* 背景颜色由变量决定 */
+    border: 1px solid var(--panel-border-color);
+}
+
+/* 不同标签的不同颜色 (保持不变)
+.tag-游戏 { background-color: #a4c34c; }
+.tag-动画 { background-color: #7b61ff; }
+.tag-公告 { background-color: #0088cc; }
+.tag-★★★★★ { background-color: #ff6b6b; }
+.tag-★★★★☆ { background-color: #f0c419; }
+.tag-★★★☆☆ { background-color: #46b1e7; }
+.tag-★★☆☆☆ { background-color: #9b9b9b; }
+.tag-★☆☆☆☆ { background-color: #c4c4c4; }
+.tag-☹作弊 { background-color: #333333; }
+*/
+
+.price {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 1; /* 让金额和标签的垂直节奏一致 */
+    white-space: nowrap;
+    display: block;
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.steam-name {
+    margin: 4px 0 2px;
+    color: var(--title-color);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    line-height: 1.05;
+}
+
+.steam-loading.steam-name {
+    opacity: 0.6;
+}
+
+.steam-meta {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-color);
+    text-align: right;
+    width: auto;
+}
+
+.steam-loading {
+    opacity: 0.85;
+}
+
+.steam-pill,
+.steam-note {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    line-height: 1.2;
+}
+
+.steam-game,
+.steam-pill {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.steam-game-name {
+    font-size: 12px;
+    color: var(--text-color);
+    margin-bottom: 6px;
+}
+
+.steam-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+}
+
+.steam-progress {
+    margin-top: 14px;
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.steam-progress.steam-loading {
+    min-height: 8px;
+}
+
+.steam-achievement-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(107, 115, 128, 0.16);
+}
+
+.steam-achievement-bar--complete {
+    background: rgba(191, 155, 48, 0.2);
+}
+
+.steam-achievement-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #9aa3af;
+    width: 0%;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: width, background-position;
+}
+
+.steam-achievement-fill--complete {
+    background: #c79f34;
+    position: relative;
+    overflow: hidden;
+}
+
+.steam-achievement-fill--complete::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 80%;
+    left: -90%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 248, 210, 0.14) 28%, rgba(255, 255, 255, 0.58) 50%, rgba(255, 248, 210, 0.14) 72%, rgba(255, 255, 255, 0) 100%);
+    transform: translateX(0);
+    animation: steam-gold-sheen 5.8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes steam-gold-sheen {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(280%);
+    }
+}
+
+.steam-note {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    background: none;
+    color: #888;
+}
+
+.steam-error .steam-note {
+    color: #c66;
+}
+
+.tag-全成就,
+.tag-auto-complete {
+    background: linear-gradient(180deg, #d4af37, #b8871f);
+    color: #1f1603;
+    border-color: rgba(212, 175, 55, 0.35);
+}
+
+.tag-system {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.tag-content {
+    background-color: rgba(0, 0, 0, 0.045);
+}
+
+@media (prefers-color-scheme: dark) {
+    .steam-game-name {
+        color: var(--title-color);
+    }
+
+    .steam-pill {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .steam-achievement-bar {
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+    .steam-achievement-bar--complete {
+        background: rgba(214, 184, 80, 0.22);
+    }
+
+    .steam-achievement-fill {
+        background: #d4d9e0;
+    }
+
+    .steam-achievement-fill--complete {
+        background: #c79f34;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .steam-achievement-fill--complete::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        width: 80%;
+        left: -90%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 251, 231, 0.12) 28%, rgba(255, 255, 255, 0.50) 50%, rgba(255, 251, 231, 0.12) 72%, rgba(255, 255, 255, 0) 100%);
+        transform: translateX(0);
+        animation: steam-gold-sheen 5.8s linear infinite;
+        pointer-events: none;
+    }
+
+    .tag-全成就,
+    .tag-auto-complete {
+        background: linear-gradient(180deg, #d7b64f, #b28a2d);
+        color: #1f1603;
+    }
+
+    .tag-content {
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.tag-Steam {
+    background-color: #1b2838;
+    color: #fff;
+}
+
+body.sidebar-hidden #sidebar {
+    display: none;
+}
+
+body.sidebar-hidden #main-content {
+    margin: 0 auto;
+}
+
+body.loading .container {
+    visibility: hidden;
+}
+
+.startup-loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+}
+
+body.loading .startup-loading-screen {
+    display: flex;
+    flex-direction: column;
+}
+
+body.loading #sidebar {
+    opacity: 0;
+    visibility: hidden;
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+    pointer-events: none;
+}
+
+body.loading #main-content {
+    max-width: none;
+    margin: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.pre-opening .container {
+    visibility: hidden;
+}
+
+.startup-loading {
+    width: min(188px, 37vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transform: translateY(-24px);
+}
+
+.startup-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.startup-brand-logo {
+    display: block;
+    width: 112px;
+    height: auto;
+}
+
+.startup-brand-text {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--title-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    .startup-brand-logo {
+        filter: brightness(0) invert(1);
+    }
+}
+
+.startup-loading-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.14);
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+.startup-loading-footer {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: rgba(128, 128, 128, 0.75);
+    text-align: center;
+}
+
+.startup-loading-fill {
+    position: absolute;
+    left: -35%;
+    top: 0;
+    width: 35%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.12));
+    animation: startup-loading-slide 1.6s ease-in-out infinite;
+}
+
+@keyframes startup-loading-slide {
+    0% {
+        left: -35%;
+        opacity: 0.55;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        left: 100%;
+        opacity: 0.55;
+    }
+}
+
+body.page-opening #sidebar {
+    opacity: 0;
+    transform: translateX(-120px) scale(0.9);
+    filter: blur(8px);
+    animation: sidebar-enter 720ms cubic-bezier(0.2, 0.8, 0.2, 1) 850ms both;
+    transform-origin: top left;
+}
+
+body.page-opening .container {
+    padding-left: var(--layout-padding);
+    animation: layout-push 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 850ms both;
+}
+
+body.page-opening .news-item,
+body.content-transition .news-item {
+    opacity: 0;
+    transform: translateY(72px) scale(0.92);
+    animation: card-enter 1150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--enter-delay, 0ms);
+    will-change: transform, opacity, filter;
+}
+
+@keyframes sidebar-enter {
+    0% {
+        opacity: 0;
+        transform: translateX(-120px) scale(0.9);
+        filter: blur(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes layout-push {
+    0% {
+        padding-left: var(--layout-padding);
+    }
+    100% {
+        padding-left: calc(var(--sidebar-left) + var(--sidebar-width) + var(--sidebar-gap));
+    }
+}
+
+@keyframes card-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(72px) scale(0.92);
+        filter: blur(10px);
+    }
+    60% {
+        opacity: 1;
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* JS 精准识别到手机浏览器后，恢复手机端卡片排版。 */
+body.mobile-browser .container {
+    padding: var(--layout-padding);
+}
+
+body .mobile-sidebar-backdrop,
+body .mobile-tab-bar {
+    display: none;
+}
+
+body.mobile-browser #main-content {
+    padding: 20px;
+    max-width: none;
+    margin: 0;
+    padding-bottom: 120px;
+}
+
+body.mobile-browser.sidebar-open {
+    overflow: hidden;
+}
+
+body.mobile-browser.sidebar-hidden #sidebar {
+    display: block;
+}
+
+body.mobile-browser #sidebar {
+    position: fixed;
+    left: auto;
+    right: 12px;
+    top: 12px;
+    bottom: 126px;
+    width: calc((100vw - 24px) * 0.66);
+    height: auto;
+    max-height: none;
+    border-radius: 28px;
+    transform: translateY(120%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.35s ease, opacity 0.35s ease, visibility 0.35s ease;
+    z-index: 40;
+    background: color-mix(in srgb, var(--nav-bg) 92%, transparent);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.18);
+}
+
+body.mobile-browser.mobile-sidebar-open #sidebar {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.mobile-browser .mobile-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 35;
+}
+
+body.mobile-browser.mobile-sidebar-open .mobile-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.mobile-browser .mobile-tab-bar {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    min-height: 102px;
+    display: none;
+    align-items: center;
+    justify-content: stretch;
+    gap: 0;
+    padding: 14px 14px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--nav-bg) 90%, transparent);
+    border: 1px solid var(--panel-border-color);
+    box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.24),
+        0 8px 20px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    z-index: 45;
+}
+
+body.mobile-browser .mobile-tab-bar {
+    display: flex;
+}
+
+body.mobile-browser .mobile-tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: #7a8188;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 24px;
+    min-width: 0;
+    flex: 1 1 0;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: inherit;
+    box-shadow: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.mobile-browser .mobile-tab.mobile-tab--label-only {
+    justify-content: center;
+    gap: 0;
+}
+
+body.mobile-browser .mobile-tab + .mobile-tab {
+    margin-left: 12px;
+}
+
+body.mobile-browser .mobile-tab.active {
+    color: var(--title-color);
+    background: color-mix(in srgb, var(--nav-active-bg) 86%, transparent);
+    border-color: var(--panel-border-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+body.mobile-browser .mobile-tab-icon {
+    font-size: 1.18em;
+    line-height: 1;
+}
+
+body.mobile-browser .mobile-tab.mobile-tab--label-only .mobile-tab-icon {
+    display: none;
+}
+
+body.mobile-browser .mobile-tab-label {
+    font-size: 1.12em;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.01em;
+}
+
+body.mobile-browser .mobile-sidebar-backdrop,
+body.mobile-browser .mobile-tab-bar {
+    display: flex;
+}
+
+body.mobile-browser .news-item {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 32px;
+}
+
+body.mobile-browser.page-opening .container {
+    animation: none;
+    padding-left: var(--layout-padding);
+}
+
+body.mobile-browser .news-left {
+    flex-basis: auto;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+body.mobile-browser .news-left img {
+    display: block;
+    width: 70%;
+    height: auto;
+    border-radius: 14px;
+}
+
+body.mobile-browser .music-artwork {
+    width: 70%;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+body.mobile-browser .news-item.music-playing .music-artwork {
+    width: 70%;
+}
+
+body.mobile-browser .news-left .music-cover-base {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.mobile-browser .music-disc {
+    width: calc(100% - 32px);
+    height: calc(100% - 32px);
+    max-width: none;
+    padding: 8px;
+}
+
+body.mobile-browser .music-disc::before {
+    inset: -10px;
+    border-width: 1.5px;
+    box-shadow: 0 0 10px rgba(255, 36, 94, 0.14);
+}
+
+body.mobile-browser .news-left .music-disc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+body.mobile-browser .music-toggle {
+    width: 72px;
+    height: 72px;
+    right: 10px;
+    bottom: 0;
+    font-size: 40px;
+}
+
+body.mobile-browser .music-toggle-icon {
+    font-size: 34px;
+}
+
+body.mobile-browser .has-music .music-frame {
+    left: 0;
+    top: 0;
+    width: 70%;
+    height: 100%;
+    opacity: 0.01;
+    z-index: 0;
+}
+
+body.mobile-browser .news-item .news-title {
+    font-size: 2.2em;
+    margin-bottom: 5px;
+}
+
+body.mobile-browser .news-item .content {
+    font-size: 1.3em;
+    line-height: 1.7;
+}
+
+body.mobile-browser .news-time {
+    font-size: 1.05em;
+}
+
+body.mobile-browser .tag {
+    font-size: 1.05em;
+}
+
+body.mobile-browser .tags-price-line {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+body.mobile-browser .tags {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+body.mobile-browser .footer-right {
+    margin-left: 0;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+body.mobile-browser .steam-meta {
+    align-items: flex-start;
+    text-align: left;
+}
+
+body.mobile-browser .steam-meta-line {
+    justify-content: flex-start;
+}
+
+body.mobile-browser .steam-progress {
+    margin-top: 12px;
+    margin-bottom: 10px;
+}
+
+body.mobile-browser .steam-no-achievements .tags-price-line {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+body.mobile-browser .steam-no-achievements .footer-right {
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(107, 115, 128, 0.25);
+    justify-content: flex-end;
+}
+
+body.mobile-browser .steam-no-achievements .price {
+    margin-top: 0;
+}
+
+body.mobile-browser .price {
+    display: block;
+    text-align: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1.5em;
+}
+
+body.mobile-browser .steam-name {
+    font-size: 1.05em;
+}
+
+body.mobile-browser .steam-meta {
+    font-size: 1.05em;
+}
+
+body.mobile-browser .toggle-content-button {
+    font-size: 1.2em;
+}
+
+body.mobile-browser #tag-stats-container {
+    padding: 0 10px;
+}
+
+body.mobile-browser #tag-stats-container a {
+    font-size: 1.1em;
+}
+
+@media (max-width: 900px) and (hover: hover) and (pointer: fine) {
+    .music-disc {
+        width: min(235px, calc(100% - 20px));
+        height: min(235px, calc(100% - 20px));
+    }
+}
+
+
+/* =======================
+   标签统计区域样式
+   ======================= */
+#tag-stats-container {
+    padding: 0 10px;
+    margin-top: 15px;
+}
+
+#tag-stats-container h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--title-color);
+    font-weight: bold;
+}
+
+#tag-stats-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#tag-stats-container .tag-home-list {
+    margin-bottom: 8px;
+}
+
+#tag-stats-container a {
+    color: var(--nav-text);
+    text-decoration: none;
+    font-size: 12px; /* 桌面端默认字体大小 */
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    transition: background-color 0.2s;
+}
+
+#tag-stats-container a:hover,
+#tag-stats-container a.active {
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
+}
+
+.tag-count {
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 16px;
+    font-weight: normal;
+}
+
+/* 分隔线样式 */
+.short-line {
+    width: 80%;
+    height: 1px;
+    background-color: var(--news-border-color);
+    border: none;
+    margin: 20px auto;
+}
+/* 价格总和样式 */
+.total-price,
+.sidebar-total-time-box {
+    margin-top: 20px;
+    padding: 8px 10px;
+    border: 1px solid var(--panel-border-color);
+    border-radius: 16px;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--panel-shadow);
+}
+
+.total-price:hover {
+    background-color: var(--nav-active-bg);
+    color: var(--nav-active-text);
+}
+
+.total-price {
+    border-color: rgba(212, 175, 55, 0.75);
+    color: #d4af37;
+}
+
+.total-price.is-loading {
+    color: #7a8188;
+    border-color: rgba(122, 129, 136, 0.55);
+}
+
+.total-price.is-loading::after {
+    content: "";
+    position: absolute;
+    inset: 2px 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.22) 50%, transparent 100%);
+    animation: sidebar-time-loading 1.8s linear infinite;
+    pointer-events: none;
+}
+
+.sidebar-total-time-box {
+    cursor: default;
+    border-color: rgba(122, 129, 136, 0.75);
+    color: #7a8188;
+}
+
+.sidebar-total-time-box:hover {
+    background-color: transparent;
+    color: inherit;
+}
+
+.total-price span {
+    display: inline-block;
+    animation: roll-up 1s ease-out forwards;
+}
+
+.sidebar-total-time-group {
+    margin-top: 8px;
+}
+
+.sidebar-total-caption {
+    margin-top: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #7a8188;
+    line-height: 1.2;
+    text-align: left;
+    width: 100%;
+}
+
+.sidebar-total-time-box {
+    margin-top: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    font-weight: 400;
+    color: #7a8188;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-total-time-box span {
+    color: #7a8188;
+    font-weight: 400;
+}
+
+.sidebar-total-time-box span[data-steam-recent-time-value],
+.sidebar-total-time-box span[data-steam-total-time-value] {
+    font-weight: 300;
+    letter-spacing: 0;
+    min-width: 4.2em;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar-total-time-box.is-loading::after {
+    content: "";
+    position: absolute;
+    inset: 2px 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.22) 50%, transparent 100%);
+    animation: sidebar-time-loading 1.8s linear infinite;
+    pointer-events: none;
+}
+
+.sidebar-total-time-box.is-loading span[data-steam-recent-time-value],
+.sidebar-total-time-box.is-loading span[data-steam-total-time-value] {
+    opacity: 0.72;
+}
+
+.sidebar-time-icon {
+    font-size: 0.95em;
+    line-height: 1;
+    flex: 0 0 auto;
+    color: #7a8188;
+}
+
+.total-price[data-total-price] .sidebar-time-icon {
+    color: #d4af37;
+}
+
+@keyframes sidebar-time-loading {
+    0% {
+        transform: translateX(-45%);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(45%);
+        opacity: 0;
+    }
+}
+
+/* 链接样式 */
+.social-links-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.social-icon {
+    display: block;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+
+    flex: 0 0 calc(33.333% - 20px);
+    max-width: 60px;
+    min-width: 40px;
+}
+
+/* 默认样式（浅色模式）：保持彩色 */
+.social-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: filter 0.3s ease-in-out;
+    filter: none;
+}
+
+.social-icon-img:hover {
+    filter: brightness(70%);
+}
+
+/* 深色模式下的样式 */
+@media (prefers-color-scheme: dark) {
+    .social-icon-img {
+        filter: grayscale(100%) brightness(200%);
+    }
+
+    .social-icon-img:hover {
+        filter: grayscale(200%) brightness(700%);
+    }
+}
+
+/* 如果需要在更小的屏幕上每行显示更少的图标，可以添加媒体查询 */
+@media (max-width: 700px) {
+    .social-icon {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .social-icon {
+        flex: 0 0 calc(100% - 20px);
+    }
+}
+
+/* --- 内容折叠样式 --- */
+
+.content-wrapper {
+    position: relative;
+    overflow: hidden;
+    transition: none;
+}
+
+.content-wrapper.collapsed .content {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- 展开/收起按钮样式 --- */
+.toggle-content-button {
+    display: block;
+    width: fit-content;
+    margin: 28px auto 0;
+    padding: 3px 10px;
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.toggle-content-button:hover {
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 在您的CSS文件中修改或添加 */
+blockquote {
+    border-left: 2px solid; /* 添加左侧边框，颜色将继承 */
+    padding-left: 0px; /* 增加边框和文本之间的间距 */
+    margin: 1em 0; /* 默认的上下边距，可以根据需要调整 */
+    /* color: var(--text-color-secondary, #555); */ /* 这行决定引用文字颜色，保持不变或根据您实际的引用文字颜色定义 */
+    background-color: transparent; /* 确保背景是透明的 */
+}
