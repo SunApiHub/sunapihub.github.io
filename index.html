@@ -5,12 +5,22 @@
   <title>日核</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body class="loading">
+  <div class="startup-loading-screen" aria-label="页面加载中" aria-hidden="true">
+    <div class="startup-loading">
+      <div class="startup-brand" aria-hidden="true">
+        <img src="jpg/logo-color.png" alt="" class="startup-brand-logo">
+        <div class="startup-brand-text">SunApiHub</div>
+      </div>
+      <div class="startup-loading-track">
+        <span class="startup-loading-fill"></span>
+      </div>
+    </div>
+    <div class="startup-loading-footer">2025-2026</div>
+  </div>
   <div class="container">
     <aside id="sidebar"></aside>
-    <main id="main-content">
-      <p>加载中...</p>
-    </main>
+    <main id="main-content"></main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/main1.js"></script>

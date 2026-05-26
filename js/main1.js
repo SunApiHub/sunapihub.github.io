@@ -22,6 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let steamTotalsPromise = null;
     let activeMusicCard = null;
+    let openingAnimationTimer = null;
+    let contentAnimationTimer = null;
+    let loadingMinimumTimer = null;
+    let loadingCanHide = false;
+    let contentReadyToReveal = false;
+    let openingStarted = false;
+    let steamTotalsAnimated = false;
+    let steamTotalsAnimationPending = false;
+    let sidebarRevealCompleted = false;
+    let sidebarPriceAnimated = false;
+    let sidebarPriceAnimationPending = false;
+    let sidebarPriceTarget = 0;
+    let steamTotalsLoadedSignature = '';
+    let steamTotalsRequestSignature = '';
 
     // --- 侧边栏自动收起阈值 ---
     const SIDEBAR_WIDTH = 220;
@@ -62,6 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getSteamAppIds(posts = allPosts) {
         return [...new Set(posts.map(resolveSteamAppId).filter(Boolean))];
+    }
+
+    function getSteamTotalsSignature(posts = allPosts) {
+        return getSteamAppIds(posts).sort().join(',');
     }
 
     function countRenderedLines(element) {
@@ -242,9 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const recentTimeValue = container.querySelector('[data-steam-recent-time-value]');
         const totalTimeBox = container.querySelector('[data-steam-total-time-box]');
         const recentTimeBox = container.querySelector('[data-steam-recent-time-box]');
+        const shouldHoldLoading = steamTotalsCache.loading || (!steamTotalsCache.error && !sidebarRevealCompleted && steamTotalsAnimationPending);
 
         if (totalTimeValue) {
-            totalTimeValue.textContent = steamTotalsCache.loading
+            stopSteamValueAnimation(totalTimeValue);
+            totalTimeValue.textContent = shouldHoldLoading
                 ? '-'
                 : steamTotalsCache.error
                     ? '读取失败'
@@ -252,7 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (recentTimeValue) {
-            recentTimeValue.textContent = steamTotalsCache.loading
+            stopSteamValueAnimation(recentTimeValue);
+            recentTimeValue.textContent = shouldHoldLoading
                 ? '-'
                 : steamTotalsCache.error
                     ? '读取失败'
@@ -260,22 +281,162 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (totalTimeBox) {
-            totalTimeBox.classList.toggle('is-loading', steamTotalsCache.loading);
+            totalTimeBox.classList.toggle('is-loading', shouldHoldLoading);
             totalTimeBox.classList.toggle('is-error', !!steamTotalsCache.error);
         }
 
         if (recentTimeBox) {
-            recentTimeBox.classList.toggle('is-loading', steamTotalsCache.loading);
+            recentTimeBox.classList.toggle('is-loading', shouldHoldLoading);
             recentTimeBox.classList.toggle('is-error', !!steamTotalsCache.error);
+        }
+
+        if (steamTotalsCache.loading) {
+            steamTotalsAnimationPending = false;
+        } else if (!steamTotalsCache.error) {
+            steamTotalsAnimationPending = !steamTotalsAnimated;
+            if (!steamTotalsAnimated) {
+                tryStartSteamTotalsAnimation();
+            }
         }
     }
 
+    function tryStartSteamTotalsAnimation() {
+        if (steamTotalsAnimated || !steamTotalsAnimationPending || !sidebarRevealCompleted || steamTotalsCache.error) return;
+        const container = document.getElementById('tag-stats-container');
+        if (!container) return;
+
+        const totalTimeValue = container.querySelector('[data-steam-total-time-value]');
+        const recentTimeValue = container.querySelector('[data-steam-recent-time-value]');
+        animateSteamValue(totalTimeValue, steamTotalsCache.totalMinutes);
+        animateSteamValue(recentTimeValue, steamTotalsCache.recentMinutes);
+        steamTotalsAnimated = true;
+        steamTotalsAnimationPending = false;
+        tryStartSidebarPriceAnimation();
+    }
+
+    function stopSteamValueAnimation(element) {
+        if (!element || !element.__steamCountFrame) return;
+        window.cancelAnimationFrame(element.__steamCountFrame);
+        element.__steamCountFrame = null;
+    }
+
+    function animateSteamValue(element, targetMinutes) {
+        if (!element) return;
+        stopSteamValueAnimation(element);
+
+        const target = Math.max(0, Number(targetMinutes) || 0);
+        const duration = target > 0 ? 1100 : 1;
+        const startTime = performance.now();
+        const loadingBox = element.closest('.sidebar-total-time-box');
+
+        if (loadingBox) {
+            loadingBox.classList.remove('is-loading');
+        }
+        element.textContent = formatSteamHours(0);
+
+        const step = (now) => {
+            const progress = Math.min(1, (now - startTime) / duration);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const currentMinutes = target * eased;
+            element.textContent = formatSteamHours(currentMinutes);
+
+            if (progress < 1) {
+                element.__steamCountFrame = window.requestAnimationFrame(step);
+            } else {
+                element.textContent = formatSteamHours(target);
+                element.__steamCountFrame = null;
+            }
+        };
+
+        if (target > 0) {
+            element.__steamCountFrame = window.requestAnimationFrame(step);
+        }
+    }
+
+    function renderSidebarPrice(container = document.getElementById('tag-stats-container'), totalPrice = 0) {
+        if (!container) return;
+
+        const priceEl = container.querySelector('[data-total-price]');
+        if (!priceEl) return;
+
+        sidebarPriceTarget = Math.max(0, Number(totalPrice) || 0);
+
+        if (sidebarPriceAnimated) {
+            priceEl.classList.remove('is-loading');
+            priceEl.textContent = `¥${sidebarPriceTarget.toFixed(2)}`;
+            return;
+        }
+
+        if (!sidebarRevealCompleted || (!steamTotalsCache.error && steamTotalsAnimationPending)) {
+            sidebarPriceAnimationPending = true;
+            priceEl.classList.add('is-loading');
+            priceEl.textContent = '-';
+            return;
+        }
+
+        tryStartSidebarPriceAnimation();
+    }
+
+    function tryStartSidebarPriceAnimation() {
+        if (sidebarPriceAnimated || !sidebarPriceAnimationPending || !sidebarRevealCompleted) return;
+        const container = document.getElementById('tag-stats-container');
+        if (!container) return;
+
+        const priceEl = container.querySelector('[data-total-price]');
+        if (!priceEl) return;
+
+        animateSidebarPrice(priceEl, sidebarPriceTarget);
+        sidebarPriceAnimated = true;
+        sidebarPriceAnimationPending = false;
+    }
+
+    function animateSidebarPrice(element, targetPrice) {
+        if (!element) return;
+
+        const target = Math.max(0, Number(targetPrice) || 0);
+        const duration = target > 0 ? 1100 : 1;
+        const startTime = performance.now();
+        stopSidebarPriceAnimation(element);
+        element.classList.remove('is-loading');
+        element.textContent = '¥0.00';
+
+        const step = (now) => {
+            const progress = Math.min(1, (now - startTime) / duration);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = target * eased;
+            element.textContent = `¥${current.toFixed(2)}`;
+
+            if (progress < 1) {
+                element.__priceCountFrame = window.requestAnimationFrame(step);
+            } else {
+                element.textContent = `¥${target.toFixed(2)}`;
+                element.__priceCountFrame = null;
+            }
+        };
+
+        if (target > 0) {
+            element.__priceCountFrame = window.requestAnimationFrame(step);
+        }
+    }
+
+    function stopSidebarPriceAnimation(element) {
+        if (!element || !element.__priceCountFrame) return;
+        window.cancelAnimationFrame(element.__priceCountFrame);
+        element.__priceCountFrame = null;
+    }
+
     async function refreshSteamTotals() {
-        if (steamTotalsPromise) {
+        const signature = getSteamTotalsSignature();
+        if (steamTotalsPromise && steamTotalsRequestSignature === signature) {
             return steamTotalsPromise;
         }
 
         const appids = getSteamAppIds();
+        if (signature && signature === steamTotalsLoadedSignature && !steamTotalsCache.loading && !steamTotalsCache.error) {
+            renderSteamTotals();
+            return steamTotalsCache;
+        }
+
         if (!appids.length) {
             steamTotalsCache = {
                 loading: false,
@@ -283,6 +444,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 recentMinutes: 0,
                 error: null
             };
+            steamTotalsAnimated = true;
+            steamTotalsAnimationPending = false;
+            steamTotalsLoadedSignature = signature;
             renderSteamTotals();
             return steamTotalsCache;
         }
@@ -293,6 +457,9 @@ document.addEventListener('DOMContentLoaded', () => {
             recentMinutes: null,
             error: null
         };
+        steamTotalsAnimated = false;
+        steamTotalsAnimationPending = false;
+        steamTotalsRequestSignature = signature;
         renderSteamTotals();
 
         steamTotalsPromise = (async () => {
@@ -320,6 +487,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     recentMinutes: totals.recent,
                     error: null
                 };
+                steamTotalsLoadedSignature = signature;
+                steamTotalsAnimated = false;
+                steamTotalsAnimationPending = true;
             } catch (error) {
                 steamTotalsCache = {
                     loading: false,
@@ -327,8 +497,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     recentMinutes: null,
                     error: error?.message || String(error)
                 };
+                steamTotalsAnimated = false;
+                steamTotalsAnimationPending = false;
             } finally {
                 steamTotalsPromise = null;
+                steamTotalsRequestSignature = '';
                 renderSteamTotals();
             }
 
@@ -491,6 +664,24 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     async function initialize() {
         try {
+            contentReadyToReveal = false;
+            openingStarted = false;
+            loadingCanHide = false;
+            sidebarRevealCompleted = false;
+            sidebarPriceAnimated = false;
+            sidebarPriceAnimationPending = false;
+            sidebarPriceTarget = 0;
+            steamTotalsLoadedSignature = '';
+            steamTotalsRequestSignature = '';
+            if (loadingMinimumTimer) {
+                clearTimeout(loadingMinimumTimer);
+            }
+            loadingMinimumTimer = window.setTimeout(() => {
+                loadingCanHide = true;
+                loadingMinimumTimer = null;
+                tryStartOpeningSequence();
+            }, 1000);
+
             // --- marked.js 配置：用于将 Markdown 转换为 HTML ---
             const renderer = new marked.Renderer();
             const linkRenderer = renderer.link; // 保存原始的链接渲染器
@@ -540,6 +731,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bindScrollEvent(); // 绑定滚动事件监听器
             updateSidebarVisibility(); // 初始化时根据窗口宽度决定边栏显示状态
             window.addEventListener('resize', updateSidebarVisibility);
+            contentReadyToReveal = true;
+            tryStartOpeningSequence();
 
         } catch (err) {
             // 如果初始化过程中发生错误，显示错误信息
@@ -548,13 +741,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function tryStartOpeningSequence() {
+        if (openingStarted || !contentReadyToReveal || !loadingCanHide) return;
+        openingStarted = true;
+
+        document.body.classList.add('pre-opening');
+        document.body.classList.remove('loading');
+        document.body.classList.add('page-opening');
+
+        if (openingAnimationTimer) {
+            clearTimeout(openingAnimationTimer);
+        }
+        openingAnimationTimer = window.setTimeout(() => {
+            document.body.classList.remove('page-opening');
+            sidebarRevealCompleted = true;
+            tryStartSteamTotalsAnimation();
+            tryStartSidebarPriceAnimation();
+            openingAnimationTimer = null;
+        }, 2850);
+
+        requestAnimationFrame(() => {
+            document.body.classList.remove('pre-opening');
+        });
+    }
+
     /**
      * 渲染初始数量的文章到主内容区
      * @param {Array} postsToRender - 需要被渲染的文章对象数组
      */
-    function renderInitialPosts(postsToRender) {
+    function triggerContentAnimation() {
+        document.body.classList.add('content-transition');
+        if (contentAnimationTimer) {
+            clearTimeout(contentAnimationTimer);
+        }
+        contentAnimationTimer = window.setTimeout(() => {
+            document.body.classList.remove('content-transition');
+            contentAnimationTimer = null;
+        }, 1600);
+    }
+
+    function renderInitialPosts(postsToRender, animate = false) {
         if (activeMusicCard && activeMusicCard.__musicState) {
             stopMusicPlayer(activeMusicCard.__musicState);
+        }
+        if (animate) {
+            triggerContentAnimation();
+        } else {
+            document.body.classList.remove('content-transition');
         }
         mainContent.innerHTML = ''; // 清空主内容区
         currentLoadedCount = 0; // 重置已加载计数
@@ -591,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 渲染这一批文章
-        postsBatch.forEach(item => {
+        postsBatch.forEach((item, index) => {
             const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
             const displayTags = getDisplayTags(item);
             const tagsHTML = displayTags.map(tag => `<span class="${getTagClassName(tag)}">${tag}</span>`).join("");
@@ -616,6 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'news-item';
+            itemDiv.style.setProperty('--enter-delay', `${(startIndex + index) * 95}ms`);
             itemDiv.innerHTML = `
                 <div class="news-left${musicUrl ? ' has-music' : ''}">
                     ${musicButtonHTML}
@@ -759,7 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </li>
             </ul>
             <ul>${listHtml}</ul>
-            <div class="total-price" data-total-price>¥${totalPrice.toFixed(2)}</div>
+            <div class="total-price is-loading" data-total-price>-</div>
             <div class="sidebar-total-time-group">
                 <div class="sidebar-total-caption">近两周</div>
                 <div class="total-price sidebar-total-time-box" data-steam-recent-time-box>
@@ -774,6 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         renderSteamTotals(container);
+        renderSidebarPrice(container, totalPrice);
         refreshSteamTotals();
         if (!activeTagName) {
             const homeStatsLink = container.querySelector('a[data-tag-home]');
@@ -802,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.classList.add('active'); // 高亮当前点击的导航链接
 
                 if (page === 'home.html') {
-                    renderInitialPosts(allPosts); // 点击首页，重新渲染初始数量的所有文章
+                renderInitialPosts(allPosts, true); // 点击首页，重新渲染初始数量的所有文章
                 } else {
                     // 如果点击的是其他页面（如 about.html），则显示加载提示
                     mainContent.innerHTML = `<p>加载 ${page}...</p>`;
@@ -828,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isTotalPrice = e.target.closest('[data-total-price]'); // 检查是否点击了总价格区域
             if (homeLink) {
                 e.preventDefault();
-                renderInitialPosts(allPosts);
+                renderInitialPosts(allPosts, true);
                 clearAllActiveStates();
                 homeLink.classList.add('active');
                 activeTagLink = null;
@@ -837,7 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tag = link.getAttribute('data-tag'); // 获取点击的标签名
 
                 const filteredPosts = allPosts.filter(post => post.tags.includes(tag));
-                renderInitialPosts(filteredPosts); // 渲染过滤后的文章，并重置加载状态
+                renderInitialPosts(filteredPosts, true); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
                 link.classList.add('active'); // 高亮当前点击的标签链接
@@ -850,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // 阻止默认行为
                 // 过滤出所有有价格的文章
                 const filteredPosts = allPosts.filter(post => post.price && Number(post.price) !== 0);
-                renderInitialPosts(filteredPosts); // 渲染过滤后的文章，并重置加载状态
+                renderInitialPosts(filteredPosts, true); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
                 // 移除：在小屏幕上点击总价格后自动关闭侧边栏
