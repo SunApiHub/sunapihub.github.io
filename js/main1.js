@@ -116,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function startMusicFrame(state) {
+        if (!state || state.iframe.src === state.autoplaySrc) return;
+        state.iframe.src = state.autoplaySrc;
+    }
+
     function playMusicPlayer(state) {
         if (!state) return;
         if (activeMusicCard && activeMusicCard !== state.card) {
@@ -127,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.icon) {
             state.icon.textContent = '⏹';
         }
-        state.iframe.src = state.autoplaySrc;
+        startMusicFrame(state);
         activeMusicCard = state.card;
     }
 
@@ -145,6 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
             autoplaySrc: buildMusicAutoplayUrl(musicUrl),
         };
         card.__musicState = state;
+
+        button.addEventListener('pointerdown', () => {
+            if (!card.classList.contains('music-playing')) {
+                startMusicFrame(state);
+            }
+        }, { passive: true });
 
         button.addEventListener('click', () => {
             if (card.classList.contains('music-playing')) {
@@ -176,22 +187,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getDisplayTags(item) {
         const tags = Array.isArray(item.tags) ? [...item.tags] : [];
-        const steamIndex = tags.indexOf('Steam');
-        if (steamIndex > 0) {
-            tags.splice(steamIndex, 1);
-            tags.unshift('Steam');
+        const uniqueTags = [...new Set(tags)];
+        const sortedTags = [];
+
+        if (uniqueTags.includes('Steam')) {
+            sortedTags.push('Steam');
         }
-        const musicIndex = tags.indexOf('Music');
-        if (musicIndex > -1) {
-            tags.splice(musicIndex, 1);
-            const nextSteamIndex = tags.indexOf('Steam');
-            if (nextSteamIndex >= 0) {
-                tags.splice(nextSteamIndex + 1, 0, 'Music');
-            } else {
-                tags.unshift('Music');
-            }
+        if (uniqueTags.includes('Music')) {
+            sortedTags.push('Music');
         }
-        return tags;
+
+        uniqueTags.forEach((tag) => {
+            if (tag === 'Steam' || tag === 'Music' || tag === '全成就') return;
+            sortedTags.push(tag);
+        });
+
+        if (uniqueTags.includes('全成就')) {
+            sortedTags.push('全成就');
+        }
+
+        return sortedTags;
+    }
+
+    function getTagClassName(tag) {
+        const baseClass = `tag-${tag.replace(/ /g, '-')}`;
+        if (tag === 'Steam' || tag === 'Music' || tag === '全成就') {
+            return `tag ${baseClass} tag-system`;
+        }
+        return `tag ${baseClass} tag-content`;
     }
 
     function fetchSteamGameInfo(appid) {
@@ -571,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         postsBatch.forEach(item => {
             const priceHTML = (item.price && Number(item.price) !== 0) ? `<div class="price">¥${item.price}</div>` : "";
             const displayTags = getDisplayTags(item);
-            const tagsHTML = displayTags.map(tag => `<span class="tag tag-${tag.replace(/ /g, '-')}">${tag}</span>`).join("");
+            const tagsHTML = displayTags.map(tag => `<span class="${getTagClassName(tag)}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
             const steamAppId = item.steamAppId || resolveSteamAppId(item);
             const musicUrl = normalizeMusicUrl(item.musicUrl || item.musicIframe || item.musicSrc);
