@@ -875,14 +875,154 @@ body.mobile-browser .container {
     padding: var(--layout-padding);
 }
 
+body .mobile-sidebar-backdrop,
+body .mobile-tab-bar {
+    display: none;
+}
+
 body.mobile-browser #main-content {
     padding: 20px;
     max-width: none;
     margin: 0;
+    padding-bottom: 120px;
 }
 
 body.mobile-browser.sidebar-open {
     overflow: hidden;
+}
+
+body.mobile-browser.sidebar-hidden #sidebar {
+    display: block;
+}
+
+body.mobile-browser #sidebar {
+    position: fixed;
+    left: auto;
+    right: 12px;
+    top: 12px;
+    bottom: 126px;
+    width: calc((100vw - 24px) * 0.66);
+    height: auto;
+    max-height: none;
+    border-radius: 28px;
+    transform: translateY(120%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.35s ease, opacity 0.35s ease, visibility 0.35s ease;
+    z-index: 40;
+    background: color-mix(in srgb, var(--nav-bg) 92%, transparent);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.18);
+}
+
+body.mobile-browser.mobile-sidebar-open #sidebar {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.mobile-browser .mobile-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 35;
+}
+
+body.mobile-browser.mobile-sidebar-open .mobile-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.mobile-browser .mobile-tab-bar {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    min-height: 102px;
+    display: none;
+    align-items: center;
+    justify-content: stretch;
+    gap: 0;
+    padding: 14px 14px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--nav-bg) 90%, transparent);
+    border: 1px solid var(--panel-border-color);
+    box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.24),
+        0 8px 20px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    z-index: 45;
+}
+
+body.mobile-browser .mobile-tab-bar {
+    display: flex;
+}
+
+body.mobile-browser .mobile-tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: #7a8188;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 24px;
+    min-width: 0;
+    flex: 1 1 0;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: inherit;
+    box-shadow: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.mobile-browser .mobile-tab.mobile-tab--label-only {
+    justify-content: center;
+    gap: 0;
+}
+
+body.mobile-browser .mobile-tab + .mobile-tab {
+    margin-left: 12px;
+}
+
+body.mobile-browser .mobile-tab.active {
+    color: var(--title-color);
+    background: color-mix(in srgb, var(--nav-active-bg) 86%, transparent);
+    border-color: var(--panel-border-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+body.mobile-browser .mobile-tab-icon {
+    font-size: 1.18em;
+    line-height: 1;
+}
+
+body.mobile-browser .mobile-tab.mobile-tab--label-only .mobile-tab-icon {
+    display: none;
+}
+
+body.mobile-browser .mobile-tab-label {
+    font-size: 1.12em;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.01em;
+}
+
+body.mobile-browser .mobile-sidebar-backdrop,
+body.mobile-browser .mobile-tab-bar {
+    display: flex;
 }
 
 body.mobile-browser .news-item {
@@ -890,6 +1030,11 @@ body.mobile-browser .news-item {
     gap: 15px;
     padding: 15px;
     margin-bottom: 32px;
+}
+
+body.mobile-browser.page-opening .container {
+    animation: none;
+    padding-left: var(--layout-padding);
 }
 
 body.mobile-browser .news-left {

@@ -730,6 +730,9 @@ document.addEventListener('DOMContentLoaded', () => {
             bindTagLinks(); // 绑定标签链接点击事件
             bindScrollEvent(); // 绑定滚动事件监听器
             updateSidebarVisibility(); // 初始化时根据窗口宽度决定边栏显示状态
+            bindMobileTabBar();
+            bindMobileSidebarBackdrop();
+            setMobileTabActive('home');
             window.addEventListener('resize', updateSidebarVisibility);
             contentReadyToReveal = true;
             tryStartOpeningSequence();
@@ -1038,6 +1041,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (page === 'home.html') {
                 renderInitialPosts(allPosts, true); // 点击首页，重新渲染初始数量的所有文章
+                setMobileTabActive('home');
+                closeMobileSidebar();
                 } else {
                     // 如果点击的是其他页面（如 about.html），则显示加载提示
                     mainContent.innerHTML = `<p>加载 ${page}...</p>`;
@@ -1067,6 +1072,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearAllActiveStates();
                 homeLink.classList.add('active');
                 activeTagLink = null;
+                setMobileTabLabel('tags', '标签');
+                setMobileTabActive('home');
+                closeMobileSidebar();
             } else if (link) {
                 e.preventDefault(); // 阻止链接的默认行为
                 const tag = link.getAttribute('data-tag'); // 获取点击的标签名
@@ -1077,6 +1085,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearAllActiveStates(); // 清除所有高亮状态
                 link.classList.add('active'); // 高亮当前点击的标签链接
                 activeTagLink = link; // 记录当前激活的标签链接
+                setMobileTabActive('tags');
+                setMobileTabLabel('tags', tag);
+                closeMobileSidebar();
                 // 移除：在小屏幕上点击标签链接后自动关闭侧边栏
                 // if (window.innerWidth <= MOBILE_BREAKPOINT) { // 判断是否在小屏幕模式
                 //     closeSidebar();
@@ -1088,6 +1099,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderInitialPosts(filteredPosts, true); // 渲染过滤后的文章，并重置加载状态
 
                 clearAllActiveStates(); // 清除所有高亮状态
+                setMobileTabLabel('tags', '标签');
+                setMobileTabActive('stats');
+                closeMobileSidebar();
                 // 移除：在小屏幕上点击总价格后自动关闭侧边栏
                 // if (window.innerWidth <= MOBILE_BREAKPOINT) { // 判断是否在小屏幕模式
                 //     closeSidebar();
@@ -1132,6 +1146,76 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('mobile-browser', isMobile);
         document.body.classList.toggle('desktop-browser', !isMobile);
         document.body.classList.toggle('sidebar-hidden', shouldHideSidebar);
+        if (!isMobile) {
+            document.body.classList.remove('mobile-sidebar-open');
+        }
+    }
+
+    function setMobileTabActive(tabName) {
+        document.querySelectorAll('.mobile-tab').forEach((button) => {
+            button.classList.toggle('active', button.getAttribute('data-mobile-tab') === tabName);
+        });
+    }
+
+    function setMobileTabLabel(tabName, labelText) {
+        const button = document.querySelector(`.mobile-tab[data-mobile-tab="${tabName}"]`);
+        if (!button) return;
+        const label = button.querySelector('.mobile-tab-label');
+        const icon = button.querySelector('.mobile-tab-icon');
+        if (!label) return;
+        label.textContent = labelText;
+        button.classList.toggle('mobile-tab--label-only', labelText !== '标签');
+        if (icon) {
+            icon.hidden = labelText !== '标签';
+        }
+    }
+
+    function closeMobileSidebar() {
+        document.body.classList.remove('mobile-sidebar-open');
+    }
+
+    function openMobileSidebar() {
+        if (!document.body.classList.contains('mobile-browser')) return;
+        document.body.classList.add('mobile-sidebar-open');
+    }
+
+    function scrollMobileSidebarTo(selector) {
+        const target = sidebar.querySelector(selector);
+        if (!target) return;
+        window.setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 40);
+    }
+
+    function bindMobileTabBar() {
+        document.querySelectorAll('.mobile-tab').forEach((button) => {
+            button.addEventListener('click', () => {
+                const tab = button.getAttribute('data-mobile-tab');
+                setMobileTabActive(tab);
+
+                if (tab === 'home') {
+                    renderInitialPosts(allPosts, true);
+                    setMobileTabLabel('tags', '标签');
+                    closeMobileSidebar();
+                    return;
+                }
+
+                if (tab === 'tags') {
+                    if (document.body.classList.contains('mobile-sidebar-open')) {
+                        closeMobileSidebar();
+                        return;
+                    }
+                    openMobileSidebar();
+                }
+            });
+        });
+    }
+
+    function bindMobileSidebarBackdrop() {
+        const backdrop = document.querySelector('.mobile-sidebar-backdrop');
+        if (!backdrop) return;
+
+        backdrop.addEventListener('click', closeMobileSidebar);
     }
 
     /**
