@@ -1255,6 +1255,38 @@ body.mobile-browser #tag-stats-container a {
     font-size: 1.18em;
 }
 
+body.mobile-browser.chrome-android .news-item .news-title {
+    font-size: 1.12em;
+}
+
+body.mobile-browser.chrome-android .news-item .content {
+    font-size: 0.78em;
+}
+
+body.mobile-browser.chrome-android .news-time,
+body.mobile-browser.chrome-android .tag,
+body.mobile-browser.chrome-android .steam-name,
+body.mobile-browser.chrome-android #tag-stats-container a {
+    font-size: 0.6em;
+}
+
+body.mobile-browser.chrome-android .steam-meta {
+    font-size: 0.56em;
+}
+
+body.mobile-browser.chrome-android .price {
+    font-size: 0.88em;
+}
+
+body.mobile-browser.chrome-android .toggle-content-button {
+    font-size: 0.68em;
+}
+
+body.mobile-browser.chrome-android .mobile-tab-label,
+body.mobile-browser.chrome-android .mobile-tab-icon {
+    font-size: 0.62em;
+}
+
 @media (max-width: 900px) and (hover: hover) and (pointer: fine) {
     .music-disc {
         width: min(235px, calc(100% - 20px));
