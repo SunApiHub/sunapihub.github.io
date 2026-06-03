@@ -881,10 +881,10 @@ body .mobile-tab-bar {
 }
 
 body.mobile-browser #main-content {
-    padding: 20px;
+    padding: 14px;
     max-width: none;
     margin: 0;
-    padding-bottom: 120px;
+    padding-bottom: 146px;
 }
 
 body.mobile-browser.sidebar-open {
@@ -941,15 +941,15 @@ body.mobile-browser.mobile-sidebar-open .mobile-sidebar-backdrop {
 
 body.mobile-browser .mobile-tab-bar {
     position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    min-height: 102px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    min-height: 120px;
     display: none;
     align-items: center;
     justify-content: stretch;
     gap: 0;
-    padding: 14px 14px;
+    padding: 18px 18px;
     box-sizing: border-box;
     border-radius: 999px;
     background: color-mix(in srgb, var(--nav-bg) 90%, transparent);
@@ -976,8 +976,8 @@ body.mobile-browser .mobile-tab {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 20px 24px;
+    gap: 14px;
+    padding: 24px 26px;
     min-width: 0;
     flex: 1 1 0;
     border-radius: 999px;
@@ -993,7 +993,7 @@ body.mobile-browser .mobile-tab.mobile-tab--label-only {
 }
 
 body.mobile-browser .mobile-tab + .mobile-tab {
-    margin-left: 12px;
+    margin-left: 14px;
 }
 
 body.mobile-browser .mobile-tab.active {
@@ -1005,7 +1005,7 @@ body.mobile-browser .mobile-tab.active {
 }
 
 body.mobile-browser .mobile-tab-icon {
-    font-size: 1.18em;
+    font-size: 1.28em;
     line-height: 1;
 }
 
@@ -1014,7 +1014,7 @@ body.mobile-browser .mobile-tab.mobile-tab--label-only .mobile-tab-icon {
 }
 
 body.mobile-browser .mobile-tab-label {
-    font-size: 1.12em;
+    font-size: 1.24em;
     font-weight: 500;
     line-height: 1;
     letter-spacing: 0.01em;
@@ -1027,9 +1027,9 @@ body.mobile-browser .mobile-tab-bar {
 
 body.mobile-browser .news-item {
     flex-direction: column;
-    gap: 15px;
-    padding: 15px;
-    margin-bottom: 32px;
+    gap: 18px;
+    padding: 18px;
+    margin-bottom: 38px;
 }
 
 body.mobile-browser.page-opening .container {
@@ -1045,22 +1045,22 @@ body.mobile-browser .news-left {
 
 body.mobile-browser .news-left img {
     display: block;
-    width: 70%;
+    width: 86%;
     height: auto;
-    border-radius: 14px;
+    border-radius: 16px;
 }
 
 body.mobile-browser .music-artwork {
-    width: 70%;
+    width: 86%;
     aspect-ratio: 1 / 1;
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     position: relative;
     z-index: 1;
 }
 
 body.mobile-browser .news-item.music-playing .music-artwork {
-    width: 70%;
+    width: 86%;
 }
 
 body.mobile-browser .news-left .music-cover-base {
@@ -1070,10 +1070,10 @@ body.mobile-browser .news-left .music-cover-base {
 }
 
 body.mobile-browser .music-disc {
-    width: calc(100% - 32px);
-    height: calc(100% - 32px);
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
     max-width: none;
-    padding: 8px;
+    padding: 10px;
 }
 
 body.mobile-browser .music-disc::before {
@@ -1090,15 +1090,15 @@ body.mobile-browser .news-left .music-disc img {
 }
 
 body.mobile-browser .music-toggle {
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
     right: 10px;
     bottom: 0;
-    font-size: 40px;
+    font-size: 44px;
 }
 
 body.mobile-browser .music-toggle-icon {
-    font-size: 34px;
+    font-size: 38px;
 }
 
 body.mobile-browser .has-music .music-frame {
@@ -1111,21 +1111,21 @@ body.mobile-browser .has-music .music-frame {
 }
 
 body.mobile-browser .news-item .news-title {
-    font-size: 2.2em;
-    margin-bottom: 5px;
+    font-size: 2.55em;
+    margin-bottom: 8px;
 }
 
 body.mobile-browser .news-item .content {
-    font-size: 1.3em;
-    line-height: 1.7;
+    font-size: 1.55em;
+    line-height: 1.72;
 }
 
 body.mobile-browser .news-time {
-    font-size: 1.05em;
+    font-size: 1.18em;
 }
 
 body.mobile-browser .tag {
-    font-size: 1.05em;
+    font-size: 1.18em;
 }
 
 body.mobile-browser .tags-price-line {
@@ -1133,8 +1133,8 @@ body.mobile-browser .tags-price-line {
     align-items: stretch;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 body.mobile-browser .tags {
@@ -1152,6 +1152,7 @@ body.mobile-browser .footer-right {
 body.mobile-browser .steam-meta {
     align-items: flex-start;
     text-align: left;
+    font-size: 1.08em;
 }
 
 body.mobile-browser .steam-meta-line {
@@ -1159,8 +1160,8 @@ body.mobile-browser .steam-meta-line {
 }
 
 body.mobile-browser .steam-progress {
-    margin-top: 12px;
-    margin-bottom: 10px;
+    margin-top: 14px;
+    margin-bottom: 12px;
 }
 
 body.mobile-browser .steam-no-achievements .tags-price-line {
@@ -1186,27 +1187,27 @@ body.mobile-browser .price {
     text-align: right;
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 1.5em;
+    font-size: 1.75em;
 }
 
 body.mobile-browser .steam-name {
-    font-size: 1.05em;
+    font-size: 1.18em;
 }
 
 body.mobile-browser .steam-meta {
-    font-size: 1.05em;
+    font-size: 1.12em;
 }
 
 body.mobile-browser .toggle-content-button {
-    font-size: 1.2em;
+    font-size: 1.35em;
 }
 
 body.mobile-browser #tag-stats-container {
-    padding: 0 10px;
+    padding: 0 12px;
 }
 
 body.mobile-browser #tag-stats-container a {
-    font-size: 1.1em;
+    font-size: 1.18em;
 }
 
 @media (max-width: 900px) and (hover: hover) and (pointer: fine) {
