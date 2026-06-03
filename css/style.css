@@ -270,11 +270,11 @@ nav a:hover {
     content: "";
     position: absolute;
     inset: -10px;
-    border: 1.5px solid rgba(255, 36, 94, 0.92);
+    border: 1.5px solid rgba(180, 186, 194, 0.86);
     border-radius: 50%;
     opacity: 0;
     transform: scale(1.08);
-    box-shadow: 0 0 12px rgba(255, 36, 94, 0.18);
+    box-shadow: 0 0 12px rgba(180, 186, 194, 0.16);
     transform-origin: center center;
 }
 
@@ -315,6 +315,8 @@ nav a:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     transform: translateZ(0);
     backface-visibility: hidden;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .music-toggle-icon {
@@ -326,6 +328,11 @@ nav a:hover {
 
 .music-toggle:hover {
     background: rgba(255, 36, 94, 0.72);
+}
+
+.music-toggle:focus,
+.music-toggle:focus-visible {
+    outline: none;
 }
 
 .music-toggle.is-playing {
@@ -344,6 +351,20 @@ nav a:hover {
     opacity: 0;
     pointer-events: none;
     border: 0;
+}
+
+.music-audio {
+    display: none;
+}
+
+.has-local-music .music-toggle,
+.has-local-music .music-toggle.is-playing {
+    background: rgba(255, 255, 255, 0.76);
+    color: #111;
+}
+
+.has-local-music .music-toggle:hover {
+    background: rgba(255, 255, 255, 0.88);
 }
 
 .news-item.music-playing .music-cover-base {
@@ -387,10 +408,9 @@ nav a:hover {
     z-index: 20;
 }
 
-.tag.tag-Music {
-    background: rgba(255, 36, 94, 0.16);
-    color: #FF245E;
-    border: 1px solid rgba(255, 36, 94, 0.24);
+.news-item.music-playing .has-local-music .music-toggle {
+    background: rgba(255, 255, 255, 0.76);
+    color: #111;
 }
 
 .news-right {
@@ -1124,7 +1144,7 @@ body.mobile-browser .music-disc {
 body.mobile-browser .music-disc::before {
     inset: -10px;
     border-width: 1.5px;
-    box-shadow: 0 0 10px rgba(255, 36, 94, 0.14);
+    box-shadow: 0 0 10px rgba(180, 186, 194, 0.14);
 }
 
 body.mobile-browser .news-left .music-disc img {
@@ -1135,15 +1155,22 @@ body.mobile-browser .news-left .music-disc img {
 }
 
 body.mobile-browser .music-toggle {
-    width: 80px;
-    height: 80px;
-    right: 10px;
-    bottom: 0;
-    font-size: 44px;
+    width: 54px;
+    height: 54px;
+    left: 43%;
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    font-size: 26px;
+    transform: translate(-50%, -50%) translateZ(0);
 }
 
 body.mobile-browser .music-toggle-icon {
-    font-size: 38px;
+    font-size: 24px;
+}
+
+body.mobile-browser .has-external-music .music-toggle {
+    display: none;
 }
 
 body.mobile-browser .has-music .music-frame {

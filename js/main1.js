@@ -106,6 +106,38 @@ document.addEventListener('DOMContentLoaded', () => {
         return trimmed.startsWith('//') ? `https:${trimmed}` : trimmed;
     }
 
+    function isLocalMusicUrl(url) {
+        if (!url) return false;
+        const trimmed = String(url).trim();
+        return /(\.(mp3|ogg|wav|m4a|aac|flac)(\?.*)?$)/i.test(trimmed)
+            || /^(\/|\.\/|\.\.\/|music\/|audio\/|mp3\/)/i.test(trimmed);
+    }
+
+    function getMusicSource(item) {
+        const localUrl = item.localMusicUrl || item.localMusicSrc || item.musicLocal || item.musicFile || item.audioUrl || item.audioSrc;
+        if (localUrl) {
+            return {
+                type: 'local',
+                url: normalizeMusicUrl(localUrl)
+            };
+        }
+
+        if (item.musicSrc && isLocalMusicUrl(item.musicSrc)) {
+            return {
+                type: 'local',
+                url: normalizeMusicUrl(item.musicSrc)
+            };
+        }
+
+        const externalUrl = item.musicUrl || item.musicIframe || item.musicSrc;
+        if (!externalUrl) return null;
+
+        return {
+            type: 'external',
+            url: normalizeMusicUrl(externalUrl)
+        };
+    }
+
     function buildMusicAutoplayUrl(url) {
         const normalized = normalizeMusicUrl(url);
         if (!normalized) return '';
@@ -128,15 +160,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.icon) {
             state.icon.textContent = '♪';
         }
-        state.iframe.src = 'about:blank';
+        if (state.type === 'local' && state.audio) {
+            state.audio.pause();
+            state.audio.currentTime = 0;
+        } else if (state.iframe) {
+            state.iframe.src = 'about:blank';
+        }
         if (activeMusicCard === state.card) {
             activeMusicCard = null;
         }
     }
 
-    function startMusicFrame(state) {
-        if (!state || state.iframe.src === state.autoplaySrc) return;
-        state.iframe.src = state.autoplaySrc;
+    function startMusicSource(state) {
+        if (!state) return;
+        if (state.type === 'local' && state.audio) {
+            state.audio.play().catch(() => {
+                stopMusicPlayer(state);
+            });
+            return;
+        }
+        if (state.iframe && state.iframe.src !== state.autoplaySrc) {
+            state.iframe.src = state.autoplaySrc;
+        }
     }
 
     function playMusicPlayer(state) {
@@ -148,30 +193,35 @@ document.addEventListener('DOMContentLoaded', () => {
         state.button.classList.add('is-playing');
         state.button.setAttribute('aria-label', '停止音乐');
         if (state.icon) {
-            state.icon.textContent = '⏹';
+            state.icon.textContent = '■';
         }
-        startMusicFrame(state);
+        startMusicSource(state);
         activeMusicCard = state.card;
     }
 
-    function setupMusicPlayer(card, musicUrl) {
-        if (!card || !musicUrl) return;
+    function setupMusicPlayer(card, musicSource) {
+        if (!card || !musicSource?.url) return;
         const button = card.querySelector('[data-music-toggle]');
+        if (!button) return;
         const iframe = card.querySelector('[data-music-frame]');
-        if (!button || !iframe) return;
+        const audio = card.querySelector('[data-music-audio]');
+        if (musicSource.type === 'local' && !audio) return;
+        if (musicSource.type === 'external' && !iframe) return;
 
         const state = {
             card,
             button,
             iframe,
+            audio,
+            type: musicSource.type,
             icon: button.querySelector('[data-music-icon]'),
-            autoplaySrc: buildMusicAutoplayUrl(musicUrl),
+            autoplaySrc: musicSource.type === 'external' ? buildMusicAutoplayUrl(musicSource.url) : '',
         };
         card.__musicState = state;
 
         button.addEventListener('pointerdown', () => {
-            if (!card.classList.contains('music-playing')) {
-                startMusicFrame(state);
+            if (state.type === 'external' && !card.classList.contains('music-playing')) {
+                startMusicSource(state);
             }
         }, { passive: true });
 
@@ -182,12 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 playMusicPlayer(state);
             }
         });
+
+        if (audio) {
+            audio.addEventListener('ended', () => stopMusicPlayer(state));
+        }
     }
 
     function augmentPost(item) {
         const steamAppId = resolveSteamAppId(item);
         const tags = Array.isArray(item.tags) ? [...item.tags] : [];
-        const hasMusic = Boolean(item.musicUrl || item.musicIframe || item.musicSrc);
+        const hasMusic = Boolean(getMusicSource(item));
 
         if (steamAppId && !tags.includes('Steam')) {
             tags.push('Steam');
@@ -836,12 +890,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const tagsHTML = displayTags.map(tag => `<span class="${getTagClassName(tag)}">${tag}</span>`).join("");
             const renderedContent = marked.parse(item.content);
             const steamAppId = item.steamAppId || resolveSteamAppId(item);
-            const musicUrl = normalizeMusicUrl(item.musicUrl || item.musicIframe || item.musicSrc);
-            const musicButtonHTML = musicUrl ? `
+            const musicSource = getMusicSource(item);
+            const hasMusic = Boolean(musicSource);
+            const musicButtonHTML = hasMusic ? `
                 <button class="music-toggle" type="button" data-music-toggle aria-label="播放音乐"><span class="music-toggle-icon" data-music-icon>♪</span></button>
             ` : "";
-            const musicFrameHTML = musicUrl ? `
+            const musicFrameHTML = musicSource?.type === 'external' ? `
                 <iframe class="music-frame" data-music-frame title="${item.title} 音乐播放器" allow="autoplay; encrypted-media" scrolling="no" frameborder="0"></iframe>
+            ` : "";
+            const musicAudioHTML = musicSource?.type === 'local' ? `
+                <audio class="music-audio" data-music-audio preload="none" src="${musicSource.url}"></audio>
             ` : "";
             const steamMetaHTML = steamAppId
                 ? `<div class="steam-meta steam-loading" data-steam-appid="${steamAppId}"><span class="steam-note">加载中...</span></div>`
@@ -857,9 +915,9 @@ document.addEventListener('DOMContentLoaded', () => {
             itemDiv.className = 'news-item';
             itemDiv.style.setProperty('--enter-delay', `${(startIndex + index) * 95}ms`);
             itemDiv.innerHTML = `
-                <div class="news-left${musicUrl ? ' has-music' : ''}">
+                <div class="news-left${hasMusic ? ' has-music' : ''}${musicSource?.type === 'local' ? ' has-local-music' : ''}${musicSource?.type === 'external' ? ' has-external-music' : ''}">
                     ${musicButtonHTML}
-                    ${musicUrl ? `
+                    ${hasMusic ? `
                         <div class="music-artwork">
                             <img class="music-cover-base" src="${item.image}" alt="${item.title}" loading="lazy" />
                             <div class="music-disc" aria-hidden="true">
@@ -870,6 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${item.image}" alt="${item.title}" loading="lazy" />
                     `}
                     ${musicFrameHTML}
+                    ${musicAudioHTML}
                 </div>
                 <div class="news-right">
                     <h3 class="news-title">${item.title}</h3>
@@ -894,8 +953,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const steamMeta = itemDiv.querySelector('.steam-meta');
                 hydrateSteamMeta(steamMeta, item);
             }
-            if (musicUrl) {
-                setupMusicPlayer(itemDiv, musicUrl);
+            if (musicSource) {
+                setupMusicPlayer(itemDiv, musicSource);
             }
 
             // 检查并折叠内容
