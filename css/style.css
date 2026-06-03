@@ -1281,28 +1281,36 @@ body.mobile-browser #tag-stats-container {
 body.mobile-browser #tag-stats-container a {
     font-size: 1.18em;
 }
-
+/*  手机端优化
+    适用于安卓Chrome浏览器
+    防止标题过小 */
 body.mobile-browser.chrome-android .news-item .news-title {
-    font-size: 1.7em;
+    font-size: 1.3em;
 }
-
+/*  手机端优化
+    适用于安卓Chrome浏览器
+    防止正文过小 */
 body.mobile-browser.chrome-android .news-item .content {
-    font-size: 1.16em;
+    font-size: 0.9em;
 }
-
+/*  手机端优化
+    适用于安卓Chrome浏览器
+    标签/日期/Steam 名称 */
 body.mobile-browser.chrome-android .news-time,
 body.mobile-browser.chrome-android .tag,
 body.mobile-browser.chrome-android .steam-name,
 body.mobile-browser.chrome-android #tag-stats-container a {
-    font-size: 0.88em;
+    font-size: 0.6em;
 }
 
 body.mobile-browser.chrome-android .steam-meta {
     font-size: 0.84em;
 }
-
+/*  手机端优化
+    适用于安卓Chrome浏览器
+    金额 */
 body.mobile-browser.chrome-android .price {
-    font-size: 1.32em;
+    font-size: 1.1em;
 }
 
 body.mobile-browser.chrome-android .toggle-content-button {
