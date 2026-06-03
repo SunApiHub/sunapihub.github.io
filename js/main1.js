@@ -734,6 +734,9 @@ document.addEventListener('DOMContentLoaded', () => {
             bindMobileSidebarBackdrop();
             setMobileTabActive('home');
             window.addEventListener('resize', updateSidebarVisibility);
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', updateSidebarVisibility);
+            }
             contentReadyToReveal = true;
             tryStartOpeningSequence();
 
@@ -1148,8 +1151,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('desktop-browser', !isMobile);
         document.body.classList.toggle('sidebar-hidden', shouldHideSidebar);
         document.body.classList.toggle('chrome-android', isMobile && isAndroidChrome);
+        if (isMobile) {
+            const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
+            document.documentElement.style.setProperty('--mobile-viewport-height', `${Math.round(viewportHeight)}px`);
+        } else {
+            document.documentElement.style.removeProperty('--mobile-viewport-height');
+        }
         if (!isMobile) {
             document.body.classList.remove('mobile-sidebar-open');
+            document.documentElement.classList.remove('mobile-sidebar-open');
         }
     }
 
@@ -1174,11 +1184,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeMobileSidebar() {
         document.body.classList.remove('mobile-sidebar-open');
+        document.documentElement.classList.remove('mobile-sidebar-open');
     }
 
     function openMobileSidebar() {
         if (!document.body.classList.contains('mobile-browser')) return;
         document.body.classList.add('mobile-sidebar-open');
+        document.documentElement.classList.add('mobile-sidebar-open');
     }
 
     function scrollMobileSidebarTo(selector) {
@@ -1218,6 +1230,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!backdrop) return;
 
         backdrop.addEventListener('click', closeMobileSidebar);
+        backdrop.addEventListener('touchmove', (event) => {
+            if (document.body.classList.contains('mobile-sidebar-open')) {
+                event.preventDefault();
+            }
+        }, { passive: false });
     }
 
     /**
