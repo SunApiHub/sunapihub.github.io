@@ -886,14 +886,14 @@ body.mobile-browser.chrome-android .container {
 }
 
 body.mobile-browser.chrome-android #main-content {
-    width: calc(100% / 0.84);
-    transform: scale(0.84);
-    transform-origin: top left;
+    width: 100%;
+    transform: none;
+    margin-left: 0;
 }
 
 body.mobile-browser.chrome-android .mobile-tab-bar {
-    width: calc((100vw - 48px) / 0.84);
-    transform: translateX(-50%) scale(0.84);
+    width: calc(100vw - 48px);
+    transform: translateX(-50%);
     transform-origin: bottom center;
     left: 50%;
     right: auto;
