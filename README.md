@@ -3,7 +3,9 @@
 > 日志封面1280x720  
 > 内容图片格式 “日期-数字”
 
-[日核](https://sunapihub.github.io)
+### 20260603
+- 外链音乐 "musicUrl": "//player...",
+- 本地音乐 "localMusicUrl": "music/xxx.mp3",
 
 ### 20260526
 - 新增独立的开场加载页，加载阶段只显示居中的极简椭圆进度条，并补上 `SunApiHub` 与 logo 识别区。
