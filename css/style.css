@@ -1256,35 +1256,35 @@ body.mobile-browser #tag-stats-container a {
 }
 
 body.mobile-browser.chrome-android .news-item .news-title {
-    font-size: 1.12em;
+    font-size: 1.7em;
 }
 
 body.mobile-browser.chrome-android .news-item .content {
-    font-size: 0.78em;
+    font-size: 1.16em;
 }
 
 body.mobile-browser.chrome-android .news-time,
 body.mobile-browser.chrome-android .tag,
 body.mobile-browser.chrome-android .steam-name,
 body.mobile-browser.chrome-android #tag-stats-container a {
-    font-size: 0.6em;
-}
-
-body.mobile-browser.chrome-android .steam-meta {
-    font-size: 0.56em;
-}
-
-body.mobile-browser.chrome-android .price {
     font-size: 0.88em;
 }
 
+body.mobile-browser.chrome-android .steam-meta {
+    font-size: 0.84em;
+}
+
+body.mobile-browser.chrome-android .price {
+    font-size: 1.32em;
+}
+
 body.mobile-browser.chrome-android .toggle-content-button {
-    font-size: 0.68em;
+    font-size: 1.02em;
 }
 
 body.mobile-browser.chrome-android .mobile-tab-label,
 body.mobile-browser.chrome-android .mobile-tab-icon {
-    font-size: 0.62em;
+    font-size: 0.94em;
 }
 
 @media (max-width: 900px) and (hover: hover) and (pointer: fine) {
