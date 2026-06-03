@@ -1141,11 +1141,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!sidebar) return;
 
         const isMobile = isMobileBrowser();
+        const isAndroidChrome = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent) && !/Edg|SamsungBrowser|OPR|Opera/i.test(navigator.userAgent);
         const shouldHideSidebar = isMobile || window.innerWidth < SIDEBAR_HIDE_AT;
 
         document.body.classList.toggle('mobile-browser', isMobile);
         document.body.classList.toggle('desktop-browser', !isMobile);
         document.body.classList.toggle('sidebar-hidden', shouldHideSidebar);
+        document.body.classList.toggle('chrome-android', isMobile && isAndroidChrome);
         if (!isMobile) {
             document.body.classList.remove('mobile-sidebar-open');
         }

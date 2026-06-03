@@ -27,6 +27,11 @@
     --mac-chip-radius: 999px;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 /* 暗色模式下的变量重写 */
 @media (prefers-color-scheme: dark) {
     :root {
@@ -875,6 +880,20 @@ body.mobile-browser .container {
     padding: var(--layout-padding);
 }
 
+body.mobile-browser.chrome-android .container {
+    width: calc(100% / 0.84);
+    transform: scale(0.84);
+    transform-origin: top left;
+}
+
+body.mobile-browser.chrome-android .mobile-tab-bar {
+    width: calc((100vw - 48px) / 0.84);
+    transform: scale(0.84);
+    transform-origin: bottom center;
+    left: 24px;
+    right: 24px;
+}
+
 body .mobile-sidebar-backdrop,
 body .mobile-tab-bar {
     display: none;
@@ -941,9 +960,9 @@ body.mobile-browser.mobile-sidebar-open .mobile-sidebar-backdrop {
 
 body.mobile-browser .mobile-tab-bar {
     position: fixed;
-    left: 8px;
-    right: 8px;
-    bottom: 8px;
+    left: 24px;
+    right: 24px;
+    bottom: 16px;
     min-height: 120px;
     display: none;
     align-items: center;
