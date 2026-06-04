@@ -29,8 +29,7 @@
     "tags": [
       "杂谈"
     ],
-    "image": "date/260512.jpg",
-    "localMusicUrl": "music/1.mp3"
+    "image": "date/260512.jpg"
   },
   {
     "title": "最终幻想战略版",
@@ -41,7 +40,7 @@
       "★★★"
     ],
     "image": "date/1004640.jpg",
-    "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=1901941532&bvid=BV1pm411R73u&cid=1471792703&p=1",
+   "localMusicUrl": "music/fft.mp3",
     "steamAppId": 1004640
   },
   {
@@ -64,6 +63,7 @@
       "★★★"
     ],
     "image": "date/260124.jpg",
+     "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=207545886&bvid=BV1wh411q7M2&cid=396255395&p=1",
     "steamAppId": 3330250
   },
   {
@@ -97,6 +97,7 @@
     "tags": [
       "★★★"
     ],
+     "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=356870606&bvid=BV1MX4y187vk&cid=1149232303&p=1",
     "image": "date/250930.jpg"
   },
   {
@@ -194,6 +195,7 @@
       "★★★"
     ],
     "image": "date/250216.jpg",
+     "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=113269427734890&bvid=BV1nS2EYLEVW&cid=26193300218&p=1",
     "steamAppId": 206440
   },
   {
@@ -205,6 +207,7 @@
       "★★★"
     ],
     "image": "date/250118.jpg",
+    "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=997637120&bvid=BV1vs4y1C7mo&cid=1176897608&p=1",
     "steamAppId": 489830
   },
   {
@@ -228,6 +231,7 @@
       "★★☆"
     ],
     "image": "date/241204.jpg",
+    "musicUrl": "//player.bilibili.com/player.html?isOutside=true&aid=11513868&bvid=BV19x411h7NB&cid=19033329&p=1",
     "steamAppId": 1065970
   },
   {
@@ -285,6 +289,7 @@
       "★★☆"
     ],
     "image": "date/240917.jpg",
+    "localMusicUrl": "music/ff15.mp3",
     "steamAppId": 637650
   },
   {
@@ -307,6 +312,7 @@
       "★★★"
     ],
     "image": "date/240804.jpg",
+    "localMusicUrl": "music/flower.mp3",
     "steamAppId": 966330
   },
   {
@@ -608,6 +614,7 @@
       "★★☆"
     ],
     "image": "date/231015.jpg",
+    "localMusicUrl": "music/danizhuan.mp3",
     "steamAppId": 1158850
   },
   {
@@ -709,6 +716,7 @@
       "★★★"
     ],
     "image": "date/230303.jpg",
+    "localMusicUrl": "music/MGS5.mp3",
     "steamAppId": 287700
   },
   {
