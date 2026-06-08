@@ -1378,12 +1378,13 @@ body.mobile-browser.chrome-android .mobile-tab-icon {
 }
 
 .tag-count {
-    background-color: var(--nav-active-bg);
+    display: inline-block;
     color: var(--nav-active-text);
     font-size: 10px;
     padding: 1px 6px;
-    border-radius: 16px;
     font-weight: normal;
+    min-width: 22px;
+    text-align: right;
 }
 
 /* 分隔线样式 */
