@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Python 本地后台（不上传 GitHub）
+admin/
+
+# Python 缓存
+__pycache__/
+*.pyc
