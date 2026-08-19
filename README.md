@@ -2,7 +2,8 @@
 > md格式换行后面2个空格  
 > 日志封面1280x720  
 > 内容图片格式 “日期-数字”
-> 后台运行: python admin/server.py → http://localhost:8080/admin/
+> 后台运行（macOS）：双击项目根目录的 `一键启动后台.command`。它会在服务未运行时自动启动，然后打开 http://localhost:8080/admin/
+> 也可手动运行: python3 admin/server.py
 
 ### 20260608
 - 优化侧边栏标签统计数字样式，固定为 3 位数宽度（`min-width: 22px`），数字右对齐。
